@@ -1,0 +1,20 @@
+
+
+
+* {
+  user-select: none;
+}
+/* Pointer fixes */
+*:where(:not(input, textarea)) {
+  -webkit-user-select: none; /* disable selection/Copy of UIWebView */
+  -webkit-touch-callout: none; /* disable the IOS popup when long-press on a link */
+}
+
+
+:root {
+  /* viewport content width / height */
+  --vp-ct-w: 0px;
+  --vp-ct-h: 0px;
+}
+
+
