@@ -1,0 +1,12 @@
+import {
+  type GridViewShortProps,
+  processGridViewShortProps,
+} from 'src/utils/libs/fast-elems/props/processGridViewShortProps.ts'
+
+
+export const gridStyle = <P extends object>(
+  gridShortProps: P & GridViewShortProps
+) => {
+  const { css, gridViewRest } = processGridViewShortProps(gridShortProps)
+  return [{ display: 'grid' }, ...css, gridViewRest]
+}
