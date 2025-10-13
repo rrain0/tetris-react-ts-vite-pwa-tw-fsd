@@ -50,6 +50,7 @@ export default defineConfig(({ command, mode }) => ({
           plugins: [
             //'removeTitle',
             //'removeDesc',
+            // SVG elements' id attr auto prefixer to avoid duplicate ids across all document
             {
               name: 'prefixIds',
               params: {
