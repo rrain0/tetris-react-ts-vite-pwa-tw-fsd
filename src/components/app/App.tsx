@@ -14,21 +14,6 @@ const App = () => {
     <>
       <Flex col>
         
-        <div
-          style={{
-            cursor: 'var(--cursor)',
-            '--aa': 'aa',
-            touchAction: 'none',
-          }}
-          css={{
-            '--aa': 'aa',
-            touchAction: 'none',
-            cursor: 'var(--cursor)',
-          }}
-        >
-          Test
-        </div>
-        
         <TetrisGlass/>
         
       </Flex>
