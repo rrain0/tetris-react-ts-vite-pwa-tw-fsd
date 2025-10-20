@@ -1,1 +1,16 @@
-@layer reset fonts app;
+
+
+
+/* Setup default out-of-the-box elems state */
+@layer reset;
+
+/* Setup app fonts */
+@layer fonts;
+
+/* Setup app defaults */
+@layer app;
+
+
+
+/* Setup any local widget defaults */
+@layer widget;

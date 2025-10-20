@@ -21,13 +21,13 @@ export const processPointerShortProps = <P extends object>(
   
   
   
-  const pointer = {
+  const pointerCss = {
     ...pointerAuto && { pointerEvents: 'auto' },
     ...noPointer && { pointerEvents: 'none' },
     ...noTouchAction && { touchAction: 'none' },
   }
   
-  return { pointer, pointerRest }
+  return { pointerCss, pointerRest }
 }
 
 

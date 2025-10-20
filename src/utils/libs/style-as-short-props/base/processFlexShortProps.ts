@@ -4,12 +4,12 @@ import { isdef, ifBool, type Pu } from 'src/utils/base/tsUtils.ts'
 
 
 export type FlexShortProps = Pu<{
-  row: boolean
-  col: boolean
-  rowRev: boolean
-  colRev: boolean
-  wrap: boolean
-  wrapRev: boolean
+  row: boolean // true => { flexDirection: 'row' }
+  col: boolean // true => { flexDirection: 'column' }
+  rowRev: boolean // true => { flexDirection: 'row-reverse' }
+  colRev: boolean // true => { flexDirection: 'column-reverse' }
+  wrap: boolean // true => { flexWrap: 'wrap' }
+  wrapRev: boolean // true => { flexWrap: 'wrap-reverse' }
   
   
   align: string | boolean // alignItems // true => 'center'
@@ -21,32 +21,36 @@ export type FlexShortProps = Pu<{
   alignEnd: boolean // true => { alignItems: 'end' }
   alignStretch: boolean // true => { alignItems: 'stretch' }
   
-  // justify-content: stretch; does not exist for flex
+  // 'justify-content: stretch;' does not exist for flex
   justifyStart: boolean // true => { justifyContent: 'start' }
   justifyEnd: boolean // true => { justifyContent: 'end' }
   justifySpaceBetween: boolean // true => { justifyContent: 'space-between' }
   justifySpaceAround: boolean // true => { justifyContent: 'space-around' }
   
   start: boolean // true => { alignItems: 'start', justifyContent: 'start' }
+  center: boolean // true => { alignItems: 'center', justifyContent: 'center' }
+  end: boolean // true => { alignItems: 'end', justifyContent: 'end' }
+  
   startStart: boolean // true => { alignItems: 'start', justifyContent: 'start' }
   startCenter: boolean // true => { alignItems: 'start', justifyContent: 'center' }
   startEnd: boolean // true => { alignItems: 'start', justifyContent: 'end' }
   
   centerStart: boolean // true => { alignItems: 'center', justifyContent: 'start' }
-  center: boolean // true => { alignItems: 'center', justifyContent: 'center' }
+  centerCenter: boolean // true => { alignItems: 'center', justifyContent: 'center' }
   centerEnd: boolean // true => { alignItems: 'center', justifyContent: 'end' }
   
-  end: boolean // true => { alignItems: 'end', justifyContent: 'end' }
   endStart: boolean // true => { alignItems: 'end', justifyContent: 'start' }
   endCenter: boolean // true => { alignItems: 'end', justifyContent: 'center' }
   endEnd: boolean // true => { alignItems: 'end', justifyContent: 'end' }
   
+  stretchStart: boolean // true => { alignItems: 'stretch', justifyContent: 'start' }
+  stretchCenter: boolean // true => { alignItems: 'stretch', justifyContent: 'center' }
   stretchEnd: boolean // true => { alignItems: 'stretch', justifyContent: 'end' }
   
-  gap: number | string
-  g: number | string
-  gRow: number | string
-  gCol: number | string
+  gap: number | string // { gap }
+  g: number | string // { gap }
+  gRow: number | string // { rowGap }
+  gCol: number | string // { columnGap }
 }>
 
 
@@ -59,33 +63,43 @@ export const processFlexShortProps = <P extends object>(
     align, alignCt, justifyCt, justify,
     alignStart, alignEnd, alignStretch,
     justifyStart, justifyEnd, justifySpaceBetween, justifySpaceAround,
-    start, startStart, startCenter, startEnd,
-    centerStart, center, centerEnd,
-    end, endStart, endCenter, endEnd,
-    stretchEnd,
+    start, center, end,
+    startStart, startCenter, startEnd,
+    centerStart, centerCenter, centerEnd,
+    endStart, endCenter, endEnd,
+    stretchStart, stretchCenter, stretchEnd,
     gap, g, gRow, gCol,
     ...flexRest
   } = props
   
   
   
-  const flex = {
+  const flexCss = {
     ...row && { flexDirection: 'row' as const },
-    ...rowRev && { flexDirection: 'row-reverse' as const },
     ...col && { flexDirection: 'column' as const },
+    ...rowRev && { flexDirection: 'row-reverse' as const },
     ...colRev && { flexDirection: 'column-reverse' as const },
     ...wrap && { flexWrap: 'wrap' as const },
     ...wrapRev && { flexWrap: 'wrap-reverse' as const },
     
-    ...centerStart && { alignItems: 'center', justifyContent: 'start' },
+    ...start && { alignItems: 'start', justifyContent: 'start' },
     ...center && { alignItems: 'center', justifyContent: 'center' },
+    ...end && { alignItems: 'end', justifyContent: 'end' },
+    
+    ...startStart && { alignItems: 'start', justifyContent: 'start' },
+    ...startCenter && { alignItems: 'start', justifyContent: 'center' },
+    ...startEnd && { alignItems: 'start', justifyContent: 'end' },
+    
+    ...centerStart && { alignItems: 'center', justifyContent: 'start' },
+    ...centerCenter && { alignItems: 'center', justifyContent: 'center' },
     ...centerEnd && { alignItems: 'center', justifyContent: 'end' },
     
-    ...end && { alignItems: 'end', justifyContent: 'end' },
     ...endStart && { alignItems: 'end', justifyContent: 'start' },
     ...endCenter && { alignItems: 'end', justifyContent: 'center' },
     ...endEnd && { alignItems: 'end', justifyContent: 'end' },
     
+    ...stretchStart && { alignItems: 'start', justifyContent: 'end' },
+    ...stretchCenter && { alignItems: 'center', justifyContent: 'end' },
     ...stretchEnd && { alignItems: 'stretch', justifyContent: 'end' },
     
     ...alignStart && { alignItems: 'start' },
@@ -109,7 +123,7 @@ export const processFlexShortProps = <P extends object>(
     ...isdef(gCol) && { columnGap: gCol },
   }
   
-  return { flex, flexRest }
+  return { flexCss, flexRest }
 }
 
 

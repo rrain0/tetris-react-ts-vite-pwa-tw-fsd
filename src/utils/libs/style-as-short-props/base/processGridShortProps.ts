@@ -4,12 +4,13 @@ import { isdef, ifBool, type Pu } from 'src/utils/base/tsUtils.ts'
 
 
 export type GridShortProps = Pu<{
-  rows: string
-  cols: string
-  areas: string
+  grid: string // { grid }
+  areas: string // { gridTemplateAreas }
+  rows: string // { gridTemplateRows }
+  cols: string // { gridTemplateColumns }
   
-  autoRows: string
-  autoCols: string
+  autoRows: string // { gridAutoRows }
+  autoCols: string // { gridAutoColumns }
   
   
   align: string | boolean // alignItems // true => 'center'
@@ -27,11 +28,13 @@ export type GridShortProps = Pu<{
   start: boolean // true => { placeItems: 'start' }
   center: boolean // true => { placeItems: 'center' }
   stretch: boolean // true => { placeItems: 'stretch' }
-  endStretch: boolean // true => { placeItems: 'endStretch' }
   
+  endStretch: boolean // true => { placeItems: 'end stretch' }
   
-  gap: number | string
-  g: number | string
+  gap: number | string // { gap }
+  g: number | string // { gap }
+  gRow: number | string // { rowGap }
+  gCol: number | string // { columnGap }
 }>
 
 
@@ -40,19 +43,20 @@ export const processGridShortProps = <P extends object>(
   props: P & GridShortProps
 ) => {
   const {
-    areas, rows, cols,
+    grid, areas, rows, cols,
     autoRows, autoCols,
     align, justify, place,
     alignCt, justifyCt, placeCt,
     alignStart, alignEnd, alignStretch,
     start, center, stretch, endStretch,
-    gap, g,
+    gap, g, gRow, gCol,
     ...gridRest
   } = props
   
   
   
-  const grid = {
+  const gridCss = {
+    ...isdef(grid) && { grid },
     ...isdef(areas) && { gridTemplateAreas: areas },
     ...isdef(rows) && { gridTemplateRows: rows },
     ...isdef(cols) && { gridTemplateColumns: cols },
@@ -68,7 +72,8 @@ export const processGridShortProps = <P extends object>(
     ...start && { placeItems: 'start' },
     ...center && { placeItems: 'center' },
     ...stretch && { placeItems: 'stretch' },
-    ...endStretch && { placeItems: 'endStretch' },
+    
+    ...endStretch && { placeItems: 'end stretch' },
     
     ...isdef(place) && { placeItems: ifBool(place, 'center') },
     ...isdef(align) && { alignItems: ifBool(align, 'center') },
@@ -78,12 +83,13 @@ export const processGridShortProps = <P extends object>(
     ...isdef(alignCt) && { alignContent: ifBool(alignCt, 'center') },
     ...isdef(justifyCt) && { justifyContent: ifBool(justifyCt, 'center') },
     
-    
     ...isdef(gap) && { gap: gap },
     ...isdef(g) && { gap: g },
+    ...isdef(gRow) && { rowGap: gRow },
+    ...isdef(gCol) && { columnGap: gCol },
   }
   
-  return { grid, gridRest }
+  return { gridCss, gridRest }
 }
 
 

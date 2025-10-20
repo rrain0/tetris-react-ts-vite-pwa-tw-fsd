@@ -80,7 +80,7 @@ export const processSizeShortProps = <P extends object>(
   
   
   
-  const size = {
+  const sizeCss = {
     ...contentBox && { boxSizing: 'content-box' },
     ...borderBox && { boxSizing: 'border-box' },
     ...isdef(boxSizing) && { boxSizing: boxSizing },
@@ -131,7 +131,7 @@ export const processSizeShortProps = <P extends object>(
     ...isdef(pl) && { paddingLeft: pl },
   }
   
-  return { size, sizeRest }
+  return { sizeCss, sizeRest }
 }
 
 

@@ -1,7 +1,7 @@
 import {
   type CommonViewShortProps,
   processCommonViewShortProps,
-} from 'src/utils/libs/fast-elems/props/processCommonViewShortProps.ts'
+} from 'src/utils/libs/style-as-short-props/props/processCommonViewShortProps.ts'
 
 
 
@@ -11,3 +11,5 @@ export const commonStyle = <P extends object>(
   const { css, commonViewRest } = processCommonViewShortProps(commonShortProps)
   return [...css, commonViewRest ]
 }
+
+export const shortStyle = commonStyle

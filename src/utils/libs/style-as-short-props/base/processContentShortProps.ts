@@ -11,6 +11,8 @@ export type ContentShortProps = Pu<{
   
   noOverflow: boolean // true => { overflow: 'hidden' }
   overflowAuto: boolean // true => { overflow: 'auto' }
+  overflowHidden: boolean // true => { overflow: 'hidden' }
+  overflowVisible: boolean // true => { overflow: 'visible' }
 }>
 
 
@@ -20,21 +22,24 @@ export const processContentShortProps = <P extends object>(
 ) => {
   const {
     bg, bgColor, color,
-    noOverflow,
+    noOverflow, overflowAuto, overflowHidden, overflowVisible,
     ...contentRest
   } = props
   
   
   
-  const content = {
+  const contentCss = {
     ...isdef(bg) && { background: bg },
     ...isdef(bgColor) && { backgroundColor: bgColor },
     ...isdef(color) && { color: color },
     
     ...noOverflow && { overflow: 'hidden' },
+    ...overflowAuto && { overflow: 'auto' },
+    ...overflowHidden && { overflow: 'hidden' },
+    ...overflowVisible && { overflow: 'visible' },
   }
   
-  return { content, contentRest }
+  return { contentCss, contentRest }
 }
 
 

@@ -27,7 +27,7 @@ export const processTextShortProps = <P extends object>(
   
   
   
-  const text = {
+  const textCss = {
     ...textAlignLeft && { textAlign: 'left' },
     ...textAlignRight && { textAlign: 'right' },
     ...textAlignJustify && { textAlign: 'justify' },
@@ -38,7 +38,7 @@ export const processTextShortProps = <P extends object>(
     ...isdef(lineH) && { lineHeight: lineH },
   }
   
-  return { text, textRest }
+  return { textCss, textRest }
 }
 
 

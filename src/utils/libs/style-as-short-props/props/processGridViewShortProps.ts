@@ -1,11 +1,11 @@
 import {
   type GridShortProps,
   processGridShortProps,
-} from 'src/utils/libs/fast-elems/base/processGridShortProps.ts'
+} from 'src/utils/libs/style-as-short-props/base/processGridShortProps.ts'
 import {
   type CommonViewShortProps,
   processCommonViewShortProps,
-} from 'src/utils/libs/fast-elems/props/processCommonViewShortProps.ts'
+} from 'src/utils/libs/style-as-short-props/props/processCommonViewShortProps.ts'
 
 
 
@@ -17,9 +17,9 @@ export const processGridViewShortProps = <P extends object>(
   props: P & GridViewShortProps
 ) => {
   const { css, commonViewRest } = processCommonViewShortProps(props)
-  const { grid, gridRest } = processGridShortProps(commonViewRest)
+  const { gridCss, gridRest } = processGridShortProps(commonViewRest)
   
-  return { css: [...css, grid], gridViewRest: gridRest }
+  return { css: [...css, gridCss], gridViewRest: gridRest }
 }
 
 

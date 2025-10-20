@@ -46,7 +46,7 @@ export const processPlacedShortProps = <P extends object>(
   
   
   
-  const placedStyle = {
+  const placedCss = {
     ...isdef(aligned) && { alignSelf: ifBool(aligned, 'center') },
     ...alignedStart && { alignSelf: 'start' },
     ...alignedEnd && { alignSelf: 'end' },
@@ -73,7 +73,7 @@ export const processPlacedShortProps = <P extends object>(
     ...isdef(gridArea) && { gridArea: gridArea },
   }
   
-  return { placed: placedStyle, placedRest }
+  return { placedCss, placedRest }
 }
 
 

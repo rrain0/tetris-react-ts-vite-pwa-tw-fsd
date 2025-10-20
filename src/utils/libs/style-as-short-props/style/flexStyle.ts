@@ -1,7 +1,7 @@
 import {
   type FlexViewShortProps,
   processFlexViewShortProps,
-} from 'src/utils/libs/fast-elems/props/processFlexViewShortProps.ts'
+} from 'src/utils/libs/style-as-short-props/props/processFlexViewShortProps.ts'
 
 
 

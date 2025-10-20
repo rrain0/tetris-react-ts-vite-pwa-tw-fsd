@@ -1,7 +1,7 @@
 
 @layer reset {
   
-  *,::before,::after {
+  *,::before,::after,::backdrop {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
@@ -11,6 +11,8 @@
     /* disable highlight on mobile devices when tapping on screen */
     -webkit-tap-highlight-color: transparent;
     overflow-wrap: anywhere;
+  }
+  * {
     pointer-events: auto;
   }
   
@@ -36,13 +38,6 @@
   
   #root {
     display: contents;
-  }
-  
-  
-  /* :where() nullifies specifity so you can override style further locally */
-  /* :where(*,::before,::after) doesn't work */
-  :where(#root) *,::before,::after {
-    display: flex;
   }
   
 }
