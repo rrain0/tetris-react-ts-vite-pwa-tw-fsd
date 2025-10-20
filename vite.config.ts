@@ -33,7 +33,10 @@ export default defineConfig(({ command, mode }) => ({
     react({
       jsxImportSource: '@emotion/react',
       babel: {
-        plugins: ['@emotion/babel-plugin'],
+        plugins: [
+          '@emotion/babel-plugin',
+          'babel-plugin-react-compiler',
+        ],
       },
     }),
     tsconfigPaths(),

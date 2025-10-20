@@ -14,7 +14,7 @@ const newEmptyGlass: Producer<UiBlockInGlass[][]> = () => (
 
 // TODO Figures: TetraJ TetraL TetraI TetraO TetraT TetraS TetraZ
 
-const TetrisGlass = React.memo(function TetrisGlass() {
+const TetrisGlass = function TetrisGlass() {
   
   const [blocks, setBlocks] = useState(newEmptyGlass)
   
@@ -87,7 +87,7 @@ const TetrisGlass = React.memo(function TetrisGlass() {
       }))}
     </Grid>
   )
-})
+}
 export default TetrisGlass
 
 

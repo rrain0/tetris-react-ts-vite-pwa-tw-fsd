@@ -8,7 +8,7 @@ import TetrisGlass from 'src/components/components/TetrisGlass/TetrisGlass.tsx'
 
 
 
-const App = () => {
+function App() {
   
   const [cnt, setCnt] = useState(0)
   
@@ -19,11 +19,12 @@ const App = () => {
         <button onClick={() => setCnt(curr => curr + 1)}>Button</button>
         
         <TetrisGlass/>
-        
+      
       </Flex>
     </>
   )
 }
+
 App.displayName = 'App'
 export default App
 
