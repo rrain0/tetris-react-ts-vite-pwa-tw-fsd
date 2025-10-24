@@ -3,11 +3,10 @@ import { isdef, type Pu } from 'src/utils/base/tsUtils.ts'
 
 
 
-export type ContentShortProps = Pu<{
-  
-  bg: string // background
-  bgColor: string // backgroundColor
-  color: string // color
+export type ContentShortStyle = Pu<{
+  bg: string // { background }
+  bgColor: string // { backgroundColor }
+  color: string // { color }
   
   noOverflow: boolean // true => { overflow: 'hidden' }
   overflowAuto: boolean // true => { overflow: 'auto' }
@@ -17,8 +16,8 @@ export type ContentShortProps = Pu<{
 
 
 
-export const processContentShortProps = <P extends object>(
-  props: P & ContentShortProps
+export const processContentShortStyle = <P extends object>(
+  props: P & ContentShortStyle
 ) => {
   const {
     bg, bgColor, color,

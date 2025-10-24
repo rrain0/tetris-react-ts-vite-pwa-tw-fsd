@@ -1,6 +1,6 @@
 import { array } from '@utils/base/array/arrayCreateUtils.ts'
 import type { Producer } from '@utils/base/tsUtils.ts'
-import Grid from '@utils/libs/style-as-short-props/elems/Grid.tsx'
+import Grid from '@utils/libs/fast-elems/Grid.tsx'
 import { useEffect, useState } from 'react'
 import * as React from 'react'
 import { type UiBlockInGlass, uiBlockTypeToSrc } from 'src/models/uiBlock.ts'
@@ -14,7 +14,11 @@ const newEmptyGlass: Producer<UiBlockInGlass[][]> = () => (
 
 // TODO Figures: TetraJ TetraL TetraI TetraO TetraT TetraS TetraZ
 
-const TetrisGlass = function TetrisGlass() {
+function TetrisGlass() {
+  
+  if (true) {
+  
+  }
   
   const [blocks, setBlocks] = useState(newEmptyGlass)
   

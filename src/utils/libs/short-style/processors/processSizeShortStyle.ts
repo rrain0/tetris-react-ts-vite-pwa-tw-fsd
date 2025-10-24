@@ -3,33 +3,42 @@ import { isdef, type Pu } from 'src/utils/base/tsUtils.ts'
 
 
 
-export type SizeShortProps = Pu<{
-  boxSizing: string
+export type SizeShortStyle = Pu<{
+  boxSizing: string // { boxSizing }
   contentBox: boolean // true => { boxSizing: 'content-box' }
   borderBox: boolean // true => { boxSizing: 'border-box' }
   
-  w: number | string | 'full' | 'ct' // 'full' => '100%', 'ct' => 'fit-content'
-  h: number | string | 'full' | 'ct' // 'full' => '100%', 'ct' => 'fit-content'
-  sz: number | string | 'full' | 'ct' // w & h
-  wMin: number | string | 'full' // 'full' => '100%'
-  hMin: number | string | 'full' // 'full' => '100%'
-  szMin: number | string | 'full' // 'full' => '100%'
-  wMax: number | string | 'full' // 'full' => '100%'
-  hMax: number | string | 'full' // 'full' => '100%'
-  szMax: number | string | 'full' // 'full' => '100%'
+  // 'full' => '100%'
+  // 'ct' => 'fit-content'
+  w: number | string | 'full' | 'ct' // { width }
+  h: number | string | 'full' | 'ct' // { height }
+  sz: number | string | 'full' | 'ct' // { width, height }
+  size: number | string | 'full' | 'ct' // { width, height }
+  wMin: number | string | 'full' // { minWidth }
+  hMin: number | string | 'full' // { minHeight }
+  szMin: number | string | 'full' // { minWidth, minHeight }
+  sizeMin: number | string | 'full' // { minWidth, minHeight }
+  wMax: number | string | 'full' // { maxWidth }
+  hMax: number | string | 'full' // { maxHeight }
+  szMax: number | string | 'full' // { maxWidth, maxHeight }
+  sizeMax: number | string | 'full' // { maxWidth, maxHeight }
   
-  fullWMin: boolean // true => { min-width: '100%' }
-  fullHMin: boolean // true => { min-height: '100%' }
   fullW: boolean // true => { width: '100%' }
   fullH: boolean // true => { height: '100%' }
-  wFull: boolean // true => { width: '100%' }
-  hFull: boolean // true => { height: '100%' }
   full: boolean // true => { width: '100%', height: '100%' }
+  fullWMin: boolean // true => { min-width: '100%' }
+  fullHMin: boolean // true => { min-height: '100%' }
   fullWMax: boolean // true => { max-width: '100%' }
   fullHMax: boolean // true => { max-height: '100%' }
+  
+  wFull: boolean // true => { width: '100%' }
+  hFull: boolean // true => { height: '100%' }
+  szFull: boolean // true => { width: '100%', height: '100%' }
+  sizeFull: boolean // true => { width: '100%', height: '100%' }
   wCt: boolean // true => { width: 'fit-content' }
   hCt: boolean // true => { height: 'fit-content' }
   szCt: boolean // true => { width: 'fit-content', height: 'fit-content' }
+  sizeCt: boolean // true => { width: 'fit-content', height: 'fit-content' }
   
   ratio: number | string // => { aspectRatio: ratio }
   rad: number | string // => { borderRadius: rad }
@@ -37,38 +46,41 @@ export type SizeShortProps = Pu<{
   round: boolean // true => { borderRadius: 999999 }
   
   // margins
-  m: number | string
-  mv: number | string
-  mh: number | string
-  mt: number | string
-  mr: number | string
-  mb: number | string
-  ml: number | string
+  m: number | string // { margin }
+  mv: number | string // { marginTop, marginBottom }
+  mh: number | string // { marginLeft, marginRight }
+  mt: number | string // { marginTop }
+  mr: number | string // { marginRight }
+  mb: number | string // { marginBottom }
+  ml: number | string // { marginLeft }
   // paddings
-  p: number | string
-  pv: number | string
-  ph: number | string
-  pt: number | string
-  pr: number | string
-  pb: number | string
-  pl: number | string
+  p: number | string // { padding }
+  pv: number | string // { paddingTop, paddingBottom }
+  ph: number | string // { paddingLeft, paddingRight }
+  pt: number | string // { paddingTop }
+  pr: number | string // { paddingRight }
+  pb: number | string // { paddingBottom }
+  pl: number | string // { paddingLeft }
 }>
 
 
 
-export const processSizeShortProps = <P extends object>(
-  props: P & SizeShortProps
+export const processSizeShortStyle = <P extends object>(
+  props: P & SizeShortStyle
 ) => {
   const {
     boxSizing, contentBox, borderBox,
     
-    w, h, sz, wMin, hMin, szMin, wMax, hMax, szMax,
+    w, h, sz, size = sz,
+    wMin, hMin, sizeMin, szMin = sizeMin,
+    wMax, hMax, sizeMax, szMax = sizeMax,
     
+    fullW, fullH, full,
     fullWMin, fullHMin,
-    fullW, fullH, wFull, hFull, full,
     fullWMax, fullHMax,
     
-    wCt, hCt, szCt,
+    wFull = fullW, hFull = fullH, sizeFull = full, szFull = sizeFull,
+    wCt, hCt, szCt, sizeCt = szCt,
     
     ratio, rad, round,
     m, mv, mh, mt, mr, mb, ml,
@@ -85,22 +97,23 @@ export const processSizeShortProps = <P extends object>(
     ...borderBox && { boxSizing: 'border-box' },
     ...isdef(boxSizing) && { boxSizing: boxSizing },
     
-    ...full && { width: '100%', height: '100%' },
+    ...szFull && { width: '100%', height: '100%' },
+    
     ...szCt && { width: 'fit-content', height: 'fit-content' },
+    
     ...isdef(sz) && { width: processAnySz(sz), height: processAnySz(sz) },
     ...isdef(szMin) && { minWidth: processAnySz(szMin), minHeight: processAnySz(szMin) },
     ...isdef(szMax) && { maxWidth: processAnySz(szMax), maxHeight: processAnySz(szMax) },
     
-    ...fullW && { width: '100%' },
-    ...fullH && { height: '100%' },
     ...wFull && { width: '100%' },
     ...hFull && { height: '100%' },
-    ...wCt && { width: 'fit-content' },
-    ...hCt && { height: 'fit-content' },
     ...fullWMin && { minWidth: '100%' },
     ...fullHMin && { minHeight: '100%' },
     ...fullWMax && { maxWidth: '100%' },
     ...fullHMax && { maxHeight: '100%' },
+    
+    ...wCt && { width: 'fit-content' },
+    ...hCt && { height: 'fit-content' },
     
     ...isdef(w) && { width: processAnySz(w) },
     ...isdef(h) && { height: processAnySz(h) },

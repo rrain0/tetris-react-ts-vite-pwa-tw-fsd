@@ -3,7 +3,7 @@ import { isdef, ifBool, type Pu } from 'src/utils/base/tsUtils.ts'
 
 
 
-export type GridShortProps = Pu<{
+export type GridShortStyle = Pu<{
   grid: string // { grid }
   areas: string // { gridTemplateAreas }
   rows: string // { gridTemplateRows }
@@ -13,9 +13,9 @@ export type GridShortProps = Pu<{
   autoCols: string // { gridAutoColumns }
   
   
-  align: string | boolean // alignItems // true => 'center'
-  justify: string | boolean // justifyItems // true => 'center'
-  place: string | boolean // true => { placeItems: 'center' }
+  align: string | boolean // { alignItems } // true => { alignItems: 'start' }
+  justify: string | boolean // { justifyItems } // true => { justifyItems: 'center' }
+  place: string | boolean // { placeItems } // true => { placeItems: 'center' }
   
   alignCt: string | boolean // alignContent // true => 'center'
   justifyCt: string | boolean // justifyContent // true => 'center'
@@ -39,8 +39,8 @@ export type GridShortProps = Pu<{
 
 
 
-export const processGridShortProps = <P extends object>(
-  props: P & GridShortProps
+export const processGridShortStyle = <P extends object>(
+  props: P & GridShortStyle
 ) => {
   const {
     grid, areas, rows, cols,

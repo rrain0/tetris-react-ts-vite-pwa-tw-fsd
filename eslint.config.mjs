@@ -1,7 +1,9 @@
+import { defineConfig } from 'eslint/config'
+
 // yarn add --dev globals
 import globals from 'globals'
 
-// yarn add --dev eslint @eslint/js @types/eslint__js typescript typescript-eslint
+// yarn add --dev eslint @eslint/js typescript typescript-eslint
 import js from '@eslint/js'
 import ts from 'typescript-eslint'
 
@@ -13,9 +15,6 @@ import react from 'eslint-plugin-react'
 
 // yarn add --dev eslint-plugin-react-hooks
 import reactHooks from 'eslint-plugin-react-hooks'
-
-// yarn add --dev eslint-plugin-import eslint-import-resolver-alias eslint-import-resolver-typescript
-import importPlugin from 'eslint-plugin-import'
 
 // yarn add --dev eslint-plugin-promise
 import promise from 'eslint-plugin-promise'
@@ -34,35 +33,33 @@ import jsxA11y from 'eslint-plugin-jsx-a11y'
 
 
 
-export default [
+export default defineConfig([
   
   // typescript config
-  ...ts.config(
-    js.configs.recommended,
-    ...ts.configs.recommended,
-    {
-      rules: {
-        'eslint no-unused-expressions': 'off',
-        'no-async-promise-executor': 'off',
-        'no-constant-binary-expression': 'warn',
-        'no-constant-condition': 'off',
-        'no-empty': 'off',
-        'no-empty-pattern': 'off',
-        'no-empty-static-block': 'off',
-        'no-self-assign': 'off',
-        'no-unexpected-multiline': 'off',
-        'prefer-const': 'warn',
-        '@typescript-eslint/no-unused-expressions': 'off',
-        '@typescript-eslint/ban-ts-comment': ['warn', { 'ts-expect-error': false }],
-        '@typescript-eslint/no-unused-vars': 'off',
-        '@typescript-eslint/ban-types': 'off',
-        '@typescript-eslint/no-explicit-any': 'off',
-        '@typescript-eslint/no-namespace': 'off',
-        '@typescript-eslint/no-empty-object-type': 'off',
-        '@typescript-eslint/no-unsafe-function-type': 'off',
-      },
-    }
-  ),
+  js.configs.recommended,
+  ts.configs.recommended,
+  {
+    rules: {
+      'eslint no-unused-expressions': 'off',
+      'no-async-promise-executor': 'off',
+      'no-constant-binary-expression': 'warn',
+      'no-constant-condition': 'warn',
+      'no-empty': 'off',
+      'no-empty-pattern': 'off',
+      'no-empty-static-block': 'off',
+      'no-self-assign': 'off',
+      'no-unexpected-multiline': 'off',
+      'prefer-const': 'warn',
+      '@typescript-eslint/no-unused-expressions': 'off',
+      '@typescript-eslint/ban-ts-comment': ['warn', { 'ts-expect-error': false }],
+      '@typescript-eslint/no-unused-vars': 'off',
+      '@typescript-eslint/ban-types': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-namespace': 'off',
+      '@typescript-eslint/no-empty-object-type': 'off',
+      '@typescript-eslint/no-unsafe-function-type': 'off',
+    },
+  },
   
   
   // react config
@@ -92,14 +89,14 @@ export default [
   
   
   // https://www.npmjs.com/package/eslint-plugin-react-hooks
-  // These rules do not work properly and do not convenient.
-  // reactHooks.configs['recommended-latest'],
-  // {
-  //   files: ['src/**/*.{js,jsx,ts,tsx}'],
-  //   rules: {
-  //
-  //   },
-  // },
+  reactHooks.configs.flat.recommended,
+  {
+    files: ['src/**/*.{js,jsx,ts,tsx}'],
+    rules: {
+      'react-hooks/exhaustive-deps': 'off',
+      'react-hooks/set-state-in-effect': 'off',
+    },
+  },
   
   
   // react-refresh config
@@ -298,55 +295,6 @@ export default [
   },
   
   
-  // https://www.npmjs.com/package/eslint-plugin-import
-  // TypeError: context.getAncestors is not a function
-  //importPlugin.flatConfigs.recommended,
-  //importPlugin.flatConfigs.typescript,
-  // Legacy error
-  //...compat.extends('plugin:import/errors'),
-  //...compat.extends('plugin:import/warnings'),
-  /*{
-    languageOptions: {
-      ecmaVersion: 'latest',
-      sourceType: 'module',
-      globals: {
-        ...globals.serviceworker,
-        ...globals.browser,
-      },
-      parser: ts.parser,
-      parserOptions: {
-        ecmaVersion: 'latest',
-        sourceType: 'module',
-        ecmaFeatures: {
-          jsx: true,
-        }
-      },
-    },
-    files: ['**!/!*.{ts,cts,mts,tsx,d.ts,js,cjs,mjs,jsx}'],
-    plugins: {
-      'import': importPlugin,
-    },
-    settings: {
-      'import/resolver': {
-        typescript: {
-          alwaysTryTypes: true,
-        },
-        alias: [
-          ['', './public']
-        ],
-      }
-    },
-    rules: {
-      // import rules
-      // 'import/order': ['error', {
-      //   groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
-      //   'newlines-between': 'always',
-      // }],
-      
-    },
-  },*/
-  
-  
   // https://www.npmjs.com/package/eslint-plugin-promise
   promise.configs['flat/recommended'],
   {
@@ -398,4 +346,4 @@ export default [
   
   // !!! 'ignores' must be in a standalone object to work globally
   { ignores: ['dist', 'dev-dist'] },
-]
+])

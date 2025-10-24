@@ -23,6 +23,9 @@ export type HtmlDataAttrs = { [Prop in `data-${string}`]?: string | undefined }
 
 
 export type Nonemptyval<T> = T & {}
+export type DefinedVal<T> = Exclude<T, undefined>
+
+
 
 // Add Partial + Undefined
 export type PartialUndef<O extends object> = {
@@ -31,7 +34,7 @@ export type PartialUndef<O extends object> = {
 export type Pu<O extends object> = PartialUndef<O>
 // Remove Partial + Undefined
 export type Defined<O extends object> = {
-  [Prop in keyof O]-?: Exclude<O[Prop], undefined>
+  [Prop in keyof O]-?: DefinedVal<O[Prop]>
 }
 // Add ReadOnly
 export type Ro<O extends object> = {
@@ -68,6 +71,7 @@ export type RecordPuro<K extends keyof any, T> = {
 export type AllOrNone<O extends object> = O | {
   [Prop in keyof O]?: undefined
 }
+export type WithDefined<T, K extends keyof T> = T & { [P in K]-?: Exclude<T[P], undefined> }
 // TODO костыль - ts костыль фиксит взятие необязательных свойств объединённых объектов
 export type ObjectUnionFix<O1 extends object, O2 extends object> =
   | O1 & { [OptKeys in keyof Omit<O2, keyof O1>]: undefined }

@@ -1,3 +1,4 @@
+# Tetris
 # React + TS + Vite
 
 # Запуск
@@ -6,6 +7,3 @@
 
 - Запуск проекта<br/>
 `pnpm run dev`
-
-
-# Tetris

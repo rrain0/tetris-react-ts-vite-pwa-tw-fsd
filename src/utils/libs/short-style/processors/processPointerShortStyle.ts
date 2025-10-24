@@ -3,7 +3,7 @@ import type { Pu } from 'src/utils/base/tsUtils.ts'
 
 
 
-export type PointerShortProps = Pu<{
+export type PointerShortStyle = Pu<{
   pointerAuto: boolean // true => { pointerEvents: 'auto' }
   noPointer: boolean // true => { pointerEvents: 'none' }
   noTouchAction: boolean // true = > { touchAction: 'none' }
@@ -11,8 +11,8 @@ export type PointerShortProps = Pu<{
 
 
 
-export const processPointerShortProps = <P extends object>(
-  props: P & PointerShortProps
+export const processPointerShortStyle = <P extends object>(
+  props: P & PointerShortStyle
 ) => {
   const {
     pointerAuto, noPointer, noTouchAction,

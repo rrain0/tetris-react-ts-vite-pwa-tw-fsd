@@ -3,7 +3,7 @@ import { isdef, ifBool, type Pu } from 'src/utils/base/tsUtils.ts'
 
 
 
-export type FlexShortProps = Pu<{
+export type FlexShortStyle = Pu<{
   row: boolean // true => { flexDirection: 'row' }
   col: boolean // true => { flexDirection: 'column' }
   rowRev: boolean // true => { flexDirection: 'row-reverse' }
@@ -12,10 +12,10 @@ export type FlexShortProps = Pu<{
   wrapRev: boolean // true => { flexWrap: 'wrap-reverse' }
   
   
-  align: string | boolean // alignItems // true => 'center'
-  alignCt: string | boolean // alignContent // true => 'center'
-  justifyCt: string | boolean // justifyContent // true => 'center'
-  justify: string | boolean // justifyContent // true => 'center'
+  align: string | boolean // { alignItems } // true => { alignItems: 'center' }
+  alignCt: string | boolean // { alignContent } // true => { alignContent: 'center' }
+  justifyCt: string | boolean // { justifyContent } // true => { justifyContent: 'center' }
+  justify: string | boolean // { justifyContent } // true => { justifyContent: 'center' }
   
   alignStart: boolean // true => { alignItems: 'start' }
   alignEnd: boolean // true => { alignItems: 'end' }
@@ -55,8 +55,8 @@ export type FlexShortProps = Pu<{
 
 
 
-export const processFlexShortProps = <P extends object>(
-  props: P & FlexShortProps
+export const processFlexShortStyle = <P extends object>(
+  props: P & FlexShortStyle
 ) => {
   const {
     row, col, rowRev, colRev, wrap, wrapRev,

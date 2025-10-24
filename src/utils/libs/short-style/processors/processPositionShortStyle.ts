@@ -3,7 +3,7 @@ import { isdef, type Pu } from 'src/utils/base/tsUtils.ts'
 
 
 
-export type PositionShortProps = Pu<{
+export type PositionShortStyle = Pu<{
   // { position }
   // 'rel' => { position: 'relative' }
   // 'abs' => { position: 'absolute }
@@ -37,8 +37,8 @@ export type PositionShortProps = Pu<{
 
 
 
-export const processPositionShortProps = <P extends object>(
-  props: P & PositionShortProps
+export const processPositionShortStyle = <P extends object>(
+  props: P & PositionShortStyle
 ) => {
   const {
     pos, fixed, absolute, relative, abs, rela,
