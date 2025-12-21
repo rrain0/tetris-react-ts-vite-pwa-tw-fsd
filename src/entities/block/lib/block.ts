@@ -5,30 +5,20 @@ import orangeBlock from '@assets/im/blocks/block-orange-39x39.png'
 import redBlock from '@assets/im/blocks/block-red-39x39.png'
 import violetBlock from '@assets/im/blocks/block-violet-39x39.png'
 import yellowBlock from '@assets/im/blocks/block-yellow-39x39.png'
+import type { BlockType } from '@entities/block/model/block.ts'
 
 
 
+const blockTypeToSrc: Record<BlockType, string> = {
+  blue: blueBlock,
+  green: greenBlock,
+  lightBlue: lightBlueBlock,
+  orange: orangeBlock,
+  red: redBlock,
+  violet: violetBlock,
+  yellow: yellowBlock,
+}
 
-export type BlockType =
-  | 'blue'
-  | 'green'
-  | 'lightBlue'
-  | 'orange'
-  | 'red'
-  | 'violet'
-  | 'yellow'
-
-export type UiBlockType = BlockType | ''
-
-export function uiBlockTypeToSrc(type: UiBlockType): string | undefined {
-  const record: Record<BlockType, string> = {
-    blue: blueBlock,
-    green: greenBlock,
-    lightBlue: lightBlueBlock,
-    orange: orangeBlock,
-    red: redBlock,
-    violet: violetBlock,
-    yellow: yellowBlock,
-  }
-  return record[type]
+export function mapBlockTypeToSrc(type: BlockType): string {
+  return blockTypeToSrc[type]
 }

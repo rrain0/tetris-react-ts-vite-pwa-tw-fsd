@@ -10,11 +10,16 @@
     -webkit-touch-callout: none; /* disable the IOS popup when long-press on a link */
   }
   
-  
-  :root {
-    /* viewport content width / height */
-    --vp-ct-w: 0px;
-    --vp-ct-h: 0px;
+  html {
+    width: 100%;
+    height: 100%;
+  }
+  body {
+    min-width: 100%;
+    min-height: 100%;
+    width: 100%;
+    height: 100%;
+    overflow: auto; /* body scroll will be WINDOW scroll */
   }
   
 }

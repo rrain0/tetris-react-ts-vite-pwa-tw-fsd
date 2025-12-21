@@ -1,20 +1,33 @@
 
 
 
+// ℹ️ Primitive shortcuts
 
 export type emptyval = null | undefined
-//export type anyval = {} | null | undefined // use 'any' type
+export type anyval = {} | null | undefined
+
 export type anyfun = (...args: any[]) => any
+export type Fun<A extends any[] = any[], R = any> = (...args: A) => R
+
 export type falsy = false | undefined | null | '' | 0 | 0n
 export type Sign = -1 | 0 | 1
-export type objectkey = string | number | symbol
+
+export type objectkey = keyof any // string | number | symbol
+
+
+
+
+// ℹ️ Empty values
 
 export const noop = () => { }
 export const emptyArr = []
 
 
-// Атрибут, который либо просто есть без значения, либо его нет,
-// то есть <div attr/> или <div/>
+
+
+// ℹ️ Html attrs
+
+// Атрибут, который либо просто есть без значения, либо его нет (<div attr/> или <div/>)
 export type HtmlEmptyAttr = '' | undefined
 export const toEmptyAttr = (value: any): HtmlEmptyAttr => value ? '' : undefined
 
@@ -22,10 +35,16 @@ export type HtmlDataAttrs = { [Prop in `data-${string}`]?: string | undefined }
 
 
 
+
+// ℹ️ Value modifiers
+
 export type Nonemptyval<T> = T & {}
 export type DefinedVal<T> = Exclude<T, undefined>
 
 
+
+
+// ℹ️ Object modifiers
 
 // Add Partial + Undefined
 export type PartialUndef<O extends object> = {
@@ -51,7 +70,15 @@ export type WriteablePartial<O extends object> = {
 export type PartialDefaults<O extends object = object, Defaults extends Partial<O> = Partial<O>> =
   & Omit<O, keyof Defaults>
   & { [DProp in keyof Defaults & keyof O]?: O[DProp] }
+// Make all properties to be defined or all to be absent or undefined
+export type AllOrNone<O extends object> = O | {
+  [Prop in keyof O]?: undefined
+}
 
+
+
+
+// ℹ️ Records
 
 export type RecordPartial<K extends keyof any, T> = {
   [P in K]+?: T
@@ -68,16 +95,67 @@ export type RecordPuro<K extends keyof any, T> = {
 
 
 
-export type AllOrNone<O extends object> = O | {
-  [Prop in keyof O]?: undefined
+
+// ℹ️ Object unions
+
+// Makes optional props in one object to be opt or undef in another object
+export type ObjectSymmetricUnion<O1 extends object, O2 extends object> =
+  | O1 & { [OptKeys in keyof Omit<O2, keyof O1>]?: undefined }
+  | O2 & { [OptKeys in keyof Omit<O1, keyof O2>]?: undefined }
+
+// Makes union of 2 objects + shallow unions of shared props
+// ⚠️ It is impossible to make conditional optionality for value union
+export type ObjectShallowPropsUnion<O1 extends object, O2 extends object> =
+  & Omit<O1, keyof O2>
+  & Omit<O2, keyof O1>
+  & { [P in keyof O2 & keyof O1]?: O1[P] | O2[P] }
+
+
+
+{
+  interface OriginalType {
+    requiredKey: string;
+    optionalKey?: number;
+    anotherRequired: boolean;
+    anotherOptional?: string;
+  }
+  
+  // Define the keys you want to exclude
+  type KeysToExclude = 'requiredKey' | 'anotherOptional'
+  
+  // Create the new type using Omit
+  type ExcludedType = Omit<OriginalType, KeysToExclude>
+  
+  /*
+   ExcludedType is effectively:
+   {
+   optionalKey?: number;
+   anotherRequired: boolean;
+   }
+   */
+  
+  const validObject1: ExcludedType = {
+    // requiredKey is excluded
+    //optionalKey: 123,
+    anotherRequired: true,
+    // anotherOptional is excluded
+  }
+  
+  const validObject2: ExcludedType = {
+    // optionalKey can be absent
+    anotherRequired: false, // anotherRequired is still mandatory
+  }
+  
+  // @ts-expect-error: Property 'anotherRequired' is missing in type
+  const invalidObject: ExcludedType = {
+    optionalKey: 456,
+  }
 }
-export type WithDefined<T, K extends keyof T> = T & { [P in K]-?: Exclude<T[P], undefined> }
-// TODO костыль - ts костыль фиксит взятие необязательных свойств объединённых объектов
-export type ObjectUnionFix<O1 extends object, O2 extends object> =
-  | O1 & { [OptKeys in keyof Omit<O2, keyof O1>]: undefined }
-  | O2 & { [OptKeys in keyof Omit<O1, keyof O2>]: undefined }
 
 
+
+// ℹ️ Primitive type predicates
+// Check type through 'typeof' or '===' or '!=='
 
 // Типы и предикаты для оператора typeof (за исключением того, что null это null, а не объект)
 export type Isobject<T> = T extends object ? T extends anyfun ? never : T : never
@@ -104,7 +182,7 @@ export function isnotnullundef<E extends {}, T>(value: T | E): value is E {
 export function isnullundef<NE extends emptyval, T>(value: T | NE): value is NE {
   return value === null || value === undefined
 }
-export function isbool<S extends boolean, T>(value: T | S): value is S {
+export function isbool<B extends boolean, T>(value: T | B): value is B {
   return typeof value === 'boolean'
 }
 export function isstring<S extends string, T>(value: T | S): value is S {
@@ -114,7 +192,7 @@ export function isnumber<N extends number, T>(value: T | N): value is N {
   return typeof value === 'number'
 }
 // Value is number or string
-export function isnumstr<N extends number | string, T>(value: T | N): value is N {
+export function isnumstr<V extends number | string, T>(value: T | V): value is V {
   return typeof value === 'number' || typeof value === 'string'
 }
 // Value is object (and not function & not null)
@@ -132,6 +210,8 @@ export function assertNever(value: never): never {
 
 
 
+// ℹ️ Object type predicates
+// Check type through 'instanceof'
 
 export function isObject<O extends object, T>(value: T | O): value is O {
   return value instanceof Object
@@ -147,6 +227,9 @@ export function isRecord<R extends object, T>(value: R | any[] | anyfun | T): va
 }
 
 
+
+// ℹ️ Number checks
+
 export function isFinitenumber<N extends number, T>(v: T | N): v is N {
   return typeof v === 'number' && Number.isFinite(v)
 }
@@ -156,6 +239,7 @@ export function isInt<N extends number, T>(v: T | N): v is N {
 
 
 
+// ℹ️ Function types
 
 export type Cb = () => void
 export type Cb1<T> = (value: T) => void
@@ -193,6 +277,9 @@ export type FunOrObj<F extends anyfun> = (
 
 
 
+
+// ℹ️ Value mappers
+
 // By default false is mapped to undefined
 export function ifBool<V, const TV>(
   v: V | true, trueV: TV
@@ -220,7 +307,6 @@ export function ifVal<V, const IFV, const THENV>(
 }
 
 
-
 export const ifdef = <V, R>(v: V | undefined, mapper: Mapper<V, R>) => isdef(v) ? mapper(v) : v
 export const ifNaN = <R = number>(n: number, r: R) => isNaN(n) ? r : n
 export const ifNotnumber = <T, R>(v: T, r: R) => isnumber(v) ? v : r
@@ -236,6 +322,8 @@ export const ifNotNonNegInt = (v: any, r: number): number => {
 
 
 
+
+// ℹ️ Playground to test ideas
 
 namespace TypeUtilsTest {
   

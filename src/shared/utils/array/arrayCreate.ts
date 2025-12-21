@@ -26,4 +26,3 @@ export function arrOfIndices(len = 0): number[] {
 export function arrOfNumbers(len = 0): number[] {
   return Array(len).fill(undefined).map((_, i) => i + 1)
 }
-

@@ -6,16 +6,21 @@
     margin: 0;
     padding: 0;
     gap: 0;
-    /* background of body is window background */
+    place-items: normal;
+    place-content: normal;
+    /* background of body is WINDOW background */
     background: none;
     /* disable highlight on mobile devices when tapping on screen */
     -webkit-tap-highlight-color: transparent;
     overflow-wrap: anywhere;
   }
+  input,textarea {
+    justify-items: normal;
+  }
   * {
+    /* It prevents inheritance that is more convenient */
     pointer-events: auto;
   }
-  
   
   
   /* WARNING! Do not apply any display property to html or body - it behaves strange */
@@ -28,16 +33,11 @@
     color-scheme: light dark;
   }
   
-  body { }
   
   a {
     display: contents;
     text-decoration: none;
     color: unset;
-  }
-  
-  #root {
-    display: contents;
   }
   
 }

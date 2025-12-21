@@ -1,11 +1,11 @@
 import Flex from '@libs/fast-elems/Flex.tsx'
 import { useState } from 'react'
 import * as React from 'react'
-import TetrisGlass from 'src/features/TetrisGlass/TetrisGlass.tsx'
+import TetrisGlass from '@features/TetrisGlass/TetrisGlass.tsx'
 
 
 
-export default function AppSetup() {
+export default function AppRest() {
   
   const [cnt, setCnt] = useState(0)
   

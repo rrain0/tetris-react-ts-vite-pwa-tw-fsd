@@ -3,10 +3,11 @@ import type { Producer } from '@utils/ts/tsBase.ts'
 import Grid from '@libs/fast-elems/Grid.tsx'
 import { useEffect, useState } from 'react'
 import * as React from 'react'
-import { type UiBlockType, uiBlockTypeToSrc } from 'src/features/Block/block.ts'
+import { mapBlockUiTypeToSrc } from '@entities/block/lib/blockUi.ts'
+import type { BlockUiType } from '@entities/block/model/blockUi.ts'
 
 
-const newEmptyGlass: Producer<UiBlockType[][]> = () => (
+const newEmptyGlass: Producer<BlockUiType[][]> = () => (
   array(20 /*rows*/).map(() => array(10 /*cols*/, ''))
 )
 
@@ -81,7 +82,7 @@ function TetrisGlass() {
       rows='repeat(20, 1fr)' cols='repeat(10, 1fr)'
     >
       {blocks.map((r, ri) => r.map((it, ci) => {
-        const src = uiBlockTypeToSrc(it)
+        const src = mapBlockUiTypeToSrc(it)
         if (!src) return undefined
         return (
           <img key={`${ri} ${ci}`} css={blockStyle} src={src}

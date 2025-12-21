@@ -1,3 +1,4 @@
+import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tsconfigPaths from 'vite-tsconfig-paths'
@@ -42,6 +43,28 @@ export default defineConfig(({ command, mode }) => {
   
   return {
     
+    // Pass desired env variables to runtime
+    define: envVarsRuntime,
+    
+    // Make url paths absolute (relative to root)
+    base: '/',
+    
+    resolve: {
+      // Aliases here are necessary to build paths for workers & css.
+      // Aliases must be duplicated in tsconfig.app.json for ts compiler.
+      alias: {
+        'src': fileURLToPath(new URL('./src', import.meta.url)),
+        
+        '@app': fileURLToPath(new URL('./src/app', import.meta.url)),
+        '@features': fileURLToPath(new URL('./src/features', import.meta.url)),
+        '@entities': fileURLToPath(new URL('./src/entities', import.meta.url)),
+        
+        '@assets': fileURLToPath(new URL('./src/shared/assets', import.meta.url)),
+        '@libs': fileURLToPath(new URL('./src/shared/libs', import.meta.url)),
+        '@utils': fileURLToPath(new URL('./src/shared/utils', import.meta.url)),
+      },
+    },
+    
     // Configure vite DEVELOPMENT server
     server: {
       // Expose app via IP address from local network
@@ -51,12 +74,6 @@ export default defineConfig(({ command, mode }) => {
       // Allow any host
       allowedHosts: true,
     },
-    
-    // Make url paths absolute (relative to root)
-    base: '/',
-    
-    // Pass desired env variables to runtime
-    define: envVarsRuntime,
     
     esbuild: {
       supported: {

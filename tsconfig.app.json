@@ -57,6 +57,9 @@
     "downlevelIteration": true,
     
     /* Path aliases */
+    // Aliases for ts compiler.
+    // Aliases (except "*" alias) must be duplicated in vite.config.ts
+    // to build paths for workers & css.
     "baseUrl": ".",
     "paths": {
       "*": [
@@ -67,11 +70,12 @@
       "src/*": ["src/*"],
       
       "@app/*": ["src/app/*"],
-      
-      "@libs/*": ["src/shared/libs/*"],
-      "@utils/*": ["src/shared/utils/*"],
+      "@features/*": ["src/features/*"],
+      "@entities/*": ["src/entities/*"],
       
       "@assets/*": ["src/shared/assets/*"],
+      "@libs/*": ["src/shared/libs/*"],
+      "@utils/*": ["src/shared/utils/*"],
     }
   }
 }

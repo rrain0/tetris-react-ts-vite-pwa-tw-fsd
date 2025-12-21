@@ -1,16 +1,19 @@
 
 
 
-/* Setup default out-of-the-box elems state */
+/* Unstyled style */
 @layer reset;
 
-/* Setup app fonts */
+/* App fonts */
 @layer fonts;
 
-/* Setup app defaults */
+/* App defaults */
 @layer app;
 
 
 
-/* Setup any local widget defaults */
+/* Unstyled local widget */
+@layer widgetReset;
+
+/* Local widget defaults */
 @layer widget;
