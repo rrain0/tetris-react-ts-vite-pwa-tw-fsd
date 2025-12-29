@@ -1,7 +1,7 @@
 import 'src/app/styles/reset.css'
 import 'src/app/styles/fonts.css'
 import 'src/app/styles/app.css'
-import 'app/styles/tailwind.scss'
+import 'app/styles/tailwind.css'
 import type { Children } from '@utils/react/props/reactPropTypes.ts'
 
 

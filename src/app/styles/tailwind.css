@@ -2,9 +2,9 @@
 
 
 
-// Registering a custom variant
-// https://tailwindcss.com/docs/hover-focus-and-other-states#registering-a-custom-variant
-@custom-variant hoverable-hover (@media ((hover: hover) and (pointer: fine)) { &:hover });
+/* Registering a custom variant */
+/* https://tailwindcss.com/docs/hover-focus-and-other-states#registering-a-custom-variant */
+@custom-variant hoverable-hover (@media (hover: hover) and (pointer: fine) { &:hover });
 
 
 
