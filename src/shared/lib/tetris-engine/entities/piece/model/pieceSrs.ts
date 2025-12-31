@@ -11,6 +11,7 @@ import { mod } from '@utils/math/mathOperators.ts'
 export type OffsetsSrs = Arr4<num2>[]
 
 export type PieceSrsConfig = {
+  xy: num2
   position: Position
   offsets: OffsetsSrs
 }
@@ -23,10 +24,11 @@ export class PieceSrs extends Piece {
   constructor(
     id: Id,
     type: Id,
+    xy: num2,
     position: Position,
     offsets: OffsetsSrs,
   ) {
-    super(id, type, position)
+    super(id, type, xy, position)
     this.offsets = offsets
   }
   
@@ -36,6 +38,6 @@ export class PieceSrs extends Piece {
     const position = rectMatrixToRotated(this.position, d)
     this.rotI = mod(this.rotI + d, 4)
     if (!position) return this
-    return new PieceSrs(this.id, this.type, position, this.offsets)
+    return new PieceSrs(this.id, this.type, this.xy, position, this.offsets)
   }
 }

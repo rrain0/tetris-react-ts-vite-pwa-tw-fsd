@@ -2,24 +2,86 @@
 
 
 
-/* Registering a custom variant */
-/* https://tailwindcss.com/docs/hover-focus-and-other-states#registering-a-custom-variant */
+/* Hoverable Hover */
 @custom-variant hoverable-hover (@media (hover: hover) and (pointer: fine) { &:hover });
 
 
-
-@utility w--ct { width: fit-content; }
-@utility w--* { width: --value(number)px; }
-@utility w--* { width: --value([*]); }
-
-@utility h--ct { height: fit-content; }
-@utility h--* { height: --value(number)px; }
-@utility h--* { height: --value([*]); }
+/* Pointer */
+@utility pointer-auto { pointer-events: auto; }
+@utility no-pointer { pointer-events: none; }
+@utility no-touch-action { touch-action: none; }
 
 
 
+/* Position */
+@utility fixed-trbl { position: fixed; top: 0; right: 0; bottom: 0; left: 0; }
+@utility fixed-tlwh { position: fixed; top: 0; left: 0; width: 100%; height: 100%; }
+@utility fixed-top { position: fixed; top: 0; left: 0; right: 0; }
+@utility fixed-left { position: fixed; top: 0; left: 0; bottom: 0; }
+@utility fixed-bottom { position: fixed; bottom: 0; left: 0; right: 0; }
+
+@utility abs-trbl { position: absolute; top: 0; right: 0; bottom: 0; left: 0; }
+@utility abs-tlwh { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+@utility abs-tl { position: absolute; top: 0; left: 0; }
+
+@utility abs { position: absolute; }
+@utility rel { position: relative; }
+@utility fixed { position: fixed; }
+
+@utility a-* {
+  top: --value([number])px; right: --value([number])px;
+  bottom: --value([number])px; left: --value([number])px;
+  top: --value([*]); right: --value([*]);
+  bottom: --value([*]); left: --value([*]);
+}
+@utility av-* {
+  top: --value([number])px; bottom: --value([number])px;
+  top: --value([*]); bottom: --value([*]);
+}
+@utility ah-* {
+  right: --value([number])px; left: --value([number])px;
+  right: --value([*]); left: --value([*]);
+}
+
+@utility t { top: 0; }
+@utility t-* { top: --value([number])px; top: --value([*]); }
+@utility r { right: 0; }
+@utility r-* { right: --value([number])px; right: --value([*]); }
+@utility b { bottom: 0; }
+@utility b-* { bottom: --value([number])px; bottom: --value([*]); }
+@utility l { left: 0; }
+@utility l-* { left: --value([number])px; left: --value([*]); }
+@utility z-* { z-index: --value([*]); }
+
+
+
+/* Size */
+@utility w-ct { width: fit-content; }
+@utility w-* { width: --value([number])px; width: --value([*]); }
+
+@utility h-ct { height: fit-content; }
+@utility h-* { height: --value([number])px; height: --value([*]); }
+
+
+
+/* Contents */
+@utility contents { display: contents; }
+
+
+
+/* Flex */
+@utility flex { display: flex; }
+
+@utility col { flex-direction: column; }
+
+
+
+/* Grid */
 @utility grid { display: grid; }
 @utility grid-* { display: grid; grid: --value([*]); }
 
 @utility rows-* { grid-template-rows: --value([*]); }
 @utility cols-* { grid-template-columns: --value([*]); }
+
+
+

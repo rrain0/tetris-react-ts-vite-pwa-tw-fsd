@@ -1,4 +1,3 @@
-import Flex from '@lib/fast-elems/Flex.tsx'
 import { useState } from 'react'
 import * as React from 'react'
 import TetrisGlass from '@features/TetrisField/TetrisField.tsx'
@@ -11,13 +10,13 @@ export default function AppRest() {
   
   return (
     <>
-      <Flex col>
+      <div className='flex col'>
         
         <button onClick={() => setCnt(curr => curr + 1)}>Button</button>
         
         <TetrisGlass/>
       
-      </Flex>
+      </div>
     </>
   )
 }

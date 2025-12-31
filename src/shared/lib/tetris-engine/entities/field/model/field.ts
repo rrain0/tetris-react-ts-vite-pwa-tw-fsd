@@ -1,4 +1,4 @@
-import type { FieldPiece } from '@lib/tetris-engine/entities/field-piece/model/fieldPiece.ts'
+import type { Piece } from '@lib/tetris-engine/entities/piece/model/piece.ts'
 import type { Id } from '@lib/tetris-engine/shared/utils/id.ts'
 import { array } from '@utils/array/arrayCreate.ts'
 
@@ -23,7 +23,7 @@ export class Field {
   }
   
   
-  canPlacePiece(piece: FieldPiece): boolean {
+  canPlacePiece(piece: Piece): boolean {
     for (const pieceBlock of piece) {
       const { x, y, element } = pieceBlock
       if (element) {
@@ -35,8 +35,8 @@ export class Field {
   }
   
   // @unsafe
-  addPiece(piece: FieldPiece) {
-    const { type, id } = piece.piece
+  addPiece(piece: Piece) {
+    const { type, id } = piece
     for (const pieceBlock of piece) {
       const { x, y, element } = pieceBlock
       if (element) {

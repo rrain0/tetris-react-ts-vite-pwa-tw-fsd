@@ -1,0 +1,101 @@
+
+
+
+/* Registering a custom variant */
+/* https://tailwindcss.com/docs/hover-focus-and-other-states#registering-a-custom-variant */
+@custom-variant hoverable-hover (@media (hover: hover) and (pointer: fine) { &:hover });
+
+
+
+/* Arbitrary values */
+/* https://tailwindcss.com/docs/adding-custom-styles#arbitrary-values */
+/*
+Available arbitrary value data types are:
+
+number
+percentage
+ratio
+angle
+integer
+length
+*
+
+absolute-size
+bg-size
+color
+family-name
+generic-name
+image
+line-width
+position
+relative-size
+url
+vector
+
+ */
+
+
+
+/* type 'length' usage: w-[100px] */
+/* type 'percentage' usage: w-10% */
+
+/* Static shortcut utility */
+@utility w-ct { width: fit-content; }
+
+/* Functional/Dynamic utility */
+/* ⚠️ Наличие и отсутствие [] имеет значение */
+@utility w-* {
+  
+  /* Handles raw numbers: w-100 -> { width: 100px } */
+  width: --value(number)px;
+  /* Handles raw numbers: w-[100] -> { width: 100px } */
+  width: --value([number])px;
+  
+  /* Handles raw numbers: w-50% -> { width: 50% }*/
+  width: --value(percentage);
+  /* Handles raw numbers: w-[50%] -> { width: 50% } */
+  width: --value([percentage]);
+  
+  /* NOT ALLOWED */
+  width: --value(*);
+  /* Handles arbitrary values or theme variables: */
+  /* w-[50%] -> { width: 50% } */
+  /* w-(--my-width) -> { width: var(--my-width) } */
+  width: --value([*]);
+}
+
+
+
+/*
+The --value() function can also take multiple arguments
+and resolve them left to right
+if you don't need to treat the return value differently in different cases:
+*/
+@theme {
+  --tab-size-github: 8;
+}
+@utility tab-* {
+  tab-size: --value(--tab-size-*, integer, [integer]);
+}
+@utility opacity-* {
+  opacity: calc(--value(integer) * 1%);
+  opacity: --value(--opacity-*, [percentage]);
+}
+
+
+
+/* Adding custom variants */
+/* https://tailwindcss.com/docs/adding-custom-styles#adding-custom-variants */
+/* When a custom variant has multiple rules, they can be nested within each other: */
+@custom-variant theme-midnight {
+  &:where([data-theme="midnight"] *) {
+    @slot;
+  }
+}
+@custom-variant any-hover {
+  @media (any-hover: hover) {
+    &:hover {
+      @slot;
+    }
+  }
+}
