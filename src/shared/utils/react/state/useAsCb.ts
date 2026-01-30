@@ -3,8 +3,10 @@ import type { anyfun } from '@utils/ts/ts.ts'
 
 
 
-export function useAsCb<F extends anyfun>(cb: F | undefined): F {
+export function useAsCb<Cb extends anyfun>(
+  cb: Cb | undefined, // unstable
+): Cb {
   const [getCb] = useAsRefGet(cb)
   const stableCb = (...args) => getCb()?.(...args)
-  return stableCb as F
+  return stableCb as Cb // stable
 }
