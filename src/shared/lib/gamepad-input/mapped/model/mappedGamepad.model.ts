@@ -12,8 +12,8 @@ export type MappedGamepadSignalId = string
 
 export type MappedPushSignal = boolean
 export type MappedAnalogSignal = number
-export type MappedGamepadSignalValue = MappedPushSignal | MappedAnalogSignal | undefined
-export type MappedGamepadState = Record<MappedGamepadSignalId, MappedGamepadSignalValue>
+export type MappedGamepadSignal = MappedPushSignal | MappedAnalogSignal | undefined
+export type MappedGamepadState = Record<MappedGamepadSignalId, MappedGamepadSignal>
 
 export interface MappedGamepad {
   id: NativeGamepadId
@@ -57,7 +57,7 @@ export function nativeGamepadStateToMappedState(
   prevMapped?: MappedGamepadState,
 ): MappedGamepadState {
   return Object.fromEntries(Object.entries(mapping).map(([mSigId, m]) => {
-    let mSig = getMappedSignal(nativeState, m, prevMapped)
+    let mSig = getMappedSignal(nativeState, m, prevMapped?.[mSigId])
     if (isnumber(mSig)) mSig = rf5(mSig)
     return [mSigId, mSig]
   }))
@@ -66,49 +66,85 @@ export function nativeGamepadStateToMappedState(
 export function getMappedSignal(
   nativeState: NativeGamepadState,
   signalExprMapping: SignalExpressionMapping,
-  prevMapped?: MappedGamepadState,
-): MappedGamepadSignalValue {
-  let mSig: MappedGamepadSignalValue = undefined
+  prevSignal?: MappedGamepadSignal,
+): MappedGamepadSignal {
+  let mSig: MappedGamepadSignal = undefined
   const sExpr = signalExprMapping
   if ('signalId' in sExpr) {
-    let {
+    const {
       signalId,
       push, pushOff,
       pushFrom, pushTo, pushOffFrom, pushOffTo,
       analogFrom, analogTo, analogBaseFrom, analogBaseTo,
     } = sExpr
+    const isPush = isdef(push)
+    const isPushOff = isdef(pushOff)
+    const isPushFrom = isdef(pushFrom)
+    const isPushTo = isdef(pushTo)
+    const isPushOffFrom = isdef(pushOffFrom)
+    const isPushOffTo = isdef(pushOffTo)
+    const isAnalogFrom = isdef(analogFrom)
+    const isAnalogTo = isdef(analogTo)
+    const isAnalogBaseFrom = isdef(analogBaseFrom)
+    const isAnalogBaseTo = isdef(analogBaseTo)
     
     const ns = nativeState[signalId]
     
-    let p: boolean | undefined = undefined
-    let a: number | undefined = undefined
-    
     if (isdef(ns)) {
-      if (isdef(analogFrom) && isdef(analogTo)) {
-        if (rngHas(ns, [analogFrom, analogTo])) {
-          analogBaseFrom ??= analogFrom
-          analogBaseTo ??= analogTo
-          a = rngMap(ns, [analogBaseFrom, analogBaseTo], [0, 1])
+      if (isAnalogFrom || isAnalogTo || isAnalogBaseFrom || isAnalogBaseTo) {
+        let a: number | undefined = undefined
+        
+        if (isdef(ns)) {
+          if (isdef(analogFrom) && isdef(analogTo)) {
+            if (rngHas(ns, [analogFrom, analogTo])) {
+              a = rngMap(ns, [analogBaseFrom ?? analogFrom, analogBaseTo ?? analogTo], [0, 1])
+            }
+          }
+          
         }
+        
+        return a
       }
-      if (isdef(pushOffFrom) && isdef(pushOffTo)) {
-        if (rngHas(ns, [pushOffFrom, pushOffTo])) p = false
-      }
-      if (isdef(pushFrom) && isdef(pushTo)) {
-        if (rngHas(ns, [pushFrom, pushTo])) p = true
-      }
-      if (pushOff) {
-        if (ns === pushOff) p = false
-      }
-      if (push) {
-        if (ns === push) p = true
+      
+      if (isPush || isPushOff || isPushFrom || isPushTo || isPushOffFrom || isPushOffTo) {
+        const p: boolean | undefined = (() => {
+          const anyPushProp = isPush || isPushFrom || isPushTo
+          const anyPushOffProp = isPushOff || isPushOffFrom || isPushOffTo
+          const anyPush = (() => {
+            if (isPush) { if (ns === push) return true }
+            if (isPushFrom || isPushTo) {
+              if (isPushFrom && isPushTo) {
+                if (rngHas(ns, [pushFrom, pushTo])) return true
+              }
+              else if (isPushFrom) { if (ns >= pushFrom) return true }
+              else if (isPushTo) { if (ns <= pushTo) return true }
+            }
+          })()
+          const anyPushOff = (() => {
+            if (isPushOff) { if (ns === pushOff) return true }
+            if (isPushOffFrom || isPushOffTo) {
+              if (isPushOffFrom && isPushOffTo) {
+                if (rngHas(ns, [pushOffFrom, pushOffTo])) return true
+              }
+              else if (isPushOffFrom) { if (ns >= pushOffFrom) return true }
+              else if (isPushOffTo) { if (ns <= pushOffTo) return true }
+            }
+          })()
+          if (anyPush) return true
+          if (anyPushOff) return false
+          if (anyPushProp && !anyPushOffProp) return false
+          if (!anyPushProp && anyPushOffProp) return true
+          if (anyPushProp && anyPushOffProp && isbool(prevSignal)) return prevSignal
+          return undefined
+        })()
+        return p
       }
     }
     
-    return a ?? p
+    return undefined
   }
   else if ('signals' in sExpr) {
-    const signals = sExpr.signals.map(it => getMappedSignal(nativeState, it, prevMapped))
+    const signals = sExpr.signals.map(it => getMappedSignal(nativeState, it, prevSignal))
     const op = sExpr.operator
     if (op === 'and') {
       mSig = signals.filter(it => isbool(it)).reduce((a, c) => a && c, undefined)
@@ -135,6 +171,7 @@ export function getMappedSignal(
         .reduce((a, c) => cnt / (cnt + 1) * a + c / ++cnt, undefined)
     }
   }
+  
   return mSig
 }
 

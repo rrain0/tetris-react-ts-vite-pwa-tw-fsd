@@ -2,8 +2,8 @@ import {
   MappedGamepadContext, type MappedGamepadContextValue,
 } from '@lib/gamepad-input/mapped/context/MappedGamepadContext.ts'
 import {
-  DInputSignalToXInputMapping
-} from '@lib/gamepad-input/mapped/lib/DInputSignalToXInputMappings.ts'
+  dInputToXXInputMapping
+} from '@lib/gamepad-input/mapped/lib/dInputToXXInputMapping.ts'
 import {
   type MappedGamepad,
   type MappedGamepadEv, type MappedGamepadGotStateEv, nativeGamepadStateToMappedState,
@@ -40,7 +40,7 @@ export default function MappedGamepadProvider({ children }: Children) {
         for (const [gpId, nGp] of nGps.entries()) {
           if (nGp?.state) {
             const { state } = nGp
-            const mapping = DInputSignalToXInputMapping
+            const mapping = dInputToXXInputMapping
             const prev = mGps.get(gpId)?.state
             mGps.set(
               gpId,
