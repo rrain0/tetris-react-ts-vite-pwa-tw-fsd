@@ -14,7 +14,7 @@ import type {
   NativeGamepadId,
 } from '@lib/gamepad-input/native/model/nativeGamepad.model.ts'
 import { NegInf, PosInf } from '@utils/math/math.ts'
-import { rangeHas, rangeMap } from '@utils/math/range.ts'
+import { rngHas, rngMap } from '@utils/math/range.ts'
 import { rf5 } from '@utils/math/rounding.ts'
 import type { Children } from '@utils/react/props/propTypes.ts'
 import { useRefGetSet } from '@utils/react/state/useRefGetSet.ts'
@@ -81,7 +81,10 @@ export default function GamepadChangeProvider({ children }: Children) {
         }
         
         if (hasChanges) {
-          console.log('changes', changes)
+          changes.entries().forEach(([gpId, { id, meta, state }]) => {
+            console.log(`${gpId} changes:`)
+            console.log(state)
+          })
           
           const newEv: GamepadChangeEv = {
             type: 'gamepadChange',
@@ -269,7 +272,7 @@ namespace Test1 {
             if (hasPushRange) {
               const pFrom = pushFrom ?? NegInf
               const pTo = pushTo ?? PosInf
-              const isPush = rangeHas(inV, [pFrom, pTo])
+              const isPush = rngHas(inV, [pFrom, pTo])
               addPush(m.pushMode, isPush)
             }
             else if (hasPush) {
@@ -281,10 +284,10 @@ namespace Test1 {
             if (hasAnalog) {
               const aFrom = analogFrom ?? 0
               const aTo = analogTo ?? 1
-              if (rangeHas(inV, [aFrom, aTo])) {
+              if (rngHas(inV, [aFrom, aTo])) {
                 const aBaseFrom = analogBaseFrom ?? aFrom
                 const aBaseTo = analogBaseTo ?? aTo
-                const vIn0To1 = rangeMap(inV, [aBaseFrom, aBaseTo], [0, 1])
+                const vIn0To1 = rngMap(inV, [aBaseFrom, aBaseTo], [0, 1])
                 addAnalog(m.analogMode, vIn0To1)
               }
             }

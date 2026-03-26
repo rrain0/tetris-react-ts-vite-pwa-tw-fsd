@@ -1,3 +1,6 @@
+import type { GamepadMapping } from '@lib/gamepad-input/mapped/model/mappedGamepad.model.ts'
+
+
 
 const mappingsToNormalized = {
   // Norm_B_A
@@ -26,6 +29,28 @@ const mappingsToXXInput = {
   
   },
 }
+
+
+// Use cases
+const mappings___ = {
+  // Push => Push
+  'A_Push__to__A_Push': { },
+  
+  // Push => Analog
+  'DPadR_Push__to__LXRight_Analog': { },
+  
+  // Analog => Analog
+  'LXUp_Analog__to__LXUp_Analog': { },
+  
+  // Analog => Push
+  'LXLeft_Analog__to__DPadL': { },
+  'RT_Analog__to__RT_Push': { },
+  
+  // Push + Push => Push
+  'LT_Push_+_A_Push__to__RB_Push': { },
+}
+
+// Result buttons:
 const mappingsToXXInput__ = {
   XX_A_Push: { },
   XX_B_Push: { },
@@ -72,90 +97,49 @@ const mappingsToXXInput__ = {
   XX_RSButton_Push: { },
 }
 
-const DInputSignalToXInputMappings = [
-  // A
-  {
-    from: [{ id: 'B2' }],
-    to: [{ id: 'A', xinput: true }],
-  },
-  // B
-  {
-    from: [{ id: 'B1' }],
-    to: [{ id: 'B', xinput: true }],
-  },
-  // X
-  {
-    from: [{ id: 'B3' }],
-    to: [{ id: 'X', xinput: true }],
-  },
-  // Y
-  {
-    from: [{ id: 'B0' }],
-    to: [{ id: 'Y', xinput: true }],
-  },
+// Defines no deadzones for analog signals to allow specific game handle it.
+export const DInputSignalToXInputMapping: GamepadMapping = {
+  XX_A_Push: { signalId: 'B2', push: 1 },
+  XX_B_Push: { signalId: 'B1', push: 1 },
+  XX_X_Push: { signalId: 'B3', push: 1 },
+  XX_Y_Push: { signalId: 'B0', push: 1 },
   
-  // Select
-  {
-    from: [{ id: 'B8' }],
-    to: [{ id: 'Select', xinput: true }],
-  },
-  // Start
-  {
-    from: [{ id: 'B9' }],
-    to: [{ id: 'Start', xinput: true }],
-  },
+  XX_Select_Push: { signalId: 'B8', push: 1 },
+  XX_Start_Push: { signalId: 'B9', push: 1 },
   
-  // LB
-  {
-    from: [{ id: 'B4' }],
-    to: [{ id: 'LB', xinput: true }],
-  },
-  // RB
-  {
-    from: [{ id: 'B5' }],
-    to: [{ id: 'RB', xinput: true }],
-  },
+  XX_LB_Push: { signalId: 'B4', push: 1 },
+  XX_RB_Push: { signalId: 'B5', push: 1 },
+  XX_LT_Push: { signalId: 'B6', pushFrom: 0.5, pushTo: 1, pushOffFrom: 0, pushOffTo: 0.45 },
+  XX_RT_Push: { signalId: 'B7', pushFrom: 0.5, pushTo: 1, pushOffFrom: 0, pushOffTo: 0.45 },
   
-  // LSButton
-  {
-    from: [{ id: 'B10' }],
-    to: [{ id: 'LSButton', xinput: true }],
-  },
-  // RSButton
-  {
-    from: [{ id: 'B11' }],
-    to: [{ id: 'RSButton', xinput: true }],
-  },
+  XX_LT_Analog: { signalId: 'B6', analogFrom: 0, analogTo: 1 },
+  XX_RT_Analog: { signalId: 'B7', analogFrom: 0, analogTo: 1 },
   
-  // LT
-  {
-    from: [{ id: 'B6' }],
-    to: [{ id: 'LT', xinput: true }],
-  },
-  // RT
-  {
-    from: [{ id: 'B7' }],
-    to: [{ id: 'RT', xinput: true }],
-  },
+  //XX_DPadL_Push: { },
+  //XX_DPadR_Push: { },
+  //XX_DPadU_Push: { },
+  //XX_DPadD_Push: { },
   
-  // LXLeft (from DPadL)
-  {
-    from: [{ id: 'A0', range: { from: 0, to: -1 } }],
-    to: [{ id: 'LXLeft', xinput: true, range: { from: 0, to: 1 } }],
-  },
-  // LXRight (from DPadR)
-  {
-    from: [{ id: 'A0', range: { from: 0, to: 1 } }],
-    to: [{ id: 'LXRight', xinput: true, range: { from: 0, to: 1 } }],
-  },
-  // LYDown (from DPadD)
-  {
-    from: [{ id: 'A1', range: { from: 0, to: 1 } }],
-    to: [{ id: 'LXDown', xinput: true, range: { from: 0, to: 1 } }],
-  },
-  // LYUp (from DPadU)
-  {
-    from: [{ id: 'A1', range: { from: 0, to: -1 } }],
-    to: [{ id: 'LXUp', xinput: true, range: { from: 0, to: 1 } }],
-  },
-]
+  XX_LXLeft_Push: { signalId: 'A0', push: -1 }, // from DPadL
+  XX_LXRight_Push: { signalId: 'A0', push: 1 }, // from DPadR
+  XX_LYUp_Push: { signalId: 'A1', push: -1 }, // from DPadU
+  XX_LYDown_Push: { signalId: 'A1', push: 1 }, // from DPadD
+  
+  XX_LXLeft_Analog: { signalId: 'A0', analogFrom: 0, analogTo: -1 }, // from DPadL
+  XX_LXRight_Analog: { signalId: 'A0', analogFrom: 0, analogTo: 1 }, // from DPadR
+  XX_LYUp_Analog: { signalId: 'A1', analogFrom: 0, analogTo: -1 }, // from DPadU
+  XX_LYDown_Analog: { signalId: 'A1', analogFrom: 0, analogTo: 1 }, // from DPadD
+  
+  //XX_RXLeft_Push: { },
+  //XX_RXRight_Push: { },
+  //XX_RXUp_Push: { },
+  //XX_RXDown_Push: { },
+  
+  //XX_RXLeft_Analog: { },
+  //XX_RXRight_Analog: { },
+  //XX_RXUp_Analog: { },
+  //XX_RXDown_Analog: { },
+  
+  XX_LSButton_Push: { signalId: 'B10', push: 1 },
+  XX_RSButton_Push: { signalId: 'B11', push: 1 },
+}

@@ -1,9 +1,12 @@
 import {
   MappedGamepadContext, type MappedGamepadContextValue,
 } from '@lib/gamepad-input/mapped/context/MappedGamepadContext.ts'
-import type {
-  MappedGamepad,
-  MappedGamepadEv, MappedGamepadGotStateEv,
+import {
+  DInputSignalToXInputMapping
+} from '@lib/gamepad-input/mapped/lib/DInputSignalToXInputMappings.ts'
+import {
+  type MappedGamepad,
+  type MappedGamepadEv, type MappedGamepadGotStateEv, nativeGamepadStateToMappedState,
 } from '@lib/gamepad-input/mapped/model/mappedGamepad.model.ts'
 import { NativeGamepadContext } from '@lib/gamepad-input/native/context/NativeGamepadContext.ts'
 import type {
@@ -11,7 +14,7 @@ import type {
   NativeGamepadId,
 } from '@lib/gamepad-input/native/model/nativeGamepad.model.ts'
 import { NegInf, PosInf } from '@utils/math/math.ts'
-import { rangeHas, rangeMap } from '@utils/math/range.ts'
+import { rngHas, rngMap } from '@utils/math/range.ts'
 import { rf5 } from '@utils/math/rounding.ts'
 import type { Children } from '@utils/react/props/propTypes.ts'
 import { useRefGetSet } from '@utils/react/state/useRefGetSet.ts'
@@ -36,10 +39,12 @@ export default function MappedGamepadProvider({ children }: Children) {
         const mGps = new Map<NativeGamepadId, MappedGamepad>()
         for (const [gpId, nGp] of nGps.entries()) {
           if (nGp?.state) {
+            const { state } = nGp
+            const mapping = DInputSignalToXInputMapping
+            const prev = mGps.get(gpId)?.state
             mGps.set(
               gpId,
-              // TODO map state
-              { ...nGp, state: { ...nGp.state } }
+              { ...nGp, state: nativeGamepadStateToMappedState(state, mapping, prev) },
             )
           }
         }
@@ -230,7 +235,7 @@ namespace Test1 {
             if (hasPushRange) {
               const pFrom = pushFrom ?? NegInf
               const pTo = pushTo ?? PosInf
-              const isPush = rangeHas(inV, [pFrom, pTo])
+              const isPush = rngHas(inV, [pFrom, pTo])
               addPush(m.pushMode, isPush)
             }
             else if (hasPush) {
@@ -242,10 +247,10 @@ namespace Test1 {
             if (hasAnalog) {
               const aFrom = analogFrom ?? 0
               const aTo = analogTo ?? 1
-              if (rangeHas(inV, [aFrom, aTo])) {
+              if (rngHas(inV, [aFrom, aTo])) {
                 const aBaseFrom = analogBaseFrom ?? aFrom
                 const aBaseTo = analogBaseTo ?? aTo
-                const vIn0To1 = rangeMap(inV, [aBaseFrom, aBaseTo], [0, 1])
+                const vIn0To1 = rngMap(inV, [aBaseFrom, aBaseTo], [0, 1])
                 addAnalog(m.analogMode, vIn0To1)
               }
             }
@@ -310,94 +315,95 @@ type SignalMappings = SignalMapping[]
 
 
 
-const DInputSignalToXInputMappings: SignalMappings = [
-  // A
-  {
-    from: [{ id: 'B2' }],
-    to: [{ id: 'A', xinput: true }],
-  },
-  // B
-  {
-    from: [{ id: 'B1' }],
-    to: [{ id: 'B', xinput: true }],
-  },
-  // X
-  {
-    from: [{ id: 'B3' }],
-    to: [{ id: 'X', xinput: true }],
-  },
-  // Y
-  {
-    from: [{ id: 'B0' }],
-    to: [{ id: 'Y', xinput: true }],
-  },
-  
-  // Select
-  {
-    from: [{ id: 'B8' }],
-    to: [{ id: 'Select', xinput: true }],
-  },
-  // Start
-  {
-    from: [{ id: 'B9' }],
-    to: [{ id: 'Start', xinput: true }],
-  },
-  
-  // LB
-  {
-    from: [{ id: 'B4' }],
-    to: [{ id: 'LB', xinput: true }],
-  },
-  // RB
-  {
-    from: [{ id: 'B5' }],
-    to: [{ id: 'RB', xinput: true }],
-  },
-  
-  // LSButton
-  {
-    from: [{ id: 'B10' }],
-    to: [{ id: 'LSButton', xinput: true }],
-  },
-  // RSButton
-  {
-    from: [{ id: 'B11' }],
-    to: [{ id: 'RSButton', xinput: true }],
-  },
-  
-  // LT
-  {
-    from: [{ id: 'B6' }],
-    to: [{ id: 'LT', xinput: true }],
-  },
-  // RT
-  {
-    from: [{ id: 'B7' }],
-    to: [{ id: 'RT', xinput: true }],
-  },
-  
-  // LXLeft (from DPadL)
-  {
-    from: [{ id: 'A0', range: { from: 0, to: -1 } }],
-    to: [{ id: 'LXLeft', xinput: true, range: { from: 0, to: 1 } }],
-  },
-  // LXRight (from DPadR)
-  {
-    from: [{ id: 'A0', range: { from: 0, to: 1 } }],
-    to: [{ id: 'LXRight', xinput: true, range: { from: 0, to: 1 } }],
-  },
-  // LYDown (from DPadD)
-  {
-    from: [{ id: 'A1', range: { from: 0, to: 1 } }],
-    to: [{ id: 'LXDown', xinput: true, range: { from: 0, to: 1 } }],
-  },
-  // LYUp (from DPadU)
-  {
-    from: [{ id: 'A1', range: { from: 0, to: -1 } }],
-    to: [{ id: 'LXUp', xinput: true, range: { from: 0, to: 1 } }],
-  },
-]
-
+{
+  const DInputSignalToXInputMappings: SignalMappings = [
+    // A
+    {
+      from: [{ id: 'B2' }],
+      to: [{ id: 'A', xinput: true }],
+    },
+    // B
+    {
+      from: [{ id: 'B1' }],
+      to: [{ id: 'B', xinput: true }],
+    },
+    // X
+    {
+      from: [{ id: 'B3' }],
+      to: [{ id: 'X', xinput: true }],
+    },
+    // Y
+    {
+      from: [{ id: 'B0' }],
+      to: [{ id: 'Y', xinput: true }],
+    },
+    
+    // Select
+    {
+      from: [{ id: 'B8' }],
+      to: [{ id: 'Select', xinput: true }],
+    },
+    // Start
+    {
+      from: [{ id: 'B9' }],
+      to: [{ id: 'Start', xinput: true }],
+    },
+    
+    // LB
+    {
+      from: [{ id: 'B4' }],
+      to: [{ id: 'LB', xinput: true }],
+    },
+    // RB
+    {
+      from: [{ id: 'B5' }],
+      to: [{ id: 'RB', xinput: true }],
+    },
+    
+    // LSButton
+    {
+      from: [{ id: 'B10' }],
+      to: [{ id: 'LSButton', xinput: true }],
+    },
+    // RSButton
+    {
+      from: [{ id: 'B11' }],
+      to: [{ id: 'RSButton', xinput: true }],
+    },
+    
+    // LT
+    {
+      from: [{ id: 'B6' }],
+      to: [{ id: 'LT', xinput: true }],
+    },
+    // RT
+    {
+      from: [{ id: 'B7' }],
+      to: [{ id: 'RT', xinput: true }],
+    },
+    
+    // LXLeft (from DPadL)
+    {
+      from: [{ id: 'A0', range: { from: 0, to: -1 } }],
+      to: [{ id: 'LXLeft', xinput: true, range: { from: 0, to: 1 } }],
+    },
+    // LXRight (from DPadR)
+    {
+      from: [{ id: 'A0', range: { from: 0, to: 1 } }],
+      to: [{ id: 'LXRight', xinput: true, range: { from: 0, to: 1 } }],
+    },
+    // LYDown (from DPadD)
+    {
+      from: [{ id: 'A1', range: { from: 0, to: 1 } }],
+      to: [{ id: 'LXDown', xinput: true, range: { from: 0, to: 1 } }],
+    },
+    // LYUp (from DPadU)
+    {
+      from: [{ id: 'A1', range: { from: 0, to: -1 } }],
+      to: [{ id: 'LXUp', xinput: true, range: { from: 0, to: 1 } }],
+    },
+  ]
+}
 
 
 const PS3SignalToXInputMappings: SignalMappings = [
