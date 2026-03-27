@@ -1,6 +1,6 @@
-import GamepadChangeProvider from '@lib/gamepad-input/change/ui/GamepadChangeProvider.tsx'
-import MappedGamepadProvider from '@lib/gamepad-input/mapped/ui/MappedGamepadProvider.tsx'
-import NativeGamepadProvider from '@lib/gamepad-input/native/ui/NativeGamepadProvider.tsx'
+import GamepadChangeProvider from '@lib/gamepad-input/change/providers/GamepadChangeProvider.tsx'
+import MappedGamepadProvider from '@lib/gamepad-input/mapped/providers/MappedGamepadProvider.tsx'
+import NativeGamepadProvider from '@lib/gamepad-input/native/providers/NativeGamepadProvider.tsx'
 import type { Children } from '@utils/react/props/propTypes.ts'
 
 

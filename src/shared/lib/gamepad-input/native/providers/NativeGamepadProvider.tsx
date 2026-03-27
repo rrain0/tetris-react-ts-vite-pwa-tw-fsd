@@ -6,19 +6,20 @@ import {
   type NativeGamepadConnectedEv, type NativeGamepadDisconnectedEv,
   type NativeGamepadEv, type NativeGamepadId,
   type NativeGamepad, type NativeGamepadPolledEv,
-  gamepadToNativeGamepadId, gamepadToNativeGamepad,
+  gamepadToNativeGamepadId, gamepadToNativeGamepad, type NativeGamepads,
 } from '@lib/gamepad-input/native/model/nativeGamepad.model.ts'
 import type { Children } from '@utils/react/props/propTypes.ts'
 import { useRefGetSet } from '@utils/react/state/useRefGetSet.ts'
-import { type Cb, type Cb1 } from '@utils/ts/ts.ts'
+import { type Cb, type EvHandler } from '@utils/ts/ts.ts'
 import { useLayoutEffect } from 'react'
 
 
 
 export default function NativeGamepadProvider({ children }: Children) {
-  const [getListeners] = useRefGetSet<Set<Cb1<NativeGamepadEv>>>(new Set())
+  const [getListeners] = useRefGetSet<Set<EvHandler<NativeGamepadEv>>>(new Set())
   
-  const [getGamepads] = useRefGetSet<Map<NativeGamepadId, NativeGamepad | undefined>>(new Map())
+  type NativeGamepadsMap = Map<NativeGamepadId, NativeGamepad | undefined>
+  const [getGamepads] = useRefGetSet<NativeGamepadsMap>(new Map())
   const [getStopOnRaf, setStopOnRaf] = useRefGetSet<Cb | undefined>(undefined)
   
   const createOnRaf = () => {

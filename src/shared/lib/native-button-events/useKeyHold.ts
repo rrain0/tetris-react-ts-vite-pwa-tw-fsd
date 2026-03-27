@@ -14,7 +14,7 @@ export function useKeyHold<T = HTMLDivElement>(
   const onKeyHoldCb = useAsCb(onKeyHold)
   
   
-  // State layer
+  // ⬤⬤ State layer ⬤⬤
   
   const [getState] = useRefGetSet(new Map<KeyId, IntervalId>())
   const checkKey = (keyId: KeyId) => {
@@ -33,9 +33,9 @@ export function useKeyHold<T = HTMLDivElement>(
   }
   
   
-  // Event layer
+  // ⬤⬤ Event layer ⬤⬤
   
-  // Save the pressed button.
+  // Save the pressed button
   const startEv = (ev: React.KeyboardEvent<T>) => {
     onKeyHoldCb(ev)
     const intervalId = setInterval(() => {
@@ -44,7 +44,7 @@ export function useKeyHold<T = HTMLDivElement>(
     const keyId = getKeyId(ev)
     startKey(keyId, intervalId)
   }
-  // Check if there is keyDown for current button & remove saved button.
+  // Check if there is keyDown for current button then remove saved button
   const finishEv = (ev: React.KeyboardEvent<T>) => {
     const keyId = getKeyId(ev)
     if (checkKey(keyId)) finishKey(keyId)
@@ -54,7 +54,7 @@ export function useKeyHold<T = HTMLDivElement>(
   }
   
   
-  // Browser event layer
+  // ⬤⬤ Browser event layer ⬤⬤
   
   const onKeyDown: React.KeyboardEventHandler<T> = ev => {
     // Events from button hold does not count.

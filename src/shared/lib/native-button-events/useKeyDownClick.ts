@@ -9,7 +9,7 @@ export function useKeyDownClick<T = HTMLDivElement>(
   const onKeyDownClickCb = useAsCb(onKeyDownClick)
   
   
-  // Browser event layer
+  // ⬤⬤ Browser event layer ⬤⬤
   
   // Эвенты от зажатия не считаются
   const onKeyDown: React.KeyboardEventHandler<T> = ev => {

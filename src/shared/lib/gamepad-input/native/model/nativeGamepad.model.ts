@@ -19,6 +19,8 @@ export interface NativeGamepad {
   state?: NativeGamepadState | undefined
 }
 
+export type NativeGamepads = ReadonlyMap<NativeGamepadId, NativeGamepad | undefined>
+
 export function gamepadToNativeGamepadMeta(gp: Gamepad): NativeGamepadMeta {
   const {
     // This so-called "id" is not unique here so it is just name

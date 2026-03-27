@@ -2,7 +2,7 @@ import { GamepadChangeContext } from '@lib/gamepad-input/change/context/GamepadC
 import type { GamepadChangeEv } from '@lib/gamepad-input/change/model/GamepadChange.model.ts'
 import type {
   GamepadKeyHoldEv, GamepadKeyHoldEvHandler,
-} from '@lib/gamepad-input/events/gamepad-key-hold/gamepadKeyHold.model.ts'
+} from '@lib/gamepad-input-events/gamepad-key-hold/gamepadKeyHold.model.ts'
 import type { MappedGamepadSignalId } from '@lib/gamepad-input/mapped/model/mappedGamepad.model.ts'
 import type { NativeGamepadId } from '@lib/gamepad-input/native/model/nativeGamepad.model.ts'
 import { useAsCb } from '@utils/react/state/useAsCb.ts'
@@ -24,7 +24,7 @@ export function useGamepadKeyHold(
   const onKeyHoldCb = useAsCb(onKeyHold)
   
   
-  // State layer
+  // ⬤⬤ State layer ⬤⬤
   
   const [getState] = useRefGetSet(new Map<KeyId, IntervalId>())
   const checkKey = (keyId: KeyId) => {
@@ -43,13 +43,15 @@ export function useGamepadKeyHold(
   }
   
   
-  // Event layer
+  // ⬤⬤ Event layer ⬤⬤
   
   // Save the pressed button.
   const startEv = (ev: KeyEv) => {
     const keyHoldEv: GamepadKeyHoldEv = {
-      ...ev,
       type: 'gamepadKeyHold',
+      ts: ev.ts,
+      gpId: ev.gpId,
+      signalId: ev.signalId,
     }
     onKeyHoldCb(keyHoldEv)
     const intervalId = setInterval(() => {
@@ -66,7 +68,7 @@ export function useGamepadKeyHold(
   }
   
   
-  // Gamepad change event layer
+  // ⬤⬤ Gamepad change event layer ⬤⬤
   
   const gamepadChangeContextValue = use(GamepadChangeContext)
   
@@ -77,7 +79,9 @@ export function useGamepadKeyHold(
         for (const [gpId,  { state }] of gps.entries()) {
           for (const [sId, s] of Object.entries(state)) {
             if (isbool(s)) {
-              console.log('SID', sId)
+              // if (sId === 'XX_LXRight_Push') {
+              //   console.log(sId, s)
+              // }
               const keyEv: KeyEv = {
                 type: 'key',
                 ts: ev.ts,

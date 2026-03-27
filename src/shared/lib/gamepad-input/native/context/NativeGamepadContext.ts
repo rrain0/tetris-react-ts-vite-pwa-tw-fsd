@@ -1,6 +1,5 @@
 import type {
-  NativeGamepadEv, NativeGamepadId,
-  NativeGamepad,
+  NativeGamepadEv, NativeGamepads,
 } from '@lib/gamepad-input/native/model/nativeGamepad.model.ts'
 import type { Cb1, Getter } from '@utils/ts/ts.ts'
 import { createContext } from 'react'
@@ -8,7 +7,7 @@ import { createContext } from 'react'
 
 
 export type NativeGamepadContextValue = {
-  getGamepads: Getter<Map<NativeGamepadId, NativeGamepad | undefined>>,
+  getGamepads: Getter<NativeGamepads>,
   on: Cb1<Cb1<NativeGamepadEv>>
   off: Cb1<Cb1<NativeGamepadEv>>
 }

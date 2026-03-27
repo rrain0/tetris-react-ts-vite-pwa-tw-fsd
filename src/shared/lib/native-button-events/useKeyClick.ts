@@ -10,31 +10,33 @@ export function useKeyClick<T = HTMLDivElement>(
   const onKeyClickCb = useAsCb(onKeyClick)
   
   
-  // State layer
+  // ⬤⬤ State layer ⬤⬤
   
-  const [getState] = useRefGetSet(new Set<JsonCodeKey>())
-  const checkKey = (ev: KbEv) => {
-    return getState().has(evToJsonCodeKey(ev))
+  const [getState] = useRefGetSet(new Set<KeyId>())
+  const checkKey = (keyId: KeyId) => {
+    return getState().has(keyId)
   }
-  const startKey = (ev: KbEv) => {
-    getState().add(evToJsonCodeKey(ev))
+  const startKey = (keyId: KeyId) => {
+    getState().add(keyId)
   }
-  const finishKey = (ev: KbEv) => {
-    getState().delete(evToJsonCodeKey(ev))
+  const finishKey = (keyId: KeyId) => {
+    getState().delete(keyId)
   }
   const cancelAllKeys = () => {
     getState().clear()
   }
   
   
-  // Event layer
+  // ⬤⬤ Event layer ⬤⬤
   
   const startEv = (ev: React.KeyboardEvent<T>) => {
-    startKey(ev)
+    const keyId = getKeyId(ev)
+    startKey(keyId)
   }
   const finishEv = (ev: React.KeyboardEvent<T>) => {
-    if (checkKey(ev)) {
-      finishKey(ev)
+    const keyId = getKeyId(ev)
+    if (checkKey(keyId)) {
+      finishKey(keyId)
       onKeyClickCb(ev)
     }
   }
@@ -43,15 +45,15 @@ export function useKeyClick<T = HTMLDivElement>(
   }
   
   
-  // Browser event layer
+  // ⬤⬤ Browser event layer ⬤⬤
   
-  // Сохраняем нажатую кнопку
+  // Save the pressed button
   // Эвенты от зажатия не считаются
   const onKeyDown: React.KeyboardEventHandler<T> = ev => {
     if (!ev.repeat) startEv(ev)
   }
-  // Проверяем есть ли сохранённый keyDown для текущй кнопки,
-  // вызываем keyClick эвент, удаляем сохранённую кнопку
+  // Check if there is keyDown for current button
+  // then emit keyClick event then remove saved button
   const onKeyUp: React.KeyboardEventHandler<T> = ev => {
     finishEv(ev)
   }
@@ -66,13 +68,12 @@ export function useKeyClick<T = HTMLDivElement>(
 
 
 
-type JsonCodeKey = string
-type KbEv = KeyboardEvent | React.KeyboardEvent<any>
+type CodeKey = { code: string, key: string }
+type KeyId = string
 
 
 
-function evToJsonCodeKey(ev: KbEv) {
-  const { code, key } = ev
-  const jsonCodeKey = JSON.stringify({ code, key })
-  return jsonCodeKey
+function getKeyId(codeKey: CodeKey): KeyId {
+  const { code, key } = codeKey
+  return JSON.stringify({ code, key })
 }

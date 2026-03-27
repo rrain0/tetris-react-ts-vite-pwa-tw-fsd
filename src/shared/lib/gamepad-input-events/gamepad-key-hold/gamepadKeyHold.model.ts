@@ -1,3 +1,4 @@
+import type { EvHandler } from '@utils/ts/ts.ts'
 
 
 
@@ -6,7 +7,6 @@ export interface GamepadKeyHoldEv {
   ts: number
   gpId: string
   signalId: string
-  keyId: string
 }
 
-export type GamepadKeyHoldEvHandler = (ev: GamepadKeyHoldEv) => void
+export type GamepadKeyHoldEvHandler = EvHandler<GamepadKeyHoldEv>

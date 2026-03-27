@@ -21,6 +21,7 @@ export interface MappedGamepad {
   state: MappedGamepadState
 }
 
+export type MappedGamepads = ReadonlyMap<NativeGamepadId, MappedGamepad>
 
 
 export interface SignalMapping {

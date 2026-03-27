@@ -1,15 +1,15 @@
 import { AppActivityContext } from '@lib/activity-manager/context/AppActivityContext.ts'
-import { GamepadChangeContext } from '@lib/gamepad-input/change/context/GamepadChangeContext.ts'
-import type { GamepadChangeEv } from '@lib/gamepad-input/change/model/GamepadChange.model.ts'
-import { useGamepadKeyHold } from '@lib/gamepad-input/events/gamepad-key-hold/useGamepadKeyHold.ts'
-import { useGamepadDownClick } from '@lib/gamepad-input/events/useGamepadDownClick.ts'
+import { useGamepadKeyHold } from '@lib/gamepad-input-events/gamepad-key-hold/useGamepadKeyHold.ts'
+import {
+  useGamepadDownClick
+} from '@lib/gamepad-input-events/gamepad-down-click/useGamepadDownClick.ts'
 import { Game } from '@lib/tetris-engine/entities/game/model/game.ts'
 import { useKeyClick } from '@lib/native-button-events/useKeyClick.ts'
 import { useKeyDownClick } from '@lib/native-button-events/useKeyDownClick.ts'
 import { useKeyHold } from '@lib/native-button-events/useKeyHold.ts'
 import { combineProps } from '@utils/react/props/combineProps.ts'
 import { isKeyboardAction } from 'entities/input-layout/lib/isKeyboardAction.ts'
-import { use, useLayoutEffect, useState } from 'react'
+import { use, useState } from 'react'
 import Block from '@widgets/tetris-field/entities/block/ui/Block.tsx'
 import {
   newISrs, newJSrs, newLSrs, newOSrs, newSSrs, newTSrs, newZSrs,
@@ -100,45 +100,29 @@ export default function TetrisField() {
     }
     
     if (ev.signalId === 'XX_LXLeft_Push') {
-      console.log('XX_LXLeft_Push')
       game.moveCurrentPieceLeft()
       setField(game.renderField())
     }
     if (ev.signalId === 'XX_LXRight_Push') {
-      console.log('XX_LXRight_Push')
       game.moveCurrentPieceRight()
       setField(game.renderField())
     }
     if (ev.signalId === 'XX_LYDown_Push') {
-      console.log('XX_LYDown_Push')
       game.moveCurrentPieceDown()
       setField(game.renderField())
     }
   })
   
-  
-  
-  useGamepadDownClick()
-  const gamepadChangeContextValue = use(GamepadChangeContext)
-  useLayoutEffect(() => {
-    const onGamepad = (ev: GamepadChangeEv) => {
-      if (ev.type === 'gamepadChange') {
-        const gps = gamepadChangeContextValue.getGamepads()
-        for (const [gpId, gp] of gps.entries()) {
-          if (gp.state['B2'] === 1) {
-            game.rotateCurrentPieceLeft()
-            setField(game.renderField())
-          }
-          else if (gp.state['B1'] === 1) {
-            game.rotateCurrentPieceRight()
-            setField(game.renderField())
-          }
-        }
-      }
+  useGamepadDownClick(ev => {
+    if (ev.signalId === 'XX_X_Push') {
+      game.rotateCurrentPieceLeft()
+      setField(game.renderField())
     }
-    gamepadChangeContextValue.on(onGamepad)
-    return () => gamepadChangeContextValue.off(onGamepad)
-  }, [gamepadChangeContextValue])
+    if (ev.signalId === 'XX_Y_Push') {
+      game.rotateCurrentPieceRight()
+      setField(game.renderField())
+    }
+  })
   
   
   
