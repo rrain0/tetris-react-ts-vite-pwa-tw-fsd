@@ -8,10 +8,14 @@ export type PieceBlock = { type: Id, pieceId: Id }
 export type FieldBlock = PieceBlock | null
 
 export class Field {
+  blocks: FieldBlock[][]
   
-  // Coordinates from bottom left.
-  // Stores only already fallen blocks.
-  blocks: FieldBlock[][] = array(20).map(() => array<FieldBlock>(10, null))
+  constructor(rows = 20, cols = 10) {
+    this.blocks =  array(rows).map(() => array<FieldBlock>(cols, null))
+  }
+  
+  get rows() { return this.blocks.length }
+  get cols() { return this.blocks[0].length }
   
   ;*[Symbol.iterator]() {
     for (let y = 0; y < this.blocks.length; y++) {
@@ -27,7 +31,7 @@ export class Field {
     for (const pieceBlock of piece) {
       const { x, y, element } = pieceBlock
       if (element) {
-        if (x < 0 || x >= 10 || y >= 20) return false
+        if (x < 0 || x >= this.cols || y >= this.rows) return false
         const fieldBlock = this.blocks[y]?.[x]
         if (fieldBlock) return false
       }

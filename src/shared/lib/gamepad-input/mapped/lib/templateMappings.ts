@@ -1,26 +1,6 @@
 
 
 
-// Use cases
-const templateUseCasesMapping = {
-  // Push => Push
-  'A_Push__to__A_Push': { },
-  
-  // Push => Analog
-  'DPadR_Push__to__LXRight_Analog': { },
-  
-  // Analog => Analog
-  'LXUp_Analog__to__LXUp_Analog': { },
-  
-  // Analog => Push
-  'LXLeft_Analog__to__DPadL': { },
-  'RT_Analog__to__RT_Push': { },
-  
-  // Push + Push => Push
-  'LT_Push_+_A_Push__to__RB_Push': { },
-}
-
-// Result buttons:
 const templateXXInputMapping = {
   XX_A_Push: { },
   XX_B_Push: { },
@@ -68,4 +48,23 @@ const templateXXInputMapping = {
   XX_RSB_Push: { },
   
   XX_Home_Push: { },
+}
+
+// TODO Use cases
+const templateUseCasesMapping = {
+  // Push => Push
+  'A_Push__to__A_Push': { },
+  
+  // Push => Analog
+  'DPadR_Push__to__LXRight_Analog': { },
+  
+  // Analog => Analog
+  'LXUp_Analog__to__LXUp_Analog': { },
+  
+  // Analog => Push
+  'LXLeft_Analog__to__DPadL': { },
+  'RT_Analog__to__RT_Push': { },
+  
+  // Push + Push => Push
+  'LT_Push_+_A_Push__to__RB_Push': { },
 }

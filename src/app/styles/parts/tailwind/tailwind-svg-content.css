@@ -1,0 +1,8 @@
+@import 'tailwindcss';
+
+
+
+/*** 🔶SVG Content🔶 ***/
+/** fill & stroke color **/
+@utility svg-color-* { fill: --value([*]); stroke: --value([*]); }
+@utility svg-curr-color { fill: currentColor; stroke: currentColor; }

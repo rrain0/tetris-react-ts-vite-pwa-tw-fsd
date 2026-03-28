@@ -18,6 +18,7 @@ export type MappedGamepadState = Record<MappedGamepadSignalId, MappedGamepadSign
 export interface MappedGamepad {
   id: NativeGamepadId
   meta: NativeGamepadMeta
+  updatedAt: number
   state: MappedGamepadState
 }
 

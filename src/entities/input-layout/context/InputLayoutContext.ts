@@ -8,6 +8,6 @@ export interface InputLayoutContextValue {
   inputLayout: InputLayoutConfig
 }
 
-export const InputLayoutContext = createContext({
+export const InputLayoutContext = createContext<InputLayoutContextValue>({
   inputLayout: inputLayoutConfigDefault,
 })

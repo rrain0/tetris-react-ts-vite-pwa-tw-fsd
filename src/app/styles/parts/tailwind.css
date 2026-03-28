@@ -4,6 +4,7 @@
 @import './tailwind/tailwind-size.css';
 @import './tailwind/tailwind-placed.css';
 @import './tailwind/tailwind-content.css';
+@import './tailwind/tailwind-svg-content.css';
 @import './tailwind/tailwind-text.css';
 @import './tailwind/tailwind-flex.css';
 @import './tailwind/tailwind-grid.css';

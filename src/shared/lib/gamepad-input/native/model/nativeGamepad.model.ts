@@ -16,6 +16,7 @@ export type NativeGamepadState = Record<NativeGamepadSignalId, NativeGamepadSign
 export interface NativeGamepad {
   id: NativeGamepadId
   meta: NativeGamepadMeta
+  updatedAt: number
   state?: NativeGamepadState | undefined
 }
 
@@ -40,6 +41,7 @@ export function gamepadToNativeGamepad(gp: Gamepad): NativeGamepad {
   return {
     id: gamepadToNativeGamepadId(gp),
     meta: { name, i, buttonsCnt, axesCnt, mapping },
+    updatedAt: gp.timestamp,
     state: Object.fromEntries([
       ...gp.buttons.map((it, i) => [`B${i}`, it.value]),
       ...gp.axes.map((it, i) => [`A${i}`, it]),

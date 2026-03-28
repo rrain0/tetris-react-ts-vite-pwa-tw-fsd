@@ -1,5 +1,10 @@
 
 
+/* Tailwind base */
+@layer base;
+/* Tailwind theme */
+@layer theme;
+
 
 /* Unstyled style */
 @layer reset;
@@ -20,5 +25,7 @@
 
 
 
-/* Tailwind classes */
+/* Tailwind utilities */
 @layer utilities;
+/* Tailwind components */
+@layer components;

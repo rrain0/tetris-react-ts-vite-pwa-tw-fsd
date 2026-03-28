@@ -59,6 +59,7 @@ export class Game {
       if (this.tryPlaceNewCurrentPiece(rotated)) return
     }
   }
+  // Only drop, does not apply any lock or delay
   dropCurrentPiece() {
     const { blocks } = this.field
     const { xy: [x, y], position: p } = this.current

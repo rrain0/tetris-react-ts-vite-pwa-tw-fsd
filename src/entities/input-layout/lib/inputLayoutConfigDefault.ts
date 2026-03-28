@@ -25,16 +25,16 @@ export const inputLayoutConfigDefault: InputLayoutConfig = {
       { inputMethod: 'gamepad', key: 'XX_LYUp_Push' },
     ],
     rotateLeft: [
-      { inputMethod: 'keyboard', key: 'ArrowLeft' },
+      { inputMethod: 'keyboard', key: 'KeyJ' },
       { inputMethod: 'keyboard', key: 'KeyQ' },
       { inputMethod: 'gamepad', key: 'XX_A_Push' },
     ],
     rotateRight: [
-      { inputMethod: 'keyboard', key: 'ArrowRight' },
+      { inputMethod: 'keyboard', key: 'KeyK' },
       { inputMethod: 'keyboard', key: 'KeyE' },
       { inputMethod: 'gamepad', key: 'XX_B_Push' },
     ],
-    drop: [
+    hardDrop: [
       { inputMethod: 'keyboard', key: 'Space' },
       { inputMethod: 'gamepad', key: 'XX_RT_Push' },
       { inputMethod: 'gamepad', key: 'XX_X_Push' },
@@ -73,6 +73,16 @@ export const inputLayoutConfigDefault: InputLayoutConfig = {
 }
 
 
+/*
+ About drops:
+ ⬤ Soft drop - pressing and holding Down to make the piece fall faster than normal gravity.
+ After reaching the bottom there is lock delay.
+ Pressing Down at the bottom must not remove lock delay.
+ ⬤ Firm drop (sonic drop) - instantly send piece to the bottom but with lock delay.
+ Pressing Down at the bottom must not remove lock delay.
+ ⬤ Hard drop (sonic lock) - instantly send piece to the bottom and instantly lock it.
+ ⬤ https://harddrop.com/wiki/Drop
+ */
 
 
 /*

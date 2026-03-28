@@ -133,7 +133,7 @@ function useAppActions(setField: Setter<Field>) {
       game.rotateCurrentPieceRight()
       setField(game.renderField())
     }
-    if (isKeyboardAction('ingame', 'drop', ev, inputLayout)) {
+    if (isKeyboardAction('ingame', 'hardDrop', ev, inputLayout)) {
       game.dropCurrentPiece()
       setField(game.renderField())
     }
@@ -168,7 +168,7 @@ function useAppActions(setField: Setter<Field>) {
       game.rotateCurrentPieceRight()
       setField(game.renderField())
     }
-    if (isGamepadKeyAction('ingame', 'drop', ev, inputLayout)) {
+    if (isGamepadKeyAction('ingame', 'hardDrop', ev, inputLayout)) {
       game.dropCurrentPiece()
       setField(game.renderField())
     }

@@ -12,7 +12,7 @@ export interface InputLayoutConfig {
     // 🔼
     moveUp: ActionConfig
     // ⭳
-    drop: ActionConfig
+    hardDrop: ActionConfig
     // ↶
     rotateLeft: ActionConfig
     // ↷
