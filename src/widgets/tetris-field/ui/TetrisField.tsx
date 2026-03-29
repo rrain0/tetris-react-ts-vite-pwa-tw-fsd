@@ -67,7 +67,7 @@ export default function TetrisField() {
     <div
       // in-focus:bg-[yellow]
       className={`
-        grid w-[300] h-ct
+        grid w-full h-ct
         rows-[repeat(20,1fr)] cols-[repeat(10,1fr)]
         
         ${fieldStyle}

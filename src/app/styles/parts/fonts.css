@@ -2,75 +2,108 @@
 @layer fonts {
   
   * {
-    font-family: 'Roboto',
-      '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Oxygen',
-      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-      sans-serif;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
+    font-family: 'Noto Sans',
+    '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
   
   code {
     font-family: 'source-code-pro', 'Menlo', 'Monaco', 'Consolas',
-      'Courier New',
-      monospace;
+    'Courier New',
+    monospace;
   }
   
   
   
-  /* import Roboto font */
   @font-face {
-    font-family: 'Roboto'; font-weight: 100;
-    src: url('@assets/fonts/Roboto/Roboto-Thin.ttf'), local('Roboto');
+    font-family: 'Noto Sans'; font-weight: 100;
+    src: url('@assets/fonts/Noto Sans/NotoSans-Thin.woff2'), local('Noto Sans');
   }
   @font-face {
-    font-family: 'Roboto'; font-weight: 100; font-style: italic;
-    src: url('@assets/fonts/Roboto/Roboto-Thin-Italic.ttf'), local('Roboto');
-  }
-  
-  @font-face {
-    font-family: 'Roboto'; font-weight: 300;
-    src: url('@assets/fonts/Roboto/Roboto-Light.ttf'), local('Roboto');
-  }
-  @font-face {
-    font-family: 'Roboto'; font-weight: 300; font-style: italic;
-    src: url('@assets/fonts/Roboto/Roboto-Light-Italic.ttf'), local('Roboto');
+    font-family: 'Noto Sans'; font-weight: 100; font-style: italic;
+    src: url('@assets/fonts/Noto Sans/NotoSans-Thin-Italic.woff2'), local('Noto Sans');
   }
   
   @font-face {
-    font-family: 'Roboto'; font-weight: 400;
-    src: url('@assets/fonts/Roboto/Roboto-Regular.ttf'), local('Roboto');
+    font-family: 'Noto Sans'; font-weight: 200;
+    src: url('@assets/fonts/Noto Sans/NotoSans-ExtraLight.woff2'), local('Noto Sans');
   }
   @font-face {
-    font-family: 'Roboto'; font-weight: 400; font-style: italic;
-    src: url('@assets/fonts/Roboto/Roboto-Regular-Italic.ttf'), local('Roboto');
-  }
-  
-  @font-face {
-    font-family: 'Roboto'; font-weight: 500;
-    src: url('@assets/fonts/Roboto/Roboto-Medium.ttf'), local('Roboto');
-  }
-  @font-face {
-    font-family: 'Roboto'; font-weight: 500; font-style: italic;
-    src: url('@assets/fonts/Roboto/Roboto-Medium-Italic.ttf'), local('Roboto');
+    font-family: 'Noto Sans'; font-weight: 200; font-style: italic;
+    src: url('@assets/fonts/Noto Sans/NotoSans-ExtraLight-Italic.woff2'), local('Noto Sans');
   }
   
   @font-face {
-    font-family: 'Roboto'; font-weight: 700;
-    src: url('@assets/fonts/Roboto/Roboto-Bold.ttf'), local('Roboto');
+    font-family: 'Noto Sans'; font-weight: 300;
+    src: url('@assets/fonts/Noto Sans/NotoSans-Light.woff2'), local('Noto Sans');
   }
   @font-face {
-    font-family: 'Roboto'; font-weight: 700; font-style: italic;
-    src: url('@assets/fonts/Roboto/Roboto-Bold-Italic.ttf'), local('Roboto');
+    font-family: 'Noto Sans'; font-weight: 300; font-style: italic;
+    src: url('@assets/fonts/Noto Sans/NotoSans-Light-Italic.woff2'), local('Noto Sans');
   }
   
   @font-face {
-    font-family: 'Roboto'; font-weight: 900;
-    src: url('@assets/fonts/Roboto/Roboto-Black.ttf'), local('Roboto');
+    font-family: 'Noto Sans'; font-weight: 400;
+    src: url('@assets/fonts/Noto Sans/NotoSans-Regular.woff2'), local('Noto Sans');
   }
   @font-face {
-    font-family: 'Roboto'; font-weight: 900; font-style: italic;
-    src: url('@assets/fonts/Roboto/Roboto-Black-Italic.ttf'), local('Roboto');
+    font-family: 'Noto Sans'; font-weight: 400; font-style: italic;
+    src: url('@assets/fonts/Noto Sans/NotoSans-Regular-Italic.woff2'), local('Noto Sans');
+  }
+  
+  @font-face {
+    font-family: 'Noto Sans'; font-weight: 500;
+    src: url('@assets/fonts/Noto Sans/NotoSans-Medium.woff2'), local('Noto Sans');
+  }
+  @font-face {
+    font-family: 'Noto Sans'; font-weight: 500; font-style: italic;
+    src: url('@assets/fonts/Noto Sans/NotoSans-Medium-Italic.woff2'), local('Noto Sans');
+  }
+  
+  @font-face {
+    font-family: 'Noto Sans'; font-weight: 600;
+    src: url('@assets/fonts/Noto Sans/NotoSans-SemiBold.woff2'), local('Noto Sans');
+  }
+  @font-face {
+    font-family: 'Noto Sans'; font-weight: 600; font-style: italic;
+    src: url('@assets/fonts/Noto Sans/NotoSans-SemiBold-Italic.woff2'), local('Noto Sans');
+  }
+  
+  @font-face {
+    font-family: 'Noto Sans'; font-weight: 700;
+    src: url('@assets/fonts/Noto Sans/NotoSans-Bold.woff2'), local('Noto Sans');
+  }
+  @font-face {
+    font-family: 'Noto Sans'; font-weight: 700; font-style: italic;
+    src: url('@assets/fonts/Noto Sans/NotoSans-Bold-Italic.woff2'), local('Noto Sans');
+  }
+  
+  @font-face {
+    font-family: 'Noto Sans'; font-weight: 800;
+    src: url('@assets/fonts/Noto Sans/NotoSans-ExtraBold.woff2'), local('Noto Sans');
+  }
+  @font-face {
+    font-family: 'Noto Sans'; font-weight: 800; font-style: italic;
+    src: url('@assets/fonts/Noto Sans/NotoSans-ExtraBold-Italic.woff2'), local('Noto Sans');
+  }
+  
+  @font-face {
+    font-family: 'Noto Sans'; font-weight: 900;
+    src: url('@assets/fonts/Noto Sans/NotoSans-Black.woff2'), local('Noto Sans');
+  }
+  @font-face {
+    font-family: 'Noto Sans'; font-weight: 900; font-style: italic;
+    src: url('@assets/fonts/Noto Sans/NotoSans-Black-Italic.woff2'), local('Noto Sans');
+  }
+  
+  
+  
+  @font-face {
+    font-family: 'DSEG7Mod7ClassicMini'; font-weight: 700;
+    src: url('@assets/fonts/DSEG7Mod7ClassicMini/DSEG7Mod7ClassicMini-Bold.woff2');
   }
   
 }
