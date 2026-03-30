@@ -11,6 +11,8 @@
     place-content: normal;
     /* background of body is WINDOW background */
     background: none;
+    /* disable outline on keyboard navigation */
+    &:focus-visible { outline: none; }
     /* disable highlight on mobile devices when tapping on screen */
     -webkit-tap-highlight-color: transparent;
     overflow-wrap: anywhere;

@@ -55,7 +55,7 @@ export default defineConfig([
       '@typescript-eslint/no-namespace': 'off',
       '@typescript-eslint/no-empty-object-type': 'off',
       '@typescript-eslint/no-unsafe-function-type': 'off',
-      'react/no-unknown-property': ['error', { ignore: ['cn'] }],
+      'react/no-unknown-property': ['error', { ignore: ['cn', 'st'] }],
     },
   },
   

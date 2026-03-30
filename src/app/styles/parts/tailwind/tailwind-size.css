@@ -16,26 +16,20 @@
 
 /** size - width & height **/
 @utility sz-* {
-  width: --value([number])px;
-  width: --value(--size-*, [*]);
-  height: --value([number])px;
-  height: --value(--size-*, [*]);
+  width: --value([number])px; width: --value(--size-*, [*]);
+  height: --value([number])px; height: --value(--size-*, [*]);
 }
 
 /** size min - min-width & min-height **/
 @utility sz-min-* {
-  min-width: --value([number])px;
-  min-width: --value(--size-*, [*]);
-  min-height: --value([number])px;
-  min-height: --value(--size-*, [*]);
+  min-width: --value([number])px; min-width: --value(--size-*, [*]);
+  min-height: --value([number])px; min-height: --value(--size-*, [*]);
 }
 
 /** size max - max-width & max-height **/
 @utility sz-max-* {
-  max-width: --value([number])px;
-  max-width: --value(--size-*, [*]);
-  max-height: --value([number])px;
-  max-height: --value(--size-*, [*]);
+  max-width: --value([number])px; max-width: --value(--size-*, [*]);
+  max-height: --value([number])px; max-height: --value(--size-*, [*]);
 }
 
 /** width **/
@@ -56,25 +50,20 @@
 /** max-height **/
 @utility h-max-* { max-height: --value([number])px; max-height: --value(--size-*, [*]); }
 
-/** shape - aspect-ratio, border-radius **/
+/** aspect-ratio **/
 @utility square { aspect-ratio: 1; }
 @utility round { border-radius: 999999px; }
 @utility ratio-* { aspect-ratio: --value([*]); }
-@utility rad-* { border-radius: --value([number])px; border-radius: --value([*]); }
 
 /** margin **/
 @utility m-* { margin: --value([number])px; margin: --value(--size-*, [*]); }
 @utility mv-* {
-  margin-top: --value([number])px;
-  margin-top: --value(--size-*, [*]);
-  margin-bottom: --value([number])px;
-  margin-bottom: --value(--size-*, [*]);
+  margin-top: --value([number])px; margin-top: --value(--size-*, [*]);
+  margin-bottom: --value([number])px; margin-bottom: --value(--size-*, [*]);
 }
 @utility mh-* {
-  margin-left: --value([number])px;
-  margin-left: --value(--size-*, [*]);
-  margin-right: --value([number])px;
-  margin-right: --value(--size-*, [*]);
+  margin-left: --value([number])px; margin-left: --value(--size-*, [*]);
+  margin-right: --value([number])px; margin-right: --value(--size-*, [*]);
 }
 @utility mt-* { margin-top: --value([number])px; margin-top: --value(--size-*, [*]); }
 @utility mr-* { margin-right: --value([number])px; margin-right: --value(--size-*, [*]); }
@@ -84,16 +73,12 @@
 /** padding **/
 @utility p-* { padding: --value([number])px; padding: --value(--size-*, [*]); }
 @utility pv-* {
-  padding-top: --value([number])px;
-  padding-top: --value(--size-*, [*]);
-  padding-bottom: --value([number])px;
-  padding-bottom: --value(--size-*, [*]);
+  padding-top: --value([number])px; padding-top: --value(--size-*, [*]);
+  padding-bottom: --value([number])px; padding-bottom: --value(--size-*, [*]);
 }
 @utility ph-* {
-  padding-left: --value([number])px;
-  padding-left: --value(--size-*, [*]);
-  padding-right: --value([number])px;
-  padding-right: --value(--size-*, [*]);
+  padding-left: --value([number])px; padding-left: --value(--size-*, [*]);
+  padding-right: --value([number])px; padding-right: --value(--size-*, [*]);
 }
 @utility pt-* { padding-top: --value([number])px; padding-top: --value(--size-*, [*]); }
 @utility pr-* { padding-right: --value([number])px; padding-right: --value(--size-*, [*]); }

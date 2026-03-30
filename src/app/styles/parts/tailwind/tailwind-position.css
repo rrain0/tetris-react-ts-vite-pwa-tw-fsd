@@ -20,18 +20,18 @@
 @utility pos-* { position: --value([*]); }
 
 @utility a-* {
-  top: --value([number])px; right: --value([number])px;
-  bottom: --value([number])px; left: --value([number])px;
-  top: --value([*]); right: --value([*]);
-  bottom: --value([*]); left: --value([*]);
+  top: --value([number])px; top: --value([*]);
+  right: --value([number])px; right: --value([*]);
+  bottom: --value([number])px; bottom: --value([*]);
+  left: --value([number])px; left: --value([*]);
 }
 @utility av-* {
-  top: --value([number])px; bottom: --value([number])px;
-  top: --value([*]); bottom: --value([*]);
+  top: --value([number])px; top: --value([*]);
+  bottom: --value([number])px; bottom: --value([*]);
 }
 @utility ah-* {
-  right: --value([number])px; left: --value([number])px;
-  right: --value([*]); left: --value([*]);
+  right: --value([number])px; right: --value([*]);
+  left: --value([number])px; left: --value([*]);
 }
 
 @utility t { top: 0; }

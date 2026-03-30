@@ -12,6 +12,7 @@
 @utility tx-align-justify { text-align: justify; }
 
 /** text size **/
+@utility tx-f-* { font-family: --value([*]); }
 @utility tx-sz-* { font-size: --value([number])px; font-size: --value([*]); }
 @utility tx-wt-* { font-weight: --value([*]); }
 @utility tx-h-* { line-height: --value([*]); }

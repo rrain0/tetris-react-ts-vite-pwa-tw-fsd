@@ -18,8 +18,8 @@ export class Field {
   get cols() { return this.blocks[0].length }
   
   ;*[Symbol.iterator]() {
-    for (let y = 0; y < this.blocks.length; y++) {
-      for (let x = 0; x < this.blocks[y].length; x++) {
+    for (let y = 0; y < this.rows; y++) {
+      for (let x = 0; x < this.cols; x++) {
         const block = this.blocks[y][x]
         yield { x, y, block }
       }
@@ -43,7 +43,7 @@ export class Field {
     const { type, id } = piece
     for (const pieceBlock of piece) {
       const { x, y, element } = pieceBlock
-      if (element && y >= 0 && y < this.blocks.length && x >= 0 && x < this.blocks[y].length) {
+      if (element && y >= 0 && y < this.rows && x >= 0 && x < this.cols) {
         this.blocks[y][x] = { type, pieceId: id }
       }
     }

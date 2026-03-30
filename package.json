@@ -19,6 +19,8 @@
     "zustand": "^5.0.12"
   },
   "devDependencies": {
+    "@babel/template": "^7.28.6",
+    "@babel/types": "^7.29.0",
     "@eslint/eslintrc": "^3.3.5",
     "@eslint/js": "^10.0.1",
     "@rolldown/plugin-babel": "^0.2.2",

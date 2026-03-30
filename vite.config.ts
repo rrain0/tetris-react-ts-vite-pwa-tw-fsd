@@ -1,8 +1,11 @@
 import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
-import babel from '@rolldown/plugin-babel'
-import react, { reactCompilerPreset } from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
+import react, { reactCompilerPreset } from '@vitejs/plugin-react'
+import babel from '@rolldown/plugin-babel'
+import addBabelPluginJsxCnToClassNameAndStToStyle
+  // @ts-ignore
+  from './addBabelPluginJsxCnToClassNameAndStToStyle.js'
 import svgr from 'vite-plugin-svgr'
 import legacy from '@vitejs/plugin-legacy'
 
@@ -82,9 +85,10 @@ export default defineConfig(({ command, mode }) => {
       tailwindcss(),
       
       react(),
+      
       babel({
         presets: [reactCompilerPreset()],
-        plugins: [addBabelPluginJsxCnToClassName()],
+        plugins: [addBabelPluginJsxCnToClassNameAndStToStyle()],
       }),
       
       addSvgrPlugin(),
@@ -107,65 +111,6 @@ export default defineConfig(({ command, mode }) => {
     
   }
 })
-
-
-
-function addBabelPluginJsxCnToClassName() {
-  return {
-    visitor: {
-      name: 'babel-plugin-jsx-cn-to-classname',
-      JSXOpeningElement(path: any) {
-        let cnAttr: any
-        let classNameAttr: any
-        
-        // Find the attributes
-        path.get('attributes').forEach((attr: any) => {
-          if (attr.isJSXAttribute()) {
-            const { name } = attr.node.name
-            if (name === 'cn') cnAttr = attr
-            if (name === 'className') classNameAttr = attr
-          }
-        })
-        
-        if (!cnAttr) return
-        
-        // Helper to extract the core value from a JSX attribute (string or {expression})
-        function getValue(attr: any) {
-          const { value: v } = attr.node
-          return v.type === 'JSXExpressionContainer' ? v.expression : v
-        }
-        
-        const cnVal = getValue(cnAttr)
-        
-        // If className exists, combine cn & className to className
-        if (classNameAttr) {
-          const classNameVal = getValue(classNameAttr)
-          
-          // Build the Template Literal: `${className} ${cn}`
-          const appendedValue = {
-            type: 'JSXExpressionContainer',
-            expression: {
-              type: 'TemplateLiteral',
-              expressions: [classNameVal, cnVal],
-              quasis: [
-                { type: 'TemplateElement', value: { raw: '', cooked: '' }, tail: false },
-                { type: 'TemplateElement', value: { raw: ' ', cooked: ' ' }, tail: false },
-                { type: 'TemplateElement', value: { raw: '', cooked: '' }, tail: true },
-              ],
-            },
-          }
-          
-          classNameAttr.set('value', appendedValue)
-          cnAttr.remove()
-        }
-        // If no className exists, just rename cn to className
-        else {
-          cnAttr.node.name.name = 'className'
-        }
-      },
-    },
-  }
-}
 
 
 

@@ -97,6 +97,15 @@ export class Game {
     f.addPiece(this.current)
     return f
   }
+  // TODO Field
+  renderNextField() {
+    const f = new Field(5, 5)
+    const [x, y] = this.next.xy
+    const piece = this.next.toMoved([-x + 5 - this.next.position[0].length, -y])
+    console.log('piece', piece)
+    f.addPiece(piece)
+    return f
+  }
   
   
 }
