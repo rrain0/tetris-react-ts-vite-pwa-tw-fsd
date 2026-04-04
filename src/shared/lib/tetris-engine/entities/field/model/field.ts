@@ -10,7 +10,7 @@ export type FieldBlock = FieldPieceBlock | null
 export class Field {
   blocks: FieldBlock[][]
   
-  constructor(cols = 20, rows = 10) {
+  constructor(cols = 10, rows = 20) {
     this.blocks =  array(rows).map(() => array<FieldBlock>(cols, null))
   }
   

@@ -64,100 +64,110 @@ export default function InGameScreen() {
   
   const focusOnMount = { ref: (elem: HTMLElement | null) => elem?.focus() }
   
-  // 1.0 - block size
-  const totalW = 0.1 + 10 * 1.0 + 0.1 + 6 * 1.0
-  const bdWPerc = 0.1 / totalW * 100
-  const fieldWPerc = 10 * 1.0 / totalW * 100
-  const sideWPerc = 6 * 1.0 / totalW * 100
+  const bSz = 1.0 // block size
+  const p = 0.5 * bSz
+  const bdW = 0.1
+  const fieldW = 10 * bSz
+  const sideW = 6 * bSz
+  const sideG = 0.35 * bSz
+  const nextW = 4 * bSz
+  const titleSz = 0.7 * bSz
+  const digitsSz = 0.9 * bSz
+  const icSz = 1.3 * bSz
+  const icG = 0.3 * bSz
   
-  const sidePPerc = 0.5 * 1.0 / totalW * 100
-  const sideGPerc = 0.35 * 1.0 / totalW * 100
-  const nextWPerc = 4 * 1.0 / totalW * 100
-  const titleSzPerc = 0.7 * 1.0 / totalW * 100
-  const digitsSzPerc = 0.9 * 1.0 / totalW * 100
+  const totalW = bdW + fieldW + bdW + p + sideW
+  const cqw = (w: number) => `${w / totalW * 100}cqw`
   
-  const titleSt = { fontSize: `${titleSzPerc}cqw` }
-  const digitsSt = { fontSize: `${digitsSzPerc}cqw` }
+  const titleSt = { fontSize: cqw(titleSz) }
+  const digitsSt = { fontSize: cqw(digitsSz) }
+  const icSt = { width: cqw(icSz), height: cqw(icSz) }
   
   return (
     <>
-      <div cn='flex row-stretch w-full container-inline-size'
+      <div cn='flex center w-full p-[8]'
         {...combineProps(
           onKeyboardKeyHold, onKeyboardKeyDownClick,
         )}
       >
         
-        <div cn='flex col w-ct bd-c-[#808080] rad-[1.25cqw]'
-          st={{ borderWidth: `${bdWPerc}cqw` }}
-        >
-          <TetrisField st={{ width: `${fieldWPerc}cqw` }}
-            field={field}
-            tabIndex={-1}
-            {...focusOnMount}
-          />
-        </div>
-        
-        <div cn='flex col' st={{ width: `${sideWPerc}cqw` }}>
-          <div cn='flex col h-full' st={{ padding: `${sidePPerc}cqw`, gap: `${sideGPerc}cqw` }}>
-            
-            <div st={titleSt}>
-              HI-SCORE
-            </div>
-            <div cn='flex col-end'>
-              <div cn={digitsTw} st={digitsSt}>194638</div>
-            </div>
-            
-            <div st={titleSt}>
-              SCORE
-            </div>
-            <div cn='flex col-end'>
-              <div cn={digitsTw} st={digitsSt}>1666</div>
-            </div>
-            
-            <div st={titleSt}>
-              LEVEL
-            </div>
-            <div cn='flex col-end'>
-              <div cn={digitsTw} st={digitsSt}>12</div>
-            </div>
-            
-            <div st={titleSt}>
-              LINES
-            </div>
-            <div cn='flex col-end'>
-              <div cn={digitsTw} st={digitsSt}>57</div>
-            </div>
-            
-            <div st={titleSt}>
-              NEXT
-            </div>
-            <div cn='flex col-end'>
-              <TetrisField st={{ width: `${nextWPerc}cqw` }}
-                field={nextField}
-              />
-            </div>
-            
-            <div cn='flex col end grow'>
-              <div cn='flex row center-end p-[4] g-[4] color-[white]'>
-                <div cn='flex col center sz-[24]'>
-                  <FullscreenIc cn='sz-full svg-curr-color'/>
-                </div>
-                <div cn='flex col center sz-[24] p-[1]'>
-                  <PauseIc cn='sz-full svg-curr-color'/>
+        <div cn='grid row w-full container-inline-size' st={{ gap: cqw(p) }}>
+          
+          <div cn='flex col w-ct bd-c-[#808080] rad-[1.25cqw]'
+            st={{ borderWidth: cqw(bdW) }}
+          >
+            <TetrisField st={{ width: cqw(fieldW) }}
+              field={field}
+              tabIndex={-1}
+              {...focusOnMount}
+            />
+          </div>
+          
+          <div cn='flex col' st={{ width: cqw(sideW) }}>
+            <div cn='flex col h-full' st={{ gap: cqw(sideG) }}>
+              
+              <div st={titleSt}>
+                HI-SCORE
+              </div>
+              <div cn='flex col-end'>
+                <div cn={digitsTw} st={digitsSt}>194638</div>
+              </div>
+              
+              <div st={titleSt}>
+                SCORE
+              </div>
+              <div cn='flex col-end'>
+                <div cn={digitsTw} st={digitsSt}>1666</div>
+              </div>
+              
+              <div st={titleSt}>
+                LEVEL
+              </div>
+              <div cn='flex col-end'>
+                <div cn={digitsTw} st={digitsSt}>12</div>
+              </div>
+              
+              <div st={titleSt}>
+                LINES
+              </div>
+              <div cn='flex col-end'>
+                <div cn={digitsTw} st={digitsSt}>57</div>
+              </div>
+              
+              <div st={titleSt}>
+                NEXT
+              </div>
+              <div cn='flex col-end'>
+                <TetrisField st={{ width: cqw(nextW) }}
+                  field={nextField}
+                />
+              </div>
+              
+              <div cn='flex col end grow'>
+                <div cn='flex row center-end color-[#282c34]' st={{ gap: cqw(icG) }}>
+                  <div cn='flex col center' st={icSt}>
+                    <FullscreenIc cn='sz-full svg-curr-color'/>
+                  </div>
+                  <div cn='flex col center p-[1]' st={icSt}>
+                    <PauseIc cn='sz-full svg-curr-color'/>
+                  </div>
                 </div>
               </div>
+            
             </div>
-          
           </div>
+        
         </div>
-      
+        
       </div>
     </>
   )
 }
 
 
+
 const digitsTw = 'tx-f-[DSEG7Mod7ClassicMini] tx-wt-[bold] tx-h-[1] tx-sp-[normal]'
+
 
 
 function useAppActions(setField: Setter<Field>) {

@@ -10,10 +10,10 @@
 
 /** grid direction **/
 @utility row { &:where(.grid,[class*=grid-]) {
-  grid-auto-flow: row;
+  grid-auto-flow: column;
 } }
 @utility col { &:where(.grid,[class*=grid-]) {
-  grid-auto-flow: column;
+  grid-auto-flow: row;
 } }
 
 /** grid layout **/
