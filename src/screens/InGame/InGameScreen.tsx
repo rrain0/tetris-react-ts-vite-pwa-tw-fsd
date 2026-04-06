@@ -21,6 +21,8 @@ import TetrisField from '@widgets/tetris-field/ui/TetrisField.tsx'
 import FullscreenIc from '@assets/ic/svg/ui/fullscreen.svg?react'
 import PauseIc from '@assets/ic/svg/ui/pause.svg?react'
 import PageFullVp from 'shared/components/elems/PageFullVp.tsx'
+import bg from '@assets/im/bg4.jpg'
+import { colors } from 'shared/styles/colors/colors.ts'
 
 
 
@@ -74,7 +76,7 @@ export default function InGameScreen() {
   const sideW = 6 * bSz
   const sideG = 0.35 * bSz
   const nextW = 4 * bSz
-  const titleSz = 0.7 * bSz
+  const titleSz = 0.8 * bSz
   const digitsSz = 0.9 * bSz
   const icSz = 1.3 * bSz
   const icG = 0.3 * bSz
@@ -90,7 +92,8 @@ export default function InGameScreen() {
   
   return (
     <>
-      <PageFullVp cn='p-[8]'
+      <PageFullVp cn='p-[8] bg-pos-[center] bg-sz-[cover]'
+        st={{ backgroundImage: `url(${bg})` }}
         {...combineProps(
           onKeyboardKeyHold, onKeyboardKeyDownClick,
         )}
@@ -110,7 +113,7 @@ export default function InGameScreen() {
                 />
               </div>
               
-              <div cn='flex col' st={{ width: cqw(sideW) }}>
+              <div cn={`flex col color-[${colors.hudColor4}]`} st={{ width: cqw(sideW) }}>
                 
                 <div cn='flex col grow between' st={{ gap: cqw(sideG) }}>
                   
@@ -154,7 +157,7 @@ export default function InGameScreen() {
                   </div>
                   
                   <div cn='flex col end'>
-                    <div cn='flex row center-end color-[#282c34]' st={{ gap: cqw(icG) }}>
+                    <div cn='flex row center-end' st={{ gap: cqw(icG) }}>
                       <div cn='flex col center2' st={icSt}>
                         <FullscreenIc cn='sz-full svg-curr-color'/>
                       </div>
@@ -179,7 +182,7 @@ export default function InGameScreen() {
 
 
 
-const titleCn = 'tx-h-[1]'
+const titleCn = 'tx-wt-[600] tx-h-[1]'
 const digitsCn = 'tx-f-[DSEG7Mod7ClassicMini] tx-wt-[bold] tx-h-[1] tx-sp-[normal]'
 
 

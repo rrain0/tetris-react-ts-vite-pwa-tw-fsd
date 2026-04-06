@@ -12,6 +12,9 @@
 /** background **/
 @utility bg-* { background: --value([*]); }
 @utility bg-color-* { background-color: --value([*]); }
+@utility bg-im-* { background-image: --value([*]); }
+@utility bg-pos-* { background-position: --value([*]); }
+@utility bg-sz-* { background-size: --value([*]); }
 
 /** color **/
 @utility color-* { color: --value([*]); }
