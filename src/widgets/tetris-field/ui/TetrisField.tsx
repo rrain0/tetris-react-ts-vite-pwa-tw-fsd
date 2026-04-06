@@ -13,7 +13,7 @@ export default function TetrisField({ field, ...rest }: TetrisFieldProps) {
   const { rows, cols } = field
   return (
     <div
-      cn='grid w-full h-ct'
+      cn='grid'
       st={{
         gridTemplateRows: `repeat(${rows},1fr)`,
         gridTemplateColumns: `repeat(${cols},1fr)`,

@@ -12,6 +12,7 @@
   --size-full: 100%;
   --size-ct: fit-content;
   --size-0: 0;
+  --size-auto: auto;
 }
 
 /** size - width & height **/

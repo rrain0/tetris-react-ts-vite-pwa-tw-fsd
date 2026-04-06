@@ -1,0 +1,68 @@
+@import 'tailwindcss';
+
+
+
+/*** 🔶Place🔶 ***/
+
+/** align-items **/
+@utility ai-start { align-items: start; }
+@utility ai-center { align-items: center; }
+@utility ai-end { align-items: end; }
+@utility ai-stretch { align-items: stretch; }
+@utility ai-* { align-items: --value([*]); }
+
+/** justify-items **/
+@utility ji-start { justify-items: start; }
+@utility ji-center { justify-items: center; }
+@utility ji-end { justify-items: end; }
+@utility ji-stretch { justify-items: stretch; }
+@utility ji-* { justify-items: --value([*]); }
+
+/** place-items **/
+@utility pi-* { place-items: --value([*]); }
+
+/** align-content **/
+@utility ac-start { align-content: start; }
+@utility ac-center { align-content: center; }
+@utility ac-end { align-content: end; }
+@utility ac-stretch { align-content: stretch; }
+@utility ac-between { align-content: space-between; }
+@utility ac-around { align-content: space-around; }
+@utility ac-* { align-content: --value([*]); }
+
+/** justify-content **/
+@utility jc-start { justify-content: start; }
+@utility jc-center { justify-content: center; }
+@utility jc-end { justify-content: end; }
+@utility jc-stretch { justify-content: stretch; }
+@utility jc-between { justify-content: space-between; }
+@utility jc-around { justify-content: space-around; }
+@utility jc-* { justify-content: --value([*]); }
+
+/** place-items **/
+@utility pc-* { place-content: --value([*]); }
+
+
+
+/*** 🔶Placed🔶 ***/
+
+/** align-self - aligned **/
+@utility aligned { align-self: center; }
+@utility aligned-start { align-self: start; }
+@utility aligned-end { align-self: end; }
+@utility aligned-stretch { align-self: stretch; }
+
+/** jusify-self - justified **/
+@utility justified { justify-self: center; }
+@utility justified-start { justify-self: start; }
+@utility justified-end { justify-self: end; }
+@utility justified-stretch { justify-self: stretch; }
+
+/** place-self - placed **/
+@utility placed { align-self: center; justify-self: center; }
+@utility centered { align-self: center; justify-self: center; }
+@utility started { align-self: start; justify-self: start; }
+@utility ended { align-self: end; justify-self: end; }
+
+/** placed 2 **/
+@utility started-ended { align-self: start; justify-self: end; }

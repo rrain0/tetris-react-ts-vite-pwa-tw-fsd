@@ -4,11 +4,9 @@ import type { Div } from '@utils/react/props/propTypes.ts'
 
 export default function PageFullVp(props: Div) {
   return (
-    <div cn={`wMin-[${wMin}] hMin-[${hMin}] w-[100dvw] h-[100dvh]`} {...props}/>
+    <div cn='w-min-[320] h-min-[480] w-full h-full' {...props}/>
   )
 }
 
 
 
-const wMin = 320
-const hMin = 480

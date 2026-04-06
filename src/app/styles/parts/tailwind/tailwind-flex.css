@@ -6,33 +6,7 @@
 
 @utility flex { display: flex; }
 
-/** flex shortcuts **/
-@utility row-start { &:where(.flex) {
-  flex-direction: row; align-items: start;
-} }
-@utility row-center { &:where(.flex) {
-  flex-direction: row; align-items: center;
-} }
-@utility row-end { &:where(.flex) {
-  flex-direction: row; align-items: end;
-} }
-@utility row-stretch { &:where(.flex) {
-  flex-direction: row; align-items: stretch;
-} }
-@utility col-start { &:where(.flex) {
-  flex-direction: column; align-items: start;
-} }
-@utility col-center { &:where(.flex) {
-  flex-direction: column; align-items: center;
-} }
-@utility col-end { &:where(.flex) {
-  flex-direction: column; align-items: end;
-} }
-@utility col-stretch { &:where(.flex) {
-  flex-direction: column; align-items: stretch;
-} }
-
-/** flex layout **/
+/** flex direction **/
 @utility row { &:where(.flex) {
   flex-direction: row;
 } }
@@ -45,6 +19,22 @@
 @utility col-rev { &:where(.flex) {
   flex-direction: column-reverse;
 } }
+
+/** flex direction with min-inline-size: 0 **/
+@utility row0 { &:where(.flex) {
+  flex-direction: row; min-width: 0;
+} }
+@utility row0-rev { &:where(.flex) {
+  flex-direction: row-reverse; min-width: 0;
+} }
+@utility col0 { &:where(.flex) {
+  flex-direction: column; min-height: 0;
+} }
+@utility col0-rev { &:where(.flex) {
+  flex-direction: column-reverse; min-height: 0;
+} }
+
+/** flex wrap **/
 @utility wrap { &:where(.flex) {
   flex-wrap: wrap;
 } }
@@ -52,17 +42,40 @@
   flex-wrap: wrap-reverse;
 } }
 
-/** flex items placing **/
+
+
+/** flex placing **/
+
 @utility start { &:where(.flex) {
-  align-items: start; justify-content: start;
+  align-items: start;
 } }
 @utility center { &:where(.flex) {
-  align-items: center; justify-content: center;
+  align-items: center;
 } }
 @utility end { &:where(.flex) {
-  align-items: end; justify-content: end;
+  align-items: end;
 } }
 @utility stretch { &:where(.flex) {
+  align-items: stretch;
+} }
+
+@utility between { &:where(.flex) {
+  justify-content: space-between;
+} }
+@utility around { &:where(.flex) {
+  justify-content: space-around;
+} }
+
+@utility start2 { &:where(.flex) {
+  align-items: start; justify-content: start;
+} }
+@utility center2 { &:where(.flex) {
+  align-items: center; justify-content: center;
+} }
+@utility end2 { &:where(.flex) {
+  align-items: end; justify-content: end;
+} }
+@utility stretch2 { &:where(.flex) {
   align-items: stretch; justify-content: stretch;
 } }
 
@@ -118,40 +131,14 @@
   align-items: stretch; justify-content: stretch;
 } }
 
-@utility align { &:where(.flex) {
-  align-items: center;
-} }
-@utility align-start { &:where(.flex) {
-  align-items: start;
-} }
-@utility align-center { &:where(.flex) {
-  align-items: center;
-} }
-@utility align-end { &:where(.flex) {
-  align-items: end;
-} }
-@utility align-stretch { &:where(.flex) {
-  align-items: stretch;
-} }
 
-@utility justify { &:where(.flex) {
-  justify-content: center;
-} }
-@utility justify-start { &:where(.flex) {
-  justify-content: start;
-} }
-@utility justify-center { &:where(.flex) {
-  justify-content: center;
-} }
-@utility justify-end { &:where(.flex) {
-  justify-content: end;
-} }
-@utility justify-stretch { &:where(.flex) {
-  justify-content: stretch;
-} }
-@utility space-between { &:where(.flex) {
-  justify-content: space-between;
-} }
-@utility space-around { &:where(.flex) {
-  justify-content: space-around;
-} }
+
+/** flexed **/
+@utility no-shrink { flex-shrink: 0; }
+@utility basis-* { flex-basis: --value([*]); }
+@utility order-* { order: --value([*]); }
+@utility grow { flex-grow: 1; }
+@utility grow-* { flex-grow: --value([*]); }
+@utility shrink { flex-shrink: 1; }
+@utility shrink-* { flex-shrink: --value([*]); }
+@utility flexed-* { flex: --value([*]); }

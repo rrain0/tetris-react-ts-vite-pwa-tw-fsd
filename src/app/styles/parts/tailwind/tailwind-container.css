@@ -15,8 +15,9 @@
 @utility contain-paint { contain: paint; }
 @utility contain-layout { contain: layout; }
 @utility contain-size { contain: size; }
-@utility contain-content { contain: content; }
-@utility contain-strict { contain: strict; }
+@utility contain-content { contain: content; /* paint + layout */ }
+@utility contain-strict { contain: strict; /* paint + layout + size */ }
 
 /** container **/
 @utility container-inline-size { container-type: inline-size; }
+@utility container-size { container-type: size; }

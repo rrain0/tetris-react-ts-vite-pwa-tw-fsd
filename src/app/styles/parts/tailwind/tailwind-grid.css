@@ -33,10 +33,36 @@
   grid-auto-columns: --value([*]);
 } }
 
-/** grid items placing shortcuts **/
+
+
+/** grid placing **/
+
+@utility start { &:where(.grid,[class*=grid-]) {
+  align-items: start;
+} }
 @utility center { &:where(.grid,[class*=grid-]) {
+  align-items: center;
+} }
+@utility end { &:where(.grid,[class*=grid-]) {
+  align-items: end;
+} }
+@utility stretch { &:where(.grid,[class*=grid-]) {
+  align-items: stretch;
+} }
+
+@utility start2 { &:where(.grid,[class*=grid-]) {
+  place-items: start;
+} }
+@utility center2 { &:where(.grid,[class*=grid-]) {
   place-items: center;
 } }
+@utility end2 { &:where(.grid,[class*=grid-]) {
+  place-items: end;
+} }
+@utility stretch2 { &:where(.grid,[class*=grid-]) {
+  place-items: stretch;
+} }
+
 @utility center-start { &:where(.grid,[class*=grid-]) {
   place-items: center start;
 } }
@@ -44,56 +70,10 @@
   place-items: end stretch;
 } }
 
-/** grid items placing **/
-@utility place-* { &:where(.grid,[class*=grid-]) {
-  place-items: --value([*]);
-} }
 
-/** grid content placing **/
-@utility place-ct-* { &:where(.grid,[class*=grid-]) {
-  place-content: --value([*]);
-} }
 
-/** grid items aligning **/
-@utility align { &:where(.grid,[class*=grid-]) {
-  align-items: center;
-} }
-@utility align-start { &:where(.grid,[class*=grid-]) {
-  align-items: start;
-} }
-@utility align-center { &:where(.grid,[class*=grid-]) {
-  align-items: center;
-} }
-@utility align-end { &:where(.grid,[class*=grid-]) {
-  align-items: end;
-} }
-@utility align-stretch { &:where(.grid,[class*=grid-]) {
-  align-items: stretch;
-} }
 
-/** grid items justifying **/
-@utility justify { &:where(.grid,[class*=grid-]) {
-  justify-items: center;
-} }
-@utility justify-start { &:where(.grid,[class*=grid-]) {
-  justify-items: start;
-} }
-@utility justify-center { &:where(.grid,[class*=grid-]) {
-  justify-items: center;
-} }
-@utility justify-end { &:where(.grid,[class*=grid-]) {
-  justify-items: end;
-} }
-@utility justify-stretch { &:where(.grid,[class*=grid-]) {
-  justify-items: stretch;
-} }
-
-/** grid content aligning **/
-@utility align-ct-* { &:where(.grid,[class*=grid-]) {
-  align-content: --value([*]);
-} }
-
-/** grid content justifying **/
-@utility justify-ct-* { &:where(.grid,[class*=grid-]) {
-  justify-content: --value([*]);
-} }
+/** grided **/
+@utility grid-row-* { grid-row: --value([*]); }
+@utility grid-col-* { grid-column: --value([*]); }
+@utility grid-area-* { grid-area: --value([*]); }
