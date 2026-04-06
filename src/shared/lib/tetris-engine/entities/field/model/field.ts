@@ -29,11 +29,11 @@ export class Field {
   
   canPlacePiece(piece: Piece): boolean {
     for (const pieceBlock of piece) {
-      const { x, y, blockValue } = pieceBlock
-      if (blockValue) {
+      const { x, y, blockValue: pieceBlockValue } = pieceBlock
+      if (pieceBlockValue) {
         if (x < 0 || x >= this.cols || y >= this.rows) return false
-        const fieldBlock = this.blocks[y]?.[x]
-        if (fieldBlock) return false
+        const fieldBlockValue = this.blocks[y]?.[x]
+        if (fieldBlockValue) return false
       }
     }
     return true

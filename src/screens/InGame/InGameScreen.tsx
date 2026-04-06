@@ -19,6 +19,7 @@ import { use, useState } from 'react'
 import TetrisField from '@widgets/tetris-field/ui/TetrisField.tsx'
 import FullscreenIc from '@assets/ic/svg/ui/fullscreen.svg?react'
 import PauseIc from '@assets/ic/svg/ui/pause.svg?react'
+import PageFullVp from 'shared/components/elems/PageFullVp.tsx'
 
 
 
@@ -85,81 +86,83 @@ export default function InGameScreen() {
   
   return (
     <>
-      <div cn='flex center w-full p-[8]'
-        {...combineProps(
-          onKeyboardKeyHold, onKeyboardKeyDownClick,
-        )}
-      >
-        
-        <div cn='grid row w-full container-inline-size' st={{ gap: cqw(p) }}>
+      <PageFullVp cn='grid center'>
+        <div cn='flex center w-full p-[8]'
+          {...combineProps(
+            onKeyboardKeyHold, onKeyboardKeyDownClick,
+          )}
+        >
           
-          <div cn='flex col w-ct bd-c-[#808080] rad-[1.25cqw]'
-            st={{ borderWidth: cqw(bdW) }}
-          >
-            <TetrisField st={{ width: cqw(fieldW) }}
-              field={field}
-              tabIndex={-1}
-              {...focusOnMount}
-            />
-          </div>
-          
-          <div cn='flex col' st={{ width: cqw(sideW) }}>
-            <div cn='flex col h-full' st={{ gap: cqw(sideG) }}>
-              
-              <div st={titleSt}>
-                HI-SCORE
-              </div>
-              <div cn='flex col-end'>
-                <div cn={digitsTw} st={digitsSt}>194638</div>
-              </div>
-              
-              <div st={titleSt}>
-                SCORE
-              </div>
-              <div cn='flex col-end'>
-                <div cn={digitsTw} st={digitsSt}>1666</div>
-              </div>
-              
-              <div st={titleSt}>
-                LEVEL
-              </div>
-              <div cn='flex col-end'>
-                <div cn={digitsTw} st={digitsSt}>12</div>
-              </div>
-              
-              <div st={titleSt}>
-                LINES
-              </div>
-              <div cn='flex col-end'>
-                <div cn={digitsTw} st={digitsSt}>57</div>
-              </div>
-              
-              <div st={titleSt}>
-                NEXT
-              </div>
-              <div cn='flex col-end'>
-                <TetrisField st={{ width: cqw(nextW) }}
-                  field={nextField}
-                />
-              </div>
-              
-              <div cn='flex col end grow'>
-                <div cn='flex row center-end color-[#282c34]' st={{ gap: cqw(icG) }}>
-                  <div cn='flex col center' st={icSt}>
-                    <FullscreenIc cn='sz-full svg-curr-color'/>
-                  </div>
-                  <div cn='flex col center p-[1]' st={icSt}>
-                    <PauseIc cn='sz-full svg-curr-color'/>
+          <div cn='grid row w-full container-inline-size' st={{ gap: cqw(p) }}>
+            
+            <div cn='flex col w-ct bd-c-[#808080] rad-[1.25cqw]'
+              st={{ borderWidth: cqw(bdW) }}
+            >
+              <TetrisField st={{ width: cqw(fieldW) }}
+                field={field}
+                tabIndex={-1}
+                {...focusOnMount}
+              />
+            </div>
+            
+            <div cn='flex col' st={{ width: cqw(sideW) }}>
+              <div cn='flex col h-full' st={{ gap: cqw(sideG) }}>
+                
+                <div st={titleSt}>
+                  HI-SCORE
+                </div>
+                <div cn='flex col-end'>
+                  <div cn={digitsTw} st={digitsSt}>194638</div>
+                </div>
+                
+                <div st={titleSt}>
+                  SCORE
+                </div>
+                <div cn='flex col-end'>
+                  <div cn={digitsTw} st={digitsSt}>1666</div>
+                </div>
+                
+                <div st={titleSt}>
+                  LEVEL
+                </div>
+                <div cn='flex col-end'>
+                  <div cn={digitsTw} st={digitsSt}>12</div>
+                </div>
+                
+                <div st={titleSt}>
+                  LINES
+                </div>
+                <div cn='flex col-end'>
+                  <div cn={digitsTw} st={digitsSt}>57</div>
+                </div>
+                
+                <div st={titleSt}>
+                  NEXT
+                </div>
+                <div cn='flex col-end'>
+                  <TetrisField st={{ width: cqw(nextW) }}
+                    field={nextField}
+                  />
+                </div>
+                
+                <div cn='flex col end grow'>
+                  <div cn='flex row center-end color-[#282c34]' st={{ gap: cqw(icG) }}>
+                    <div cn='flex col center' st={icSt}>
+                      <FullscreenIc cn='sz-full svg-curr-color'/>
+                    </div>
+                    <div cn='flex col center p-[1]' st={icSt}>
+                      <PauseIc cn='sz-full svg-curr-color'/>
+                    </div>
                   </div>
                 </div>
+              
               </div>
-            
             </div>
+          
           </div>
         
         </div>
-        
-      </div>
+      </PageFullVp>
     </>
   )
 }
