@@ -11,3 +11,41 @@
 @import './tailwind/tailwind-text.css';
 
 @import './tailwind/tailwind-state.css';
+
+
+
+/*
+Abbreviations:
+
+w, w-min, w-max - width, min, max
+h, h-min, h-max - height / line-height, min, max
+sz, sz-min, sz-max - size, min, max - width & height, min, max
+p, pt, pr, pb, pl, pv, ph - padding, top, right, bottom, left, vertical, horizontal
+m, mt, mr, mb, ml, mv, mh - margin, top, right, bottom, left, vertical, horizontal
+ratio - aspect-ratio
+g, g-row, g-col - gap, row, col
+
+full - value 100%
+0 - value 0
+ct - value fit-content
+auto - value auto
+
+pos - position
+row - row
+col - column
+bd - border
+bg - background
+cl - color
+im - image
+tx - text / text relative
+f - font
+wt - weight
+sp - space / spacing
+
+fixed - position: fixed;
+abs - position: absolute;
+rel - position: relative;
+t, r, b, l - top, right, bottom, left
+z - z-index
+
+*/

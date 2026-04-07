@@ -1,5 +1,6 @@
-@import './parts/layers.css'; /* MUST be FIRST of all CSS */
+@import './parts/layers.css'; /* CSS Layers MUST be FIRST of all CSS */
 @import './parts/reset.css';
+@import './parts/colors.css';
 @import './parts/fonts.css';
 @import './parts/tailwind.css';
 
@@ -7,25 +8,26 @@
 
 @layer app {
   
-  * {
-    user-select: none;
-  }
-  /* Pointer fixes */
-  *:where(:not(input, textarea)) {
-    -webkit-user-select: none; /* disable selection/Copy of UIWebView */
-    -webkit-touch-callout: none; /* disable the IOS popup when long-press on a link */
-  }
-  
   html {
     width: 100%;
     height: 100%;
   }
+  
   body {
     min-width: 100%;
     min-height: 100%;
     width: 100%;
     height: 100%;
     overflow: auto; /* body scroll will be WINDOW scroll */
+  }
+  
+  body * {
+    /* https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/contain#description */
+    /* Note: Using layout, paint, strict or content values for this property creates:`
+        A new containing block (for the descendants whose position property is absolute or fixed).
+        A new stacking context.
+        A new block formatting context. */
+    contain: content;
   }
   
 }

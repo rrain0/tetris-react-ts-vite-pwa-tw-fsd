@@ -6,8 +6,11 @@
 @layer theme;
 
 
-/* Unstyled style */
+/* Unstyled elements defaults */
 @layer reset;
+
+/* Colors */
+@layer colors;
 
 /* App fonts */
 @layer fonts;

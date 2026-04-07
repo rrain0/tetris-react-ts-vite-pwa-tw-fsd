@@ -22,7 +22,6 @@ import FullscreenIc from '@assets/ic/svg/ui/fullscreen.svg?react'
 import PauseIc from '@assets/ic/svg/ui/pause.svg?react'
 import PageFullVp from 'shared/components/elems/PageFullVp.tsx'
 import bg from '@assets/im/bg4.jpg'
-import { colors } from 'shared/styles/colors/colors.ts'
 
 
 
@@ -70,7 +69,7 @@ export default function InGameScreen() {
   
   const bSz = 1.0 // block size
   const p = 0.5 * bSz
-  const bdW = 0.1
+  const bdW = 0.16
   const fieldW = 10 * bSz
   const fieldH = 20 * bSz
   const sideW = 6 * bSz
@@ -103,7 +102,7 @@ export default function InGameScreen() {
           <div cn='container-size' st={elemSizeContain(ratio)}>
             <div cn='sz-full grid row' st={{ gap: cqw(p) }}>
               
-              <div cn='flex col w-ct bd-c-[#808080] rad-[1.25cqw]'
+              <div cn='flex col w-ct bd-cl-[var(--cl-tetris-field-bd)] rad-[1.25cqw]'
                 st={{ borderWidth: cqw(bdW) }}
               >
                 <TetrisField st={{ width: cqw(fieldW) }}
@@ -113,7 +112,7 @@ export default function InGameScreen() {
                 />
               </div>
               
-              <div cn={`flex col color-[${colors.hudColor4}]`} st={{ width: cqw(sideW) }}>
+              <div cn='flex col cl-[var(--cl-hud-tx)]' st={{ width: cqw(sideW) }}>
                 
                 <div cn='flex col grow between' st={{ gap: cqw(sideG) }}>
                   
@@ -159,10 +158,10 @@ export default function InGameScreen() {
                   <div cn='flex col end'>
                     <div cn='flex row center-end' st={{ gap: cqw(icG) }}>
                       <div cn='flex col center2' st={icSt}>
-                        <FullscreenIc cn='sz-full svg-curr-color'/>
+                        <FullscreenIc cn='sz-full svg-curr-cl'/>
                       </div>
                       <div cn='flex col center2 p-[1]' st={icSt}>
-                        <PauseIc cn='sz-full svg-curr-color'/>
+                        <PauseIc cn='sz-full svg-curr-cl'/>
                       </div>
                     </div>
                   </div>

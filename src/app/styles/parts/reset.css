@@ -1,9 +1,9 @@
 
+/* ⚠️ html / body display property behaves strange */
+
 @layer reset {
   
   *,::before,::after,::backdrop {
-    contain: content;
-    
     box-sizing: border-box;
     margin: 0;
     padding: 0;
@@ -15,7 +15,7 @@
     background: none;
     /* disable outline on keyboard navigation */
     &:focus-visible { outline: none; }
-    /* disable highlight on mobile devices when tapping on screen */
+    /* disable highlight when tapping on screen on mobile devices */
     -webkit-tap-highlight-color: transparent;
     
     overflow-wrap: anywhere;
@@ -24,19 +24,17 @@
     justify-items: normal;
   }
   * {
-    /* It prevents inheritance that is more convenient */
+    /* use auto as default value */
     pointer-events: auto;
   }
   
   
-  /* WARNING! Do not apply any display property to html or body - it behaves strange */
-  html {
-    /*
-      https://developer.mozilla.org/en-US/docs/Web/CSS/color-scheme
-      Indicates that page cannot be changed by autotheme browser engine.
-      And indicates that page can change theme by its own.
-    */
-    color-scheme: light dark;
+  :root {
+    /* https://developer.mozilla.org/en-US/docs/Web/CSS/color-scheme */
+    /* only - tells browser to not change colors by auto-theme engine */
+    /* dark - element is designed specifically for a dark theme,
+       it affects the rendering of built-in UI elements (scrollbars, form controls, ... */
+    color-scheme: only dark;
   }
   
   

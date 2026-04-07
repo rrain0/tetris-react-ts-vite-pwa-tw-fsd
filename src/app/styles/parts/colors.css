@@ -1,0 +1,15 @@
+
+
+
+@layer colors {
+  :root {
+    
+    --cl-hud-tx: hotpink;
+    .template {
+      --cl-hud-tx--variants: hotpink white #53b3db #d62e57 #ee325f #3D8A99;
+    }
+    
+    --cl-tetris-field-bd: grey;
+    
+  }
+}

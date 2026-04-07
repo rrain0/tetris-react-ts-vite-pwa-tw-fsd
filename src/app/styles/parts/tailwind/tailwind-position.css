@@ -4,20 +4,20 @@
 
 /*** 🔶Position🔶 ***/
 
-@utility fixed-trbl { blocks: fixed; top: 0; right: 0; bottom: 0; left: 0; }
-@utility fixed-tlwh { blocks: fixed; top: 0; left: 0; width: 100%; height: 100%; }
-@utility fixed-top { blocks: fixed; top: 0; left: 0; right: 0; }
-@utility fixed-left { blocks: fixed; top: 0; left: 0; bottom: 0; }
-@utility fixed-bot { blocks: fixed; bottom: 0; left: 0; right: 0; }
+@utility fixed-trbl { position: fixed; top: 0; right: 0; bottom: 0; left: 0; }
+@utility fixed-tlwh { position: fixed; top: 0; left: 0; width: 100%; height: 100%; }
+@utility fixed-top { position: fixed; top: 0; left: 0; right: 0; }
+@utility fixed-left { position: fixed; top: 0; left: 0; bottom: 0; }
+@utility fixed-bot { position: fixed; bottom: 0; left: 0; right: 0; }
 
-@utility abs-trbl { blocks: absolute; top: 0; right: 0; bottom: 0; left: 0; }
-@utility abs-tlwh { blocks: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-@utility abs-tl { blocks: absolute; top: 0; left: 0; }
+@utility abs-trbl { position: absolute; top: 0; right: 0; bottom: 0; left: 0; }
+@utility abs-tlwh { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+@utility abs-tl { position: absolute; top: 0; left: 0; }
 
-@utility abs { blocks: absolute; }
-@utility rel { blocks: relative; }
-@utility fixed { blocks: fixed; }
-@utility pos-* { blocks: --value([*]); }
+@utility abs { position: absolute; }
+@utility rel { position: relative; }
+@utility fixed { position: fixed; }
+@utility pos-* { position: --value([*]); }
 
 @utility a-* {
   top: --value([number])px; top: --value([*]);

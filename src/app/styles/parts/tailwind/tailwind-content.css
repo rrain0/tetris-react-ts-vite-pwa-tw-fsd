@@ -6,15 +6,15 @@
 
 /** border **/
 @utility bd-w-* { border-width: --value([number])px; border-width: --value([*]); }
-@utility bd-c-* { border-color: --value([*]); }
+@utility bd-cl-* { border-color: --value([*]); }
 @utility rad-* { border-radius: --value([number])px; border-radius: --value([*]); }
 
 /** background **/
 @utility bg-* { background: --value([*]); }
-@utility bg-color-* { background-color: --value([*]); }
+@utility bg-cl-* { background-color: --value([*]); }
 @utility bg-im-* { background-image: --value([*]); }
 @utility bg-pos-* { background-position: --value([*]); }
 @utility bg-sz-* { background-size: --value([*]); }
 
 /** color **/
-@utility color-* { color: --value([*]); }
+@utility cl-* { color: --value([*]); }

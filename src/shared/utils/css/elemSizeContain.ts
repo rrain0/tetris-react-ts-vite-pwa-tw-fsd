@@ -1,11 +1,13 @@
 
 
 
+// Usage of this applicable only if container of the element has container-type: size;
 export function elemSizeContain(elemRatio: number) {
-  const containerRatio = '(100cqw / 100cqh)'
   const elemSizeStyle = {
-    width: `calc(min(1, ${elemRatio} / ${containerRatio}) * 100cqw)`,
-    height: `calc(min(1, ${containerRatio} / ${elemRatio}) * 100cqh)`,
+    // If container is taller, shrink width to fit
+    width: `min(100cqw, 100cqh * ${elemRatio})`,
+    // If container is wider than desired ratio, shrink height to fit
+    height: `min(100cqh, 100cqw / ${elemRatio})`,
   }
   return elemSizeStyle
 }

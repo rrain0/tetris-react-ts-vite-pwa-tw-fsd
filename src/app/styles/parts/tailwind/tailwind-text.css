@@ -5,11 +5,10 @@
 /*** 🔶Text🔶 ***/
 
 /** text-align **/
-@utility tx-align { text-align: center; }
-@utility tx-align-center { text-align: center; }
-@utility tx-align-left { text-align: left; }
-@utility tx-align-right { text-align: right; }
-@utility tx-align-justify { text-align: justify; }
+@utility tx-center { text-align: center; }
+@utility tx-left { text-align: left; }
+@utility tx-right { text-align: right; }
+@utility tx-justify { text-align: justify; }
 
 /** text size **/
 @utility tx-f-* { font-family: --value([*]); }
