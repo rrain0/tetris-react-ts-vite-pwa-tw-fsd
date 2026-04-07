@@ -6,13 +6,13 @@ import GamepadInputProvider
 import InputLayoutProvider from 'entities/input-layout/providers/InputLayoutProvider.tsx'
 import { useState } from 'react'
 import * as React from 'react'
-import InGameScreen from 'screens/InGame/InGameScreen.tsx'
+import IngameScreen from '@screens/ingame/IngameScreen.tsx'
 
 
 
 export default function App() {
   
-  const [activity, setActivity] = useState('InGame')
+  const [activity, setActivity] = useState('Ingame')
   
   return (
     <>
@@ -21,8 +21,8 @@ export default function App() {
           
           <AppActivitiesProvider currentActivity={activity}>
             
-            <AppActivity name='InGame'>
-              <InGameScreen/>
+            <AppActivity name='Ingame'>
+              <IngameScreen/>
             </AppActivity>
             
           </AppActivitiesProvider>

@@ -2,6 +2,7 @@ import { Field } from '@lib/tetris-engine/entities/field/model/field.ts'
 import type { Piece } from '@lib/tetris-engine/entities/piece/model/piece.ts'
 import { randomTetrominoSrs } from '@lib/tetris-engine/entities/piece/model/tetrominoSrs.ts'
 import { matrixCopy } from '@lib/tetris-engine/shared/utils/matrix.ts'
+import { array } from '@utils/array/arrCreate.ts'
 
 
 
@@ -16,10 +17,22 @@ export class Game {
   
   level = 0
   
-  field: Field = new Field()
+  field: Field = Field.empty(10, 20)
   
   current: Piece = randomTetrominoSrs()
   next: Piece = randomTetrominoSrs()
+  
+  
+  copy() {
+    const g = new Game()
+    g.lines = this.lines
+    g.score = this.score
+    g.level = this.level
+    g.field = Field.ofBlocks(matrixCopy(this.field.blocks))
+    g.current = this.current
+    g.next = this.next
+    return g
+  }
   
   
   spawnNewPiece() {
@@ -60,7 +73,7 @@ export class Game {
     }
   }
   // Only drop, does not apply any lock or delay
-  dropCurrentPiece() {
+  hardDropCurrentPiece() {
     const { blocks } = this.field
     const { xy: [x, y], blocks: b } = this.current
     let freeY = blocks.length
@@ -92,19 +105,26 @@ export class Game {
   
   
   renderField() {
-    const f = new Field()
-    f.blocks = matrixCopy(this.field.blocks)
+    const f = Field.ofBlocks(matrixCopy(this.field.blocks))
     f.addPiece(this.current)
     return f
   }
-  // TODO Field
   renderNextField() {
     const n = this.next
-    const f = new Field(4, 2)
-    const [x, y] = n.xy
-    const piece = n.toMoved({ x: -n.firstNonEmptyCol, y: -n.firstNonEmptyRow })
-    console.log('piece', piece)
-    f.addPiece(piece)
+    const f = Field.empty(4, 2)
+    const nextPiece = n.toMoved({ x: -n.firstNonEmptyCol, y: -n.firstNonEmptyRow })
+    f.addPiece(nextPiece)
+    return f
+  }
+  renderCombinedField() {
+    const { blocks, cols, rows } = this.field
+    const f = Field.empty(cols, rows + 2)
+    f.blocks = [
+      array(cols, null),
+      array(cols, null),
+      ...matrixCopy(blocks),
+    ]
+    f.addPiece(this.current)
     return f
   }
   

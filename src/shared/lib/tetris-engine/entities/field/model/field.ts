@@ -9,16 +9,24 @@ import { array } from '@utils/array/arrCreate.ts'
 
 
 
-export type FieldPieceBlock = { type: Id, pieceId: Id }
-export type FieldBlock = FieldPieceBlock | null
+export type FieldPieceBlockValue = { type: Id, pieceId: Id }
+export type FieldBlockValue = FieldPieceBlockValue | null
 
 
 
 export class Field {
-  blocks: FieldBlock[][]
+  blocks: FieldBlockValue[][]
   
-  constructor(cols = 10, rows = 20) {
-    this.blocks =  array(rows).map(() => array<FieldBlock>(cols, null))
+  private constructor() { }
+  static empty(cols = 10, rows = 20) {
+    const f = new Field()
+    f.blocks = array(rows).map(() => array<FieldBlockValue>(cols, null))
+    return f
+  }
+  static ofBlocks(blocks: FieldBlockValue[][]) {
+    const f = new Field()
+    f.blocks = blocks
+    return f
   }
   
   get rows() { return blocksRows(this.blocks) }

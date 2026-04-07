@@ -40,6 +40,8 @@
     
     /* Linting */
     "strict": true,
+    // It is useless when using multiple static factory methods.
+    "strictPropertyInitialization": false,
     "erasableSyntaxOnly": false,
     // Checks module existence even if you don't import any values from it
     "noUncheckedSideEffectImports": true, // default value
