@@ -1,5 +1,5 @@
-import { inputLayoutConfigDefault } from 'entities/input-layout/lib/inputLayoutConfigDefault.ts'
-import type { InputLayoutConfig } from 'entities/input-layout/model/inputLayout.ts'
+import { inputLayoutConfigDefault } from '@entities/input-layout/lib/inputLayoutConfigDefault.ts'
+import type { InputLayoutConfig } from '@entities/input-layout/model/inputLayout.ts'
 import { createContext } from 'react'
 
 

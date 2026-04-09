@@ -1,4 +1,4 @@
-import type { ActionConfig, InputLayoutConfig } from 'entities/input-layout/model/inputLayout.ts'
+import type { ActionConfig, InputLayoutConfig } from '@entities/input-layout/model/inputLayout.ts'
 
 
 

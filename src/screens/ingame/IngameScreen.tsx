@@ -9,15 +9,19 @@ import { Game } from '@lib/tetris-engine/entities/game/model/game.ts'
 import {
   newISrs, newJSrs, newLSrs, newOSrs, newSSrs, newTSrs, newZSrs,
 } from '@lib/tetris-engine/entities/piece/model/tetrominoSrs.ts'
+import { elemProps } from '@utils/elem/elemProps.ts'
 import { useFocusWithinElem } from '@utils/elem/useFocusWithinElem.ts'
+import { useResizeRef } from '@utils/elem/useResizeRef.ts'
 import { combineProps } from '@utils/react/props/combineProps.ts'
 import type { SetterOrUpdater } from '@utils/ts/ts.ts'
-import { InputLayoutContext } from 'entities/input-layout/context/InputLayoutContext.ts'
-import { isGamepadKeyAction } from 'entities/input-layout/model/isGamepadKeyAction.ts'
-import { isKeyboardAction } from 'entities/input-layout/model/isKeyboardAction.ts'
-import { use, useState } from 'react'
-import IngameScreenLand from 'screens/ingame/IngameScreenLand.tsx'
-import IngameScreenLandSm from 'screens/ingame/IngameScreenLandSm.tsx'
+import { InputLayoutContext } from '@entities/input-layout/context/InputLayoutContext.ts'
+import { isGamepadKeyAction } from '@entities/input-layout/model/isGamepadKeyAction.ts'
+import { isKeyboardAction } from '@entities/input-layout/model/isKeyboardAction.ts'
+import { use, useLayoutEffect, useState } from 'react'
+import { ingameScreenLandSmParams } from '@screens/ingame/land-sm/ingame-screen-land-sm-params.ts'
+import IngameScreenLand from '@screens/ingame/land/IngameScreenLand.tsx'
+import IngameScreenLandSm from '@screens/ingame/land-sm/IngameScreenLandSm.tsx'
+import { ingameScreenLandParams } from 'screens/ingame/land/ingame-screen-land-params.ts'
 import PageFullVp from 'shared/components/elems/PageFullVp.tsx'
 import bg from '@assets/im/bg4.jpg'
 
@@ -60,17 +64,24 @@ export default function IngameScreen() {
     return game
   })
   
+  
   const refToFocus = useFocusWithinElem()
   
+  
+  const [layout, setLayout] = useState<'land' | 'landSm' | 'port' | 'portSm' | undefined>(undefined)
+  
+  const refFun = useResizeRef(elem => {
+    if (!elem) setLayout(undefined)
+    else {
+      const { ratio } = elemProps(elem)
+      if (ratio >= ingameScreenLandParams().gameRatio) setLayout('land')
+      else if (ratio >= ingameScreenLandSmParams().gameRatio) setLayout('landSm')
+      else setLayout('portSm')
+    }
+  })
+  
+  
   const { onKeyboardKeyHold, onKeyboardKeyDownClick } = useAppActions(setGame)
-  const layout = (() => {
-    return 'landSm' as const
-    
-    return 'land' as const
-    return 'landSm' as const
-    return 'portSm' as const
-    return 'port' as const
-  })()
   
   const pageProps = combineProps(onKeyboardKeyHold, onKeyboardKeyDownClick)
   
@@ -82,7 +93,7 @@ export default function IngameScreen() {
         tabIndex={-1}
         {...pageProps}
       >
-        <div cn='sz-full grid center2 container-size'>
+        <div cn='sz-full grid center2 container-size' ref={refFun}>
           {layout === 'land' && <IngameScreenLand game={game}/>}
           {layout === 'landSm' && <IngameScreenLandSm game={game}/>}
         </div>

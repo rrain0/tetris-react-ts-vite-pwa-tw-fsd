@@ -1,50 +1,37 @@
 import type { Game } from '@lib/tetris-engine/entities/game/model/game.ts'
 import { elemSizeContain } from '@utils/css/elemSizeContain.ts'
-import { useFocusWithinElem } from '@utils/elem/useFocusWithinElem.ts'
-import TetrisField from 'widgets/tetris-field/ui/TetrisField.tsx'
+import { ingameScreenLandParams } from '@screens/ingame/land/ingame-screen-land-params.ts'
+import TetrisField from '@widgets/tetris-field/ui/TetrisField.tsx'
 import FullscreenIc from '@assets/ic/svg/ui/fullscreen.svg?react'
 import PauseIc from '@assets/ic/svg/ui/pause.svg?react'
 
 
 
-export type IngameScreenLandSmProps = {
+export type IngameScreenLandProps = {
   game: Game
 }
 
-export default function IngameScreenLandSm({ game }: IngameScreenLandSmProps) {
+export default function IngameScreenLand({ game }: IngameScreenLandProps) {
   const field = game.renderField()
   const nextField = game.renderNextField()
   
-  const blockSz = 1.0
-  
-  const fieldBdW = 0.16
-  const fieldW = fieldBdW + 10 * blockSz + fieldBdW
-  const fieldH = fieldBdW + 20 * blockSz + fieldBdW
-  
-  const sideW = 6 * blockSz
-  const sideG = 0.35
-  const nextW = nextField.cols * blockSz
-  const titleH = 0.8
-  const digitH = 0.9
-  
-  const icSz = 1
-  const icsG = 0.3
-  const icsW = icSz + icsG + icSz
-  
-  const gameG = 0.5
-  const gameW = icsW + gameG + fieldW + gameG + sideW + gameG + icsW
-  const gameH = fieldH
-  const gameRatio = gameW / gameH
-  
-  const w = (w: number) => `${w / gameW * 100 * gameRatio}cqh`
+  const {
+    blockSz,
+    fieldBdW, fieldW, fieldH,
+    sideW, sideG, nextW, titleH, digitH,
+    icSz, icsG, icsW,
+    gameG, gameW, gameH, gameRatio,
+    w,
+  } = ingameScreenLandParams(nextField.cols)
   
   const containerSt = { height: elemSizeContain(gameRatio).height }
   const gameSt = {
     gap: w(gameG),
-    gridTemplateColumns: `
-      minmax(${w(icsW)}, 1fr) ${w(sideW)}
-      ${w(fieldW)}
-      ${w(sideW)} minmax(${w(icsW)}, 1fr)
+    grid: `
+      'icsLSpace sideLeftSpace field side ics'
+      / minmax(${w(icsW)}, 1fr) ${w(sideW)}
+      ${w(fieldW)} ${w(sideW)}
+      minmax(${w(icsW)}, 1fr)
     `,
   }
   const fieldSt = { borderWidth: w(fieldBdW), width: w(fieldW) }
@@ -59,15 +46,13 @@ export default function IngameScreenLandSm({ game }: IngameScreenLandSmProps) {
     <div cn='w-full container-size' st={containerSt}>
       <div cn='sz-full grid row' st={gameSt}>
         
-        <div/>
-        
-        <div/>
-        
-        <div cn='flex col w-ct bd-cl-[var(--cl-tetris-field-bd)] rad-[1cqh]' st={fieldSt}>
+        <div cn='flex col in-area-[field] w-ct bd-cl-[var(--cl-tetris-field-bd)] rad-[1cqh]'
+          st={fieldSt}
+        >
           <TetrisField cn='w-full' field={field}/>
         </div>
         
-        <div cn='flex col cl-[var(--cl-hud-tx)]' st={sideSt}>
+        <div cn='flex col in-area-[side] cl-[var(--cl-hud-tx)]' st={sideSt}>
           
           <div cn={titleCn} st={titleSt}>
             HI-SCORE
@@ -105,10 +90,10 @@ export default function IngameScreenLandSm({ game }: IngameScreenLandSmProps) {
               field={nextField}
             />
           </div>
-        
+          
         </div>
         
-        <div cn='flex row start-end cl-[var(--cl-hud-tx)]' st={icsSt}>
+        <div cn='flex row start-end in-area-[ics] cl-[var(--cl-hud-tx)]' st={icsSt}>
           <div cn='flex col center2' st={icSt}>
             <FullscreenIc cn='sz-full svg-curr-cl'/>
           </div>

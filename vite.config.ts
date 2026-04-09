@@ -18,7 +18,6 @@ export default defineConfig(({ command, mode }) => {
     reactDevServerPort: 40109,
   }
   
-  
   const buildDate = new Date()
   const buildDateStr = buildDate.toISOString()
   

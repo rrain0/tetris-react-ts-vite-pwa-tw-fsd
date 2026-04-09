@@ -77,3 +77,7 @@
 @utility grid-row-* { grid-row: --value([*]); }
 @utility grid-col-* { grid-column: --value([*]); }
 @utility grid-area-* { grid-area: --value([*]); }
+
+@utility in-row-* { grid-row: --value([*]); }
+@utility in-col-* { grid-column: --value([*]); }
+@utility in-area-* { grid-area: --value([*]); }
