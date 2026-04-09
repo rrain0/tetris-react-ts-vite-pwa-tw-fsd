@@ -3,6 +3,7 @@ import type { Piece } from '@lib/tetris-engine/entities/piece/model/piece.ts'
 import { randomTetrominoSrs } from '@lib/tetris-engine/entities/piece/model/tetrominoSrs.ts'
 import { matrixCopy } from '@lib/tetris-engine/shared/utils/matrix.ts'
 import { array } from '@utils/array/arrCreate.ts'
+import IngameScreenLandSm from 'screens/ingame/IngameScreenLandSm.tsx'
 
 
 
@@ -113,9 +114,8 @@ export class Game {
       array(cols, null),
       ...matrixCopy(blocks),
     ])
-    // TODO x0, y0 for field or move current & next
-    f.addPiece(this.current)
-    f.addPiece(this.next)
+    f.addPiece(this.current.toMoved({ dy: 2 }))
+    f.addPiece(this.next.toMoved({ dy: 2 }))
     return f
   }
   

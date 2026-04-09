@@ -46,6 +46,7 @@ export default defineConfig([
       'no-empty-static-block': 'off',
       'no-self-assign': 'off',
       'no-unexpected-multiline': 'off',
+      'no-useless-assignment': 'warn',
       'prefer-const': 'warn',
       '@typescript-eslint/no-unused-expressions': 'off',
       '@typescript-eslint/ban-ts-comment': 'off',

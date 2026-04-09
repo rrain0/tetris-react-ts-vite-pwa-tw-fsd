@@ -25,17 +25,6 @@ export const emptyArr = []
 
 
 
-// ℹ️ Html attrs
-
-// Атрибут, который либо просто есть без значения, либо его нет (<div attr/> или <div/>)
-export type HtmlEmptyAttr = '' | undefined
-export const toEmptyAttr = (value: any): HtmlEmptyAttr => value ? '' : undefined
-
-export type HtmlDataAttrs = { [Prop in `data-${string}`]?: string | undefined }
-
-
-
-
 // ℹ️ Value modifiers
 
 export type Nonnullishval<T> = T & {}

@@ -14,8 +14,6 @@ export default function IngameScreenLand({ game }: IngameScreenLandProps) {
   const field = game.renderField()
   const nextField = game.renderNextField()
   
-  const focusOnMount = { ref: (elem: HTMLElement | null) => elem?.focus() }
-  
   const blockSz = 1.0
   
   const fieldBdW = 0.16
@@ -65,11 +63,7 @@ export default function IngameScreenLand({ game }: IngameScreenLandProps) {
         <div/>
         
         <div cn='flex col w-ct bd-cl-[var(--cl-tetris-field-bd)] rad-[1cqh]' st={fieldSt}>
-          <TetrisField cn='w-full'
-            field={field}
-            tabIndex={-1}
-            {...focusOnMount}
-          />
+          <TetrisField cn='w-full' field={field}/>
         </div>
         
         <div cn='flex col cl-[var(--cl-hud-tx)]' st={sideSt}>
