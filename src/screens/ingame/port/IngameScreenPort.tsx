@@ -19,7 +19,7 @@ export default function IngameScreenPort({ game }: IngameScreenPortProps) {
     fieldBoxBdSz, fieldBoxW, fieldBoxH,
     fullFieldBoxH,
     topH, topTitleH, topTitleMl,
-    bottomG, bottomH, titleH, digitH,
+    bottomG, bottomH, titleH, digitH, bottomTxG,
     icSz, icsG, icsW,
     gameW, gameH, gameRatio,
     h,
@@ -44,7 +44,7 @@ export default function IngameScreenPort({ game }: IngameScreenPortProps) {
   const bottomSt = {
     height: h(bottomH), paddingTop: h(bottomG), paddingBottom: h(bottomG), gap: h(bottomG),
   }
-  const bottomItemSt = { gap: h(bottomG) }
+  const bottomItemSt = { gap: h(bottomTxG) }
   const titleSt = { fontSize: h(titleH) }
   const digitsSt = { fontSize: h(digitH) }
   const icsSt = { gap: h(icsG) }
@@ -79,14 +79,14 @@ export default function IngameScreenPort({ game }: IngameScreenPortProps) {
           <TetrisField cn='h-full' field={combinedField}/>
         </div>
         
-        <div cn='grid cols-[1fr_1fr] in-area-[bottom] w-full' st={bottomSt}>
+        <div cn='grid cols-[1fr_1.2fr] in-area-[bottom] w-full' st={bottomSt}>
           
           <div cn='frc' st={bottomItemSt}>
             <div cn='txHudTitle' st={titleSt}>
               SCORE
             </div>
             <div>
-              <div cn='txHudDigits' st={digitsSt}>2666</div>
+              <div cn='txHudDigitsBold' st={digitsSt}>194638</div>
             </div>
           </div>
           
@@ -95,7 +95,7 @@ export default function IngameScreenPort({ game }: IngameScreenPortProps) {
               HI-SCORE
             </div>
             <div>
-              <div cn='txHudDigits' st={digitsSt}>194638</div>
+              <div cn='txHudDigitsBold' st={digitsSt}>194638</div>
             </div>
           </div>
           
@@ -104,7 +104,7 @@ export default function IngameScreenPort({ game }: IngameScreenPortProps) {
               LEVEL
             </div>
             <div>
-              <div cn='txHudDigits' st={digitsSt}>12</div>
+              <div cn='txHudDigitsBold' st={digitsSt}>12</div>
             </div>
           </div>
           
@@ -113,7 +113,7 @@ export default function IngameScreenPort({ game }: IngameScreenPortProps) {
               LINES
             </div>
             <div>
-              <div cn='txHudDigits' st={digitsSt}>57</div>
+              <div cn='txHudDigitsBold' st={digitsSt}>57</div>
             </div>
           </div>
         
@@ -127,4 +127,4 @@ export default function IngameScreenPort({ game }: IngameScreenPortProps) {
 
 
 // Content styles
-const icCn = ' cl-[var(--cl-hud-tx)] svg-curr-cl'
+const icCn = 'cl-[var(--cl-hud-tx)] svg-curr-cl'

@@ -12,5 +12,10 @@
     @apply tx-f-['DSEG7Mod7ClassicMini'] tx-wt-[bold] tx-h-[1] tx-sp-[normal]
     cl-[var(--cl-hud-tx)];
   }
+  .txHudDigitsBold {
+    @apply tx-f-['DSEG7Mod7ClassicMini'] tx-wt-[bold] tx-h-[1] tx-sp-[normal]
+    cl-[var(--cl-hud-tx)];
+    -webkit-text-stroke: 0.6px currentColor;
+  }
   
 }

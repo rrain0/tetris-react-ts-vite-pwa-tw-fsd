@@ -49,53 +49,51 @@ export default function IngameScreenLandSm({ game }: IngameScreenLandSmProps) {
           <TetrisField cn='w-full' field={field}/>
         </div>
         
-        <div cn='flex col in-area-[side] cl-[var(--cl-hud-tx)]' st={sideSt}>
+        <div cn='flex col in-area-[side]' st={sideSt}>
           
-          <div cn={titleCn} st={titleSt}>
+          <div cn='txHudTitle' st={titleSt}>
             HI-SCORE
           </div>
           <div cn='flex col end'>
-            <div cn={digitsCn} st={digitsSt}>194638</div>
+            <div cn='txHudDigits' st={digitsSt}>194638</div>
           </div>
           
-          <div cn={titleCn} st={titleSt}>
+          <div cn='txHudTitle' st={titleSt}>
             SCORE
           </div>
           <div cn='flex col end'>
-            <div cn={digitsCn} st={digitsSt}>1666</div>
+            <div cn='txHudDigits' st={digitsSt}>1666</div>
           </div>
           
-          <div cn={titleCn} st={titleSt}>
+          <div cn='txHudTitle' st={titleSt}>
             LEVEL
           </div>
           <div cn='flex col end'>
-            <div cn={digitsCn} st={digitsSt}>12</div>
+            <div cn='txHudDigits' st={digitsSt}>12</div>
           </div>
           
-          <div cn={titleCn} st={titleSt}>
+          <div cn='txHudTitle' st={titleSt}>
             LINES
           </div>
           <div cn='flex col end'>
-            <div cn={digitsCn} st={digitsSt}>57</div>
+            <div cn='txHudDigits' st={digitsSt}>57</div>
           </div>
           
-          <div cn={titleCn} st={titleSt}>
+          <div cn='txHudTitle' st={titleSt}>
             NEXT
           </div>
           <div cn='flex col end'>
-            <TetrisField st={nextSt}
-              field={nextField}
-            />
+            <TetrisField st={nextSt} field={nextField}/>
           </div>
         
         </div>
         
-        <div cn='flex row start-end in-area-[ics] cl-[var(--cl-hud-tx)]' st={icsSt}>
+        <div cn='flex row start-end in-area-[ics]' st={icsSt}>
           <div cn='flex col center2' st={icSt}>
-            <FullscreenIc cn='sz-full svg-curr-cl'/>
+            <FullscreenIc cn={`sz-full ${icCn}`}/>
           </div>
           <div cn='flex col center2' st={icSt}>
-            <PauseIc cn='sz-full svg-curr-cl'/>
+            <PauseIc cn={`sz-full ${icCn}`}/>
           </div>
         </div>
       
@@ -106,5 +104,5 @@ export default function IngameScreenLandSm({ game }: IngameScreenLandSmProps) {
 
 
 
-const titleCn = 'tx-wt-[600] tx-h-[1]'
-const digitsCn = 'tx-f-[DSEG7Mod7ClassicMini] tx-wt-[bold] tx-h-[1] tx-sp-[normal]'
+// Content styles
+const icCn = 'cl-[var(--cl-hud-tx)] svg-curr-cl'
