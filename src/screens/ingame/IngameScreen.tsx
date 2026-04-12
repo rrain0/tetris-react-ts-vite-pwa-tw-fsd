@@ -22,9 +22,8 @@ import { ingameScreenLandSmSizes } from '@screens/ingame/land-sm/ingameScreenLan
 import IngameScreenLand from '@screens/ingame/land/IngameScreenLand.tsx'
 import IngameScreenLandSm from '@screens/ingame/land-sm/IngameScreenLandSm.tsx'
 import { ingameScreenLandSizes } from '@screens/ingame/land/ingameScreenLandSizes.ts'
-import IngameScreenPort from 'screens/ingame/port/IngameScreenPort.tsx'
-import { ingameScreenPortSizes } from 'screens/ingame/port/ingameScreenPortSizes.ts'
-import PageFullVp from 'shared/components/elems/PageFullVp.tsx'
+import IngameScreenPort from '@screens/ingame/ui/port/IngameScreenPort.tsx'
+import PageFullVp from '@components/elems/PageFullVp.tsx'
 import bg from '@assets/im/bg4.jpg'
 
 
@@ -64,6 +63,12 @@ export default function IngameScreen() {
     game.field.addPiece(newOSrs({ x: 6, y: 18 }))
     game.field.addPiece(newTSrs({ x: 8, y: 16 }).toRotatedLeft().next().value!)
     return game
+  })
+  const [gameStats] = useState({
+    hiScore: 194638,
+    score: 194638,
+    level: 12,
+    lines: 57,
   })
   
   

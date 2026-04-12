@@ -1,7 +1,7 @@
 import type { Game } from '@lib/tetris-engine/entities/game/model/game.ts'
 import { elemSizeContain } from '@utils/css/elemSizeContain.ts'
-import { ingameScreenPortSizes } from 'screens/ingame/port/ingameScreenPortSizes.ts'
-import TetrisField from 'widgets/tetris-field/ui/TetrisField.tsx'
+import { ingameScreenPortSizes } from '@screens/ingame/ui/port/ingameScreenPortSizes.ts'
+import TetrisField from '@widgets/tetris-field/ui/TetrisField.tsx'
 import FullscreenIc from '@assets/ic/svg/ui/fullscreen.svg?react'
 import PauseIc from '@assets/ic/svg/ui/pause.svg?react'
 

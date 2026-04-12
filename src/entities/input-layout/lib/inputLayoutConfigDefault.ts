@@ -27,18 +27,18 @@ export const inputLayoutConfigDefault: InputLayoutConfig = {
     rotateLeft: [
       { inputMethod: 'keyboard', key: 'KeyJ' },
       { inputMethod: 'keyboard', key: 'KeyQ' },
-      { inputMethod: 'gamepad', key: 'XX_A_Push' },
+      { inputMethod: 'gamepad', key: 'XX_X_Push' },
     ],
     rotateRight: [
       { inputMethod: 'keyboard', key: 'KeyK' },
       { inputMethod: 'keyboard', key: 'KeyE' },
-      { inputMethod: 'gamepad', key: 'XX_B_Push' },
+      { inputMethod: 'gamepad', key: 'XX_Y_Push' },
     ],
     hardDrop: [
       { inputMethod: 'keyboard', key: 'Space' },
       { inputMethod: 'gamepad', key: 'XX_RT_Push' },
-      { inputMethod: 'gamepad', key: 'XX_X_Push' },
-      { inputMethod: 'gamepad', key: 'XX_Y_Push' },
+      { inputMethod: 'gamepad', key: 'XX_A_Push' },
+      { inputMethod: 'gamepad', key: 'XX_B_Push' },
     ],
     pause: [
       { inputMethod: 'keyboard', key: 'Escape' },
