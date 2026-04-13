@@ -3,9 +3,7 @@ import { defineConfig } from 'vite'
 import tailwindcss from '@tailwindcss/vite'
 import react, { reactCompilerPreset } from '@vitejs/plugin-react'
 import babel from '@rolldown/plugin-babel'
-import addBabelPluginJsxCnToClassNameAndStToStyle
-  // @ts-ignore
-  from './addBabelPluginJsxCnToClassNameAndStToStyle.js'
+import babelPluginJsxCnStProps from './plugins/babelPluginJsxCnStProps.js'
 import svgr from 'vite-plugin-svgr'
 import legacy from '@vitejs/plugin-legacy'
 
@@ -77,7 +75,7 @@ export default defineConfig(({ command, mode }) => {
       
       babel({
         presets: [reactCompilerPreset()],
-        plugins: [addBabelPluginJsxCnToClassNameAndStToStyle()],
+        plugins: [babelPluginJsxCnStProps()],
       }),
       
       addSvgrPlugin(),

@@ -1,6 +1,5 @@
 {
   // defines paths to apply this tsconfig to
-  "include": ["src"],
   "compilerOptions": {
     // A file for storing compilation information to build faster
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
