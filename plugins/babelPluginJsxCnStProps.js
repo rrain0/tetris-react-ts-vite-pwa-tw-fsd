@@ -13,6 +13,9 @@ import * as t from '@babel/types'
 // Any 'cn' & 'st' are removed from jsx (but original object in spread is not touched).
 // and is merged with 'className' & 'style'.
 // Any 'style' & 'className' are preserved as is.
+// If jsx node has no 'cn' attr and no 'st' attr and no spreads then this plugin does nothing.
+// Otherwise, plugin adds one or two spreads as last attr
+// to calculate values of 'className' & 'style' in runtime.
 
 // Absence of 'cn' has no impact on merged prop.
 // Falsy value (e.g. when !!value === false) of 'cn' has no impact on merged prop.
@@ -35,23 +38,26 @@ export default function babelPluginJsxCnStProps() {
     name: 'babel-plugin-jsx-cn-st-prop',
     visitor: {
       JSXOpeningElement(path) {
-        const attrs = path.get('attributes')
         
-        let hasClassNameAttr
-        let classNameAttrValue
-        const classNameSpreads = [] // from last to first
+        // Collect existing attrs
+        
+        const attrs = path.get('attributes')
         
         let hasCnAttr
         let cnAttrValue
-        const cnSpreads = [] // from last to first
-        
-        let hasStyleAttr
-        let styleAttrValue
-        const styleSpreads = [] // from last to first
+        const cnSpreads = []
         
         let hasStAttr
         let stAttrValue
-        const stSpreads = [] // from last to first
+        const stSpreads = []
+        
+        let hasClassNameAttr // has any className attr
+        let classNameAttrValue // value of last className attr
+        const classNameSpreads = [] // from last spread attr arg to first before last className attr
+        
+        let hasStyleAttr
+        let styleAttrValue
+        const styleSpreads = []
         
         for (let i = attrs.length - 1; i >= 0; i--) {
           const attr = attrs[i]
@@ -105,15 +111,20 @@ export default function babelPluginJsxCnStProps() {
         
         
         
+        const maybeCnSpread = !!cnSpreads.length
+        const maybeStSpread = !!stSpreads.length
+        
+        const maybeCn = hasCnAttr || maybeCnSpread
+        const maybeSt = hasStAttr || maybeStSpread
+        
         // Calculate className final value
-        {
-          const cnBox = (() => {
-            // If cn attr does not exist, return empty container-object.
-            if (!hasCnAttr) return exprAst`{ }`
-            // If cn attr evaluates to truly value then return container-object with attr & value.
-            // Otherwise, return empty container-object.
-            return exprAst`((cn) => cn ? { className: cn } : { })(${cnAttrValue})`
-          })()
+        if (maybeCn) {
+          // If cn attr evaluates to truly value then return container-object with attr & value.
+          // Otherwise, return empty container-object.
+          // If cn attr does not exist, return empty container-object.
+          const cnBox = hasCnAttr
+            ? exprAst`((cn) => cn ? { className: cn } : { })(${cnAttrValue})`
+            : exprAst`{ }`
           
           // Find spread with non-falsy value of cn prop in it and return it in container-object.
           // Otherwise, return cnBox.
@@ -153,20 +164,15 @@ export default function babelPluginJsxCnStProps() {
           )
         }
         
-        
-        
         // Calculate style final value
-        {
-          const stBox = (() => {
-            // If st attr does not exist, return empty container-object.
-            if (!hasStAttr) return exprAst`{ }`
-            // If st attr evaluates to truly value with any own enumerable keys
-            // then return container-object with attr & value.
-            // Otherwise, return empty container-object.
-            return exprAst`((st) => st && Object.keys(st).length ? { style: st } : { })(${
-              stAttrValue
-            })`
-          })()
+        if (maybeSt) {
+          // If st attr evaluates to truly value with any own enumerable keys
+          // then return container-object with attr & value.
+          // Otherwise, return empty container-object.
+          // If st attr does not exist, return empty container-object.
+          const stBox = hasStAttr
+            ? exprAst`((st) => st && Object.keys(st).length ? { style: st } : { })(${stAttrValue})`
+            : exprAst`{ }`
           
           // Find spread with non-falsy st prop in it and return it in container-object.
           // Otherwise, return stBox.
