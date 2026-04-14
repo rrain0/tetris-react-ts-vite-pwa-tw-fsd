@@ -1,7 +1,7 @@
+import * as t from '@babel/types'
 import _template from '@babel/template'
 const template = _template.default || _template // Handles both ESM and CJS
 const exprAst = template.expression.ast
-import * as t from '@babel/types'
 
 
 

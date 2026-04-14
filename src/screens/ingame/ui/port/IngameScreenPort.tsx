@@ -56,16 +56,10 @@ export default function IngameScreenPort(props: IngameScreenPortProps) {
   return (
     <>
       
-      <div cn='h-full container-size' st={containerSt} style={{ anchorName: '--ingamebox' }}>
+      <div cn='h-full container-size' st={containerSt}>
         <div cn='sz-full grid' st={gameSt}>
           
-          <div cn='flex row start-end ps-[start_end]' st={icsSt}
-            style={{
-              position: 'absolute',
-              positionAnchor: '--ingamebox',
-              positionArea: 'start end',
-            }}
-          >
+          <div cn='flex row start-end pls-[start_end]' st={icsSt}>
             <div cn='flex col center2' st={icSt}>
               <FullscreenIc cn={`sz-full ${icCn}`}/>
             </div>
@@ -84,7 +78,7 @@ export default function IngameScreenPort(props: IngameScreenPortProps) {
             st={fieldBoxSt}
           />
           
-          <div cn='flex col in-area-[top/top/fieldBox/fieldBox] as-end w-ct bd-cl-none rad-[1cqh]'
+          <div cn='flex col in-area-[top/top/fieldBox/fieldBox] als-end w-ct bd-cl-none rad-[1cqh]'
             st={fieldSt}
           >
             <TetrisField cn='h-full' field={combinedField}/>

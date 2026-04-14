@@ -5,61 +5,61 @@
 /*** 🔶Place🔶 ***/
 
 /** align-items **/
-@utility ai-start { align-items: start; }
-@utility ai-center { align-items: center; }
-@utility ai-end { align-items: end; }
-@utility ai-stretch { align-items: stretch; }
-@utility ai-* { align-items: --value([*]); }
+@utility ali-start { align-items: start; }
+@utility ali-center { align-items: center; }
+@utility ali-end { align-items: end; }
+@utility ali-stretch { align-items: stretch; }
+@utility ali-* { align-items: --value([*]); }
 
 /** justify-items **/
-@utility ji-start { justify-items: start; }
-@utility ji-center { justify-items: center; }
-@utility ji-end { justify-items: end; }
-@utility ji-stretch { justify-items: stretch; }
-@utility ji-* { justify-items: --value([*]); }
+@utility jui-start { justify-items: start; }
+@utility jui-center { justify-items: center; }
+@utility jui-end { justify-items: end; }
+@utility jui-stretch { justify-items: stretch; }
+@utility jui-* { justify-items: --value([*]); }
 
 /** place-items **/
-@utility pi-* { place-items: --value([*]); }
+@utility pli-* { place-items: --value([*]); }
 
 /** align-content **/
-@utility ac-start { align-content: start; }
-@utility ac-center { align-content: center; }
-@utility ac-end { align-content: end; }
-@utility ac-stretch { align-content: stretch; }
-@utility ac-between { align-content: space-between; }
-@utility ac-around { align-content: space-around; }
-@utility ac-* { align-content: --value([*]); }
+@utility alc-start { align-content: start; }
+@utility alc-center { align-content: center; }
+@utility alc-end { align-content: end; }
+@utility alc-stretch { align-content: stretch; }
+@utility alc-between { align-content: space-between; }
+@utility alc-around { align-content: space-around; }
+@utility alc-* { align-content: --value([*]); }
 
 /** justify-content **/
-@utility jc-start { justify-content: start; }
-@utility jc-center { justify-content: center; }
-@utility jc-end { justify-content: end; }
-@utility jc-stretch { justify-content: stretch; }
-@utility jc-between { justify-content: space-between; }
-@utility jc-around { justify-content: space-around; }
-@utility jc-* { justify-content: --value([*]); }
+@utility juc-start { justify-content: start; }
+@utility juc-center { justify-content: center; }
+@utility juc-end { justify-content: end; }
+@utility juc-stretch { justify-content: stretch; }
+@utility juc-between { justify-content: space-between; }
+@utility juc-around { justify-content: space-around; }
+@utility juc-* { justify-content: --value([*]); }
 
 /** place-items **/
-@utility pc-* { place-content: --value([*]); }
+@utility plc-* { place-content: --value([*]); }
 
 
 
 /*** 🔶Placed🔶 ***/
 
 /* align-self */
-@utility as-start { align-self: start; }
-@utility as-center { align-self: center; }
-@utility as-end { align-self: end; }
-@utility as-stretch { align-self: stretch; }
-@utility as-* { align-self: --value([*]); }
+@utility als-start { align-self: start; }
+@utility als-center { align-self: center; }
+@utility als-end { align-self: end; }
+@utility als-stretch { align-self: stretch; }
+@utility als-* { align-self: --value([*]); }
 
 /* justify-self */
-@utility js-start { justify-self: start; }
-@utility js-center { justify-self: center; }
-@utility js-end { justify-self: end; }
-@utility js-stretch { justify-self: stretch; }
-@utility js-* { justify-self: --value([*]); }
+@utility jus-start { justify-self: start; }
+@utility jus-center { justify-self: center; }
+@utility jus-end { justify-self: end; }
+@utility jus-stretch { justify-self: stretch; }
+@utility jus-* { justify-self: --value([*]); }
 
 /** placed 2 **/
 @utility centered2 { place-self: center; }
-@utility ps-* { place-self: --value([*]); }
+@utility pls-* { place-self: --value([*]); }
