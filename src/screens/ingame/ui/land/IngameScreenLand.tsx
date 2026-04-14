@@ -106,15 +106,6 @@ export default function IngameScreenLand(props: IngameScreenLandProps) {
             </div>
           
           </div>
-          
-          <div cn='flex row start-end in-area-[controls]' st={controlsSt}>
-            <div cn='flex col center2' st={controlsIcSt}>
-              <FullscreenIc cn={`sz-full ${icCn}`}/>
-            </div>
-            <div cn='flex col center2' st={controlsIcSt}>
-              <PauseIc cn={`sz-full ${icCn}`}/>
-            </div>
-          </div>
         
         </div>
       </div>

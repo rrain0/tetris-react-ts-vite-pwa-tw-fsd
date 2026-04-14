@@ -80,7 +80,7 @@ export default function IngameScreen() {
   const refToFocus = useFocusWithinElem()
   
   
-  const [layout, setLayout] = useState<'land' | 'landSm' | 'port' | 'portSm' | undefined>(undefined)
+  const [layout, setLayout] = useState<'land' | 'landSm' | 'port' | undefined>(undefined)
   
   const refFun = useResizeRef(elem => {
     if (!elem) setLayout(undefined)
@@ -88,7 +88,6 @@ export default function IngameScreen() {
       const { ratio } = elemProps(elem)
       if (ratio >= ingameScreenLandSizes().gameRatio) setLayout('land')
       else if (ratio >= ingameScreenLandSmSizes().gameRatio) setLayout('landSm')
-      //else if (ratio >= ingameScreenPortSmSizes().gameRatio) setLayout('portSm')
       else setLayout('port')
     }
   })

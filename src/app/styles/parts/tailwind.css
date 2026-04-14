@@ -48,4 +48,16 @@ v, h - top & bottom, right & left
 t, r, b, l - top, right, bottom, left
 z - z-index
 
+ali - align-items
+jui - justify-items
+pli - place-items
+
+alc - align-content
+juc - justify-content
+plc - place-content
+
+als - align-self
+jus - justify-self
+pls - place-self
+
 */
