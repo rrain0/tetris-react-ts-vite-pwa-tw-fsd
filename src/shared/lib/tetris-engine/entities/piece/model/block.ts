@@ -5,13 +5,14 @@
 // → x
 // ↓ y
 export type Blocks<T = any> = T[][]
+export type Block<T = any> = { x: number, y: number, blockValue: T }
 
 
 
 export function blocksRows(blocks: Blocks) { return blocks.length }
 export function blocksCols(blocks: Blocks) { return blocks[0]?.length ?? 0 }
 
-export function *blocksIterator(blocks: Blocks) {
+export function *blocksIterator<T>(blocks: Blocks<T>): IterableIterator<Block<T>> {
   const rows = blocksRows(blocks), cols = blocksCols(blocks)
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {

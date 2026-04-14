@@ -7,10 +7,10 @@ import type {
 
 
 
-export type BlockProps = Img & { data: BlockUiData }
+export type BlockProps = Img & BlockUiData
 
-export default function Block({ data, ...rest }: BlockProps) {
-  const { type, translucent } = data
+export default function Block(props: BlockProps) {
+  const { type, translucent, ...rest } = props
   
   const src = mapBlockUiTypeToSrc(type)
   

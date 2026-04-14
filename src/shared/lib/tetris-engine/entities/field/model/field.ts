@@ -1,16 +1,18 @@
 import {
+  type Block,
   blocksCols,
   blocksIterator,
   blocksRows,
 } from '@@/lib/tetris-engine/entities/piece/model/block.ts'
-import type { Piece } from '@@/lib/tetris-engine/entities/piece/model/piece.ts'
+import type { Piece, PieceType } from '@@/lib/tetris-engine/entities/piece/model/piece.ts'
 import type { Id } from '@@/utils/app/id.ts'
 import { array } from '@@/utils/array/arrCreate.ts'
 
 
 
-export type FieldPieceBlockValue = { type: Id, pieceId: Id }
+export type FieldPieceBlockValue = { type: PieceType, pieceId: Id }
 export type FieldBlockValue = FieldPieceBlockValue | null
+export type FieldBlock = Block<FieldBlockValue>
 
 
 
@@ -32,7 +34,7 @@ export class Field {
   get rows() { return blocksRows(this.blocks) }
   get cols() { return blocksCols(this.blocks) }
   
-  ;[Symbol.iterator]() { return blocksIterator(this.blocks) }
+  ;[Symbol.iterator](): IterableIterator<FieldBlock> { return blocksIterator(this.blocks) }
   
   
   firstBlockUnder(x: number, y: number) {

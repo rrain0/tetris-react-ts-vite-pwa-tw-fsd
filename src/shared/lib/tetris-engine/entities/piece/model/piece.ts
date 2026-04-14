@@ -1,4 +1,5 @@
 import {
+  type Block,
   type Blocks,
   blocksCols, blocksGetBounds,
   blocksIterator, blocksRows,
@@ -12,6 +13,7 @@ import type { Opt, PartOpt } from '@@/utils/ts/ts.ts'
 
 export type PieceBlockValue = 0 | 1
 export type PieceBlocks = Blocks<PieceBlockValue>
+export type PieceBlock = Block<PieceBlockValue>
 
 export type PieceType = string
 
@@ -46,7 +48,7 @@ export class Piece {
     })
   }
   
-  ;*[Symbol.iterator]() {
+  ;*[Symbol.iterator](): IterableIterator<PieceBlock> {
     const { x, y, blocks: b } = this
     for (const block of blocksIterator(b)) {
       // xb & yb - x & y in block
@@ -77,12 +79,12 @@ export class Piece {
     const { x: x1, y: y1 } = moveXy(x, y, move)
     return this.copy({ x: x1, y: y1 })
   }
-  toRotatedRight(): IteratorObject<Piece> { return pieceToRotated(this, 1) }
-  toRotatedLeft(): IteratorObject<Piece> { return pieceToRotated(this, -1) }
+  toRotatedRight(): IterableIterator<Piece> { return pieceToRotated(this, 1) }
+  toRotatedLeft(): IterableIterator<Piece> { return pieceToRotated(this, -1) }
   
   toGhost() { return this.copy({ type: `${this.type},Ghost` }) }
   
-  ;*getBottomBlocks() {
+  ;*getBottomBlocks(): IterableIterator<PieceBlock> {
     const { x, y, blocks: b, rows, cols } = this
     for (let xb = 0; xb < cols; xb++) {
       for (let yb = rows - 1; yb >= 0; yb--) {
@@ -112,7 +114,7 @@ export type PieceDataCtor = PartOpt<PieceData, 'rotI'>
 
 
 // Uses mathematical rotation
-export function *pieceToRotated(piece: Piece, direction: 1 | -1) {
+export function *pieceToRotated(piece: Piece, direction: 1 | -1): IterableIterator<Piece> {
   const p = piece
   const { blocks, rotI } = mathRotate(p.blocks, p.rotI, direction)
   yield p.copy({ blocks, rotI })

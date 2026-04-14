@@ -68,7 +68,7 @@ export type PieceSrsDataCtor = PartOpt<PieceSrsData, 'rotI'>
 
 
 // Uses mathematical rotation then applies wall kicks
-export function *pieceSrsToRotated(piece: PieceSrs, direction: 1 | -1) {
+export function *pieceSrsToRotated(piece: PieceSrs, direction: 1 | -1): IterableIterator<PieceSrs> {
   const p = piece
   const { blocks, rotI } = mathRotate(p.blocks, p.rotI, direction)
   
