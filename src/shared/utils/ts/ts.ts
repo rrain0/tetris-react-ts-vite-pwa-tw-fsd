@@ -242,7 +242,7 @@ export type Cb2<T1, T2> = (value1: T1, value2: T2) => void
 export type CbN<T extends any[]> = (...args: T) => void
 export type Setter<T> = Cb1<T>
 export type Consumer<T> = Cb1<T>
-export type EvHandler<T> = (ev: T) => void
+export type EvCb<T> = (ev: T) => void
 export type Getter<T> = () => T
 export type Producer<T> = Getter<T>
 export type Mapper<In, Out = In> = (v: In) => Out

@@ -19,6 +19,7 @@ export default function TetrisField({ field, ...rest }: TetrisFieldProps) {
       }}
       {...rest}
     >
+      {/* TODO Block Id */}
       {[...field].map(it => <ListBlock key={`${it.x} ${it.y}`} {...it}/>)}
     </div>
   )

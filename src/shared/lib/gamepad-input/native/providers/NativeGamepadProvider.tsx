@@ -10,13 +10,13 @@ import {
 } from '@@/lib/gamepad-input/native/model/nativeGamepad.model.ts'
 import type { Children } from '@@/utils/react/props/propTypes.ts'
 import { useRefGetSet } from '@@/utils/react/state/useRefGetSet.ts'
-import { type Cb, type EvHandler } from '@@/utils/ts/ts.ts'
+import { type Cb, type EvCb } from '@@/utils/ts/ts.ts'
 import { useLayoutEffect } from 'react'
 
 
 
 export default function NativeGamepadProvider({ children }: Children) {
-  const [getListeners] = useRefGetSet<Set<EvHandler<NativeGamepadEv>>>(new Set())
+  const [getListeners] = useRefGetSet<Set<EvCb<NativeGamepadEv>>>(new Set())
   
   type NativeGamepadsMap = Map<NativeGamepadId, NativeGamepad | undefined>
   const [getGamepads] = useRefGetSet<NativeGamepadsMap>(new Map())

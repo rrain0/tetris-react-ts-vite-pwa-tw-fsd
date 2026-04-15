@@ -1,4 +1,4 @@
-import type { EvHandler } from '@@/utils/ts/ts.ts'
+import type { EvCb } from '@@/utils/ts/ts.ts'
 
 
 
@@ -9,4 +9,4 @@ export interface GamepadKeyDownClickEv {
   signalId: string
 }
 
-export type GamepadKeyDownClickEvHandler = EvHandler<GamepadKeyDownClickEv>
+export type GamepadKeyDownClickEvHandler = EvCb<GamepadKeyDownClickEv>
