@@ -1,8 +1,7 @@
 import {
   type Block,
-  type Blocks,
   blocksCols, blocksGetBounds,
-  blocksIterator, blocksRows,
+  blocksRows,
 } from '@@/lib/tetris-engine/entities/piece/model/block.ts'
 import { mathRotate, moveXy } from '@@/lib/tetris-engine/shared/utils/piece.ts'
 import type { Id } from '@@/utils/app/id.ts'
@@ -11,9 +10,13 @@ import type { Opt, PartOpt } from '@@/utils/ts/ts.ts'
 
 
 
-export type PieceBlockValue = 0 | 1
-export type PieceBlocks = Blocks<PieceBlockValue>
-export type PieceBlock = Block<PieceBlockValue>
+export type PieceBlockPresent = { id: Id }
+export type PieceBlock = PieceBlockPresent | null
+export type PieceBlocks = PieceBlock[][]
+export type PieceCoordBlock = Block<PieceBlock>
+export type PieceCoordBlockPresent = Block<PieceBlockPresent>
+
+
 
 export type PieceType = string
 
@@ -48,27 +51,33 @@ export class Piece {
     })
   }
   
-  ;*[Symbol.iterator](): IterableIterator<PieceBlock> {
-    const { x, y, blocks: b } = this
-    for (const block of blocksIterator(b)) {
-      // xb & yb - x & y in block
-      const { x: xb, y: yb, blockValue } = block
-      // xp & yp - x & y in piece
-      const blockInPiece = { x: x + xb, y: y + yb, xp: xb, yp: yb, blockValue }
-      yield blockInPiece
-    }
-  }
-  
   get rows() { return blocksRows(this.blocks) }
   get cols() { return blocksCols(this.blocks) }
   get bounds() { return blocksGetBounds(this.blocks) }
+  
+  ;*blocksIterator(): IterableIterator<PieceCoordBlock> {
+    const { blocks: b, rows, cols } = this
+    for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) {
+      yield { x, y, value: b[y][x] }
+    }
+  }
+  
+  ;*blocksPresentIterator(): IterableIterator<PieceCoordBlockPresent> {
+    const { blocks: b, rows, cols } = this
+    for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) {
+      const value = b[y][x]
+      if (value) yield { x, y, value }
+    }
+  }
+  
+  ;[Symbol.iterator](): IterableIterator<PieceCoordBlock> { return this.blocksIterator() }
   
   toTrimmed() {
     const bounds = this.bounds
     if (!bounds) return this.copy({ blocks: [] })
     const { xFirst, yFirst, xLast, yLast } = bounds
     return this.copy({
-      x: this.x + xFirst, 
+      x: this.x + xFirst,
       y: this.y + yFirst,
       blocks: this.blocks.slice(yFirst, yLast + 1).map(it => it.slice(xFirst, xLast + 1)),
     })
@@ -82,23 +91,16 @@ export class Piece {
   toRotatedRight(): IterableIterator<Piece> { return pieceToRotated(this, 1) }
   toRotatedLeft(): IterableIterator<Piece> { return pieceToRotated(this, -1) }
   
-  toGhost() { return this.copy({ type: `${this.type},Ghost` }) }
-  
-  ;*getBottomBlocks(): IterableIterator<PieceBlock> {
-    const { x, y, blocks: b, rows, cols } = this
-    for (let xb = 0; xb < cols; xb++) {
-      for (let yb = rows - 1; yb >= 0; yb--) {
-        const blockValue = b[yb][xb]
-        if (blockValue) {
-          const blockInPiece = { x: x + xb, y: y + yb, xp: xb, yp: yb, blockValue }
-          yield blockInPiece
-          break
-        }
-      }
+  ;*getBottomBlocks(): IterableIterator<PieceCoordBlock> {
+    const { blocks: b, rows, cols } = this
+    for (let x = 0; x < cols; x++) for (let y = rows - 1; y >= 0; y--) {
+      const value = b[y][x]
+      if (value) yield { x, y, value }
     }
-    
   }
 }
+
+
 
 export interface PieceData {
   id: Id

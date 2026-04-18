@@ -5,65 +5,36 @@ import { pieceOSrs } from '@@/lib/tetris-engine/entities/piece/lib/pieces/pieceO
 import { pieceSSrs } from '@@/lib/tetris-engine/entities/piece/lib/pieces/pieceSSrs.ts'
 import { pieceTSrs } from '@@/lib/tetris-engine/entities/piece/lib/pieces/pieceTSrs.ts'
 import { pieceZSrs } from '@@/lib/tetris-engine/entities/piece/lib/pieces/pieceZSrs.ts'
-import { PieceSrs, type PieceSrsDataOpt } from '@@/lib/tetris-engine/entities/piece/model/pieceSrs.ts'
+import {
+  PieceSrs,
+  type PieceSrsConfig,
+  type PieceSrsDataOpt,
+} from '@@/lib/tetris-engine/entities/piece/model/pieceSrs.ts'
 import { randomFromArray } from '@@/utils/random/randomFromArray.ts'
 import * as uuid from 'uuid'
 
 
 
-export function newISrs(data?: PieceSrsDataOpt) {
-  const p = pieceISrs
+export const newISrs = (data?: PieceSrsDataOpt) => newPieceSrs(pieceISrs, data)
+export const newJSrs = (data?: PieceSrsDataOpt) => newPieceSrs(pieceJSrs, data)
+export const newLSrs = (data?: PieceSrsDataOpt) => newPieceSrs(pieceLSrs, data)
+export const newOSrs = (data?: PieceSrsDataOpt) => newPieceSrs(pieceOSrs, data)
+export const newSSrs = (data?: PieceSrsDataOpt) => newPieceSrs(pieceSSrs, data)
+export const newTSrs = (data?: PieceSrsDataOpt) => newPieceSrs(pieceTSrs, data)
+export const newZSrs = (data?: PieceSrsDataOpt) => newPieceSrs(pieceZSrs, data)
+
+
+
+export function newPieceSrs(config: PieceSrsConfig, data?: PieceSrsDataOpt) {
+  const p = config
   const {
-    id = uuid.v4(), type = 'I', x = p.x, y = p.y,
-    blocks = p.blocks, rotI = 0, offsets = p.offsets,
-  } = data ?? { }
-  return new PieceSrs({ id, type, x, y, blocks, rotI, offsets })
-}
-export function newJSrs(data?: PieceSrsDataOpt) {
-  const p = pieceJSrs
-  const {
-    id = uuid.v4(), type = 'J', x = p.x, y = p.y,
-    blocks = p.blocks, rotI = 0, offsets = p.offsets,
-  } = data ?? { }
-  return new PieceSrs({ id, type, x, y, blocks, rotI, offsets })
-}
-export function newLSrs(data?: PieceSrsDataOpt) {
-  const p = pieceLSrs
-  const {
-    id = uuid.v4(), type = 'L', x = p.x, y = p.y,
-    blocks = p.blocks, rotI = 0, offsets = p.offsets,
-  } = data ?? { }
-  return new PieceSrs({ id, type, x, y, blocks, rotI, offsets })
-}
-export function newOSrs(data?: PieceSrsDataOpt) {
-  const p = pieceOSrs
-  const {
-    id = uuid.v4(), type = 'O', x = p.x, y = p.y,
-    blocks = p.blocks, rotI = 0, offsets = p.offsets,
-  } = data ?? { }
-  return new PieceSrs({ id, type, x, y, blocks, rotI, offsets })
-}
-export function newSSrs(data?: PieceSrsDataOpt) {
-  const p = pieceSSrs
-  const {
-    id = uuid.v4(), type = 'S', x = p.x, y = p.y,
-    blocks = p.blocks, rotI = 0, offsets = p.offsets,
-  } = data ?? { }
-  return new PieceSrs({ id, type, x, y, blocks, rotI, offsets })
-}
-export function newTSrs(data?: PieceSrsDataOpt) {
-  const p = pieceTSrs
-  const {
-    id = uuid.v4(), type = 'T', x = p.x, y = p.y,
-    blocks = p.blocks, rotI = 0, offsets = p.offsets,
-  } = data ?? { }
-  return new PieceSrs({ id, type, x, y, blocks, rotI, offsets })
-}
-export function newZSrs(data?: PieceSrsDataOpt) {
-  const p = pieceZSrs
-  const {
-    id = uuid.v4(), type = 'Z', x = p.x, y = p.y,
-    blocks = p.blocks, rotI = 0, offsets = p.offsets,
+    id = uuid.v4(),
+    type = p.type,
+    x = p.x,
+    y = p.y,
+    blocks = p.blocks.map(it => it.map(it => it ? { id: uuid.v4() } : null)),
+    rotI = 0,
+    offsets = p.offsets,
   } = data ?? { }
   return new PieceSrs({ id, type, x, y, blocks, rotI, offsets })
 }

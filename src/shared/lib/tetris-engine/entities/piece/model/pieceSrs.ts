@@ -1,7 +1,7 @@
+import type { Blocks } from '@@/lib/tetris-engine/entities/piece/model/block.ts'
 import {
   Piece,
-  type PieceBlocks,
-  type PieceData,
+  type PieceData, type PieceType,
 } from '@@/lib/tetris-engine/entities/piece/model/piece.ts'
 import { mathRotate, moveXy } from '@@/lib/tetris-engine/shared/utils/piece.ts'
 import type { Xy, XydxdyOpt } from '@@/utils/math/rect.ts'
@@ -19,9 +19,10 @@ export type OffsetsSrs = {
 }
 
 export type PieceSrsConfig = {
+  type: PieceType,
   x: number
   y: number
-  blocks: PieceBlocks
+  blocks: Blocks<1 | 0>
   offsets: OffsetsSrs
 }
 
@@ -55,9 +56,9 @@ export class PieceSrs extends Piece {
   }
   override toRotatedRight() { return pieceSrsToRotated(this, 1) }
   override toRotatedLeft() { return pieceSrsToRotated(this, -1) }
-  
-  override toGhost() { return this.copy({ type: `${this.type},Ghost` }) }
 }
+
+
 
 export interface PieceSrsData extends PieceData {
   offsets: OffsetsSrs

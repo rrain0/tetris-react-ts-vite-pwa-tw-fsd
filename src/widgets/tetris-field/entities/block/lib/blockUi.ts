@@ -1,3 +1,4 @@
+import type { FieldBlockType } from '@@/lib/tetris-engine/entities/field/model/field.ts'
 import type { PieceType } from '@@/lib/tetris-engine/entities/piece/model/piece.ts'
 import { mapBlockTypeToSrc } from '@/widgets/tetris-field/entities/block/lib/block.ts'
 import type {
@@ -13,7 +14,10 @@ export function mapBlockUiTypeToSrc(type: BlockUiType): string | undefined {
   return mapBlockTypeToSrc(type)
 }
 
-export function mapPieceTypeToBlockUiData(pieceType: PieceType): BlockUiData {
+export function mapPieceTypeToBlockUiData(
+  type: FieldBlockType | undefined,
+  pieceType: PieceType,
+): BlockUiData {
   const mapper: Record<BlockType, Partial<BlockUiData>> = {
     I: { type: 'red' },
     J: { type: 'blue' },
@@ -26,5 +30,6 @@ export function mapPieceTypeToBlockUiData(pieceType: PieceType): BlockUiData {
     Ghost: { translucent: true },
   }
   
-  return pieceType.split(',').reduce((acc, it) => Object.assign(acc, mapper[it]), { })
+  // @ts-expect-error
+  return [type, pieceType].reduce((acc, it) => Object.assign(acc, mapper[it]), { })
 }

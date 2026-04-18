@@ -1,4 +1,4 @@
-import { Field } from '@@/lib/tetris-engine/entities/field/model/field.ts'
+import { Field, type FieldBlockType } from '@@/lib/tetris-engine/entities/field/model/field.ts'
 import type { Piece } from '@@/lib/tetris-engine/entities/piece/model/piece.ts'
 import { randomTetrominoSrs } from '@@/lib/tetris-engine/entities/piece/model/tetrominoSrs.ts'
 import { matrixCopy } from '@@/lib/tetris-engine/shared/utils/matrix.ts'
@@ -74,11 +74,13 @@ export class Game {
   }
   // Only drop, does not apply any lock or delay
   hardDropCurrentPiece() {
+    const { x: fx0, y: fy0 } = this.current
     let freeY = this.field.rows
     for (const bottomBlock of this.current.getBottomBlocks()) {
-      const { x, y, yp } = bottomBlock
-      const firstBlockUnder = this.field.firstBlockUnder(x, y)
-      if (firstBlockUnder) freeY = Math.min(freeY, firstBlockUnder.y - yp - 1)
+      const { x: px, y: py } = bottomBlock
+      const fx = fx0 + px, fy = fy0 + py
+      const firstBlockUnder = this.field.firstBlockUnder(fx, fy)
+      if (firstBlockUnder) freeY = Math.min(freeY, firstBlockUnder.y - py - 1)
     }
     
     const moved = this.current.toMoved({ y: freeY })
@@ -114,12 +116,13 @@ export class Game {
       ...matrixCopy(blocks),
     ])
     
+    let nextType: FieldBlockType | undefined
     let next = this.next.toMoved({ dy: 2 })
     let curr = this.current
-    if (curr.toTrimmed().y < 0) next = next.toGhost()
+    if (curr.toTrimmed().y < 0) nextType = 'Ghost'
     curr = curr.toMoved({ dy: 2 })
     
-    f.addPiece(next)
+    f.addPiece(next, nextType)
     f.addPiece(curr)
     return f
   }

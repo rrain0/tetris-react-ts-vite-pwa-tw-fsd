@@ -1,11 +1,12 @@
 import {
-  tetroJLSTZSrsOffsets
+  tetroJLSTZSrsOffsets,
 } from '@@/lib/tetris-engine/entities/piece/lib/offsets/tetroJLSTZSrsOffsets.ts'
 import type { PieceSrsConfig } from '@@/lib/tetris-engine/entities/piece/model/pieceSrs.ts'
 
 
 
 export const pieceJSrs: PieceSrsConfig = {
+  type: 'J',
   x: 4, y: -2,
   blocks: [
     [1, 0, 0],
@@ -14,4 +15,3 @@ export const pieceJSrs: PieceSrsConfig = {
   ],
   offsets: tetroJLSTZSrsOffsets,
 }
-
