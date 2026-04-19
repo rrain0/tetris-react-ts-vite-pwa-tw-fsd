@@ -1,0 +1,67 @@
+@import './layers.css'; /* CSS Layers MUST be FIRST of all CSS */
+@import './reset.css';
+
+
+
+@layer app {
+  
+  *,::before,::after,::backdrop,::file-selector-button {
+    transition-timing-function: ease;
+  }
+  
+  * {
+    /* disable outline on keyboard navigation */
+    &:focus-visible { outline: none; }
+    /* disable highlight when tapping on screen on mobile devices */
+    -webkit-tap-highlight-color: transparent;
+    /* use 'pointer-events: auto' as default value */
+    pointer-events: auto;
+  }
+  
+  :root {
+    /* https://developer.mozilla.org/en-US/docs/Web/CSS/color-scheme */
+    /* only - tells browser to not change colors by auto-theme engine */
+    /* dark - element is designed specifically for a dark theme,
+       it affects the rendering of built-in UI elements (scrollbars, form controls, ... */
+    color-scheme: only dark;
+  }
+  
+  html {
+    width: 100%;
+    height: 100%;
+  }
+  
+  body {
+    min-width: 100%;
+    min-height: 100%;
+    width: 100%;
+    height: 100%;
+    overflow: auto; /* body scroll will be WINDOW scroll */
+    
+    /* ℹ️ background of body is WINDOW background */
+    /* ⚠️ "html { background: none }" creates white stripe under statusbar on my android 12 */
+    background: #212121;
+  }
+  
+  body * {
+    transition-timing-function: ease;
+  }
+  
+  a {
+    display: contents;
+    text-decoration: none;
+    color: unset;
+  }
+  
+}
+
+
+/*** Performance optimizers: ***/
+/* https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/contain#description */
+/* Note: Using layout, paint, strict or content values for this property creates:`
+    A new containing block (for the descendants whose position property is absolute or fixed).
+    A new stacking context.
+    A new block formatting context. */
+/*contain: content;*/
+/* https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/content-visibility */
+/*content-visibility: auto;*/

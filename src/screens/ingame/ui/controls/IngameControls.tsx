@@ -1,3 +1,4 @@
+import IngameControlsButton from '@/screens/ingame/ui/controls/IngameControlsButton.tsx'
 import { FullscreenContext } from '@@/lib/fullscreen-manager/context/FullscreenContext.ts'
 import type { StylePropType } from '@@/utils/react/props/propTypes.ts'
 import FullscreenIc from '@@/assets/ic/svg/ui/fullscreen.svg?react'
@@ -24,28 +25,24 @@ export default function IngameControls(props: IngameControlsProps) {
   return (
     <div cn='jus-end flex row start-end no-pointer container-size' st={containerSt}>
       <div cn='flex row start-end no-pointer' st={controlsSt}>
+        
         {fscreen.available && (
-          <div cn='stack center2 no-pointer' st={controlsIcSt}>
-            {!fscreen.enabled && (
-              <FullscreenIc cn={`sz-full ${icCn} fscreen-on`} onClick={fscreen.enter}/>
-            )}
-            {fscreen.enabled && (
-              <WindowedIc cn={`sz-full ${icCn} fscreen-off`} onClick={fscreen.exit}/>
-            )}
-            {fscreen.needEnter && (
-              <SpinnerTwoQuarterArcsIc cn={`sz-[30%] ended2 no-pointer ${icCn} rotation-1s`}/>
-            )}
-          </div>
+          <IngameControlsButton 
+            cn={`stack center2 no-pointer ${!fscreen.enabled ? 'fscreen-on' : 'fscreen-off'}`} 
+            st={controlsIcSt}
+            onClick={!fscreen.enabled ? fscreen.enter : fscreen.exit}
+          >
+            {!fscreen.enabled && <FullscreenIc cn='sz-full'/>}
+            {fscreen.enabled && <WindowedIc cn='sz-full'/>}
+            {fscreen.needEnter && <SpinnerTwoQuarterArcsIc cn='sz-[30%] ended2 rotation-1s'/>}
+          </IngameControlsButton>
         )}
-        <div cn='flexrc center2 no-pointer' st={controlsIcSt}>
-          <PauseIc cn={`sz-full ${icCn}`} onClick={onPause}/>
-        </div>
+        
+        <IngameControlsButton cn='flexrc center2' st={controlsIcSt} onClick={onPause}>
+          <PauseIc cn='sz-full'/>
+        </IngameControlsButton>
+        
       </div>
     </div>
   )
 }
-
-
-
-// Content styles
-const icCn = 'cl-[var(--cl-hud-tx)] svg-curr-cl'

@@ -68,11 +68,11 @@ export default function IngameScreenPort(props: IngameScreenPortProps) {
             </div>
           </div>
           
-          <div cn='flex col in-area-[fieldBox] bd-cl-[var(--cl-tetris-field-bd)] rad-[1cqh]'
+          <div cn='flex col in-area-[fieldBox] jus-stretch bd-cl-[var(--cl-tetris-field-bd)] rad-[1cqh]'
             st={fieldBoxSt}
           />
           
-          <div cn='flex col in-area-[top/top/fieldBox/fieldBox] als-end w-ct bd-cl-none rad-[1cqh]'
+          <div cn='flex col in-area-[top/top/fieldBox/fieldBox] als-end jus-stretch bd-cl-none rad-[1cqh]'
             st={fieldSt}
           >
             <TetrisField cn='h-full' field={combinedField}/>

@@ -1,47 +1,21 @@
-@import './parts/layers.css'; /* CSS Layers MUST be FIRST of all CSS */
-@import './parts/reset.css';
-@import './parts/fonts.css';
-@import './parts/tailwind.css';
+@import './fonts.css';
+@import './tailwind.css';
 @import '@@/styles/colors.css';
 @import '@@/styles/text.css';
 
 
 
 @layer app {
-  
-  html {
-    width: 100%;
-    height: 100%;
-  }
-  
-  body {
-    min-width: 100%;
-    min-height: 100%;
-    width: 100%;
-    height: 100%;
-    overflow: auto; /* body scroll will be WINDOW scroll */
-    
-    /* ℹ️ background of body is WINDOW background */
-    /* ⚠️ "html { background: none }" creates white stripe under statusbar on my android 12 */
-    background: black;
-  }
-  
-  body * {
-    /* https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/contain#description */
-    /* Note: Using layout, paint, strict or content values for this property creates:`
-        A new containing block (for the descendants whose position property is absolute or fixed).
-        A new stacking context.
-        A new block formatting context. */
-    contain: content;
-    /* https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/content-visibility */
-    content-visibility: auto;
-  }
-  
-  @keyframes rotate-1turn { from { rotate: 0turn } to { rotate: 1turn } }
-  .rotation-1s {
-    animation: rotate-1turn 1s linear infinite;
-  }
-  
+
 }
 
 
+/*** Performance optimizers: ***/
+/* https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/contain#description */
+/* Note: Using layout, paint, strict or content values for this property creates:`
+    A new containing block (for the descendants whose position property is absolute or fixed).
+    A new stacking context.
+    A new block formatting context. */
+/*contain: content;*/
+/* https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/content-visibility */
+/*content-visibility: auto;*/

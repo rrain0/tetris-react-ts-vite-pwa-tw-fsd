@@ -1,0 +1,20 @@
+
+/* ⚠️ html / body display property behaves strange */
+
+@layer reset {
+  
+  *,::before,::after,::backdrop,::file-selector-button {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    gap: 0;
+    place-items: normal;
+    place-content: normal;
+    overflow-wrap: anywhere;
+    transition-property: none;
+  }
+  input,textarea {
+    justify-items: normal;
+  }
+  
+}

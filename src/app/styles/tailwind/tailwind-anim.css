@@ -1,0 +1,18 @@
+@import 'tailwindcss';
+
+
+
+/*** 🔶Animations & Transitions🔶 ***/
+
+@utility transition-all-200 {
+  transition-property: all;
+  transition-duration: 200ms;
+}
+
+
+
+@keyframes rotate-1turn { from { rotate: 0turn } to { rotate: 1turn } }
+
+@utility rotation-1s {
+  animation: rotate-1turn 1s linear infinite;
+}
