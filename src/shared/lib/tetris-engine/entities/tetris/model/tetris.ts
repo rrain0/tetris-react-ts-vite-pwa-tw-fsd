@@ -6,10 +6,12 @@ import { matrixCopy } from '@@/lib/tetris-engine/shared/utils/matrix.ts'
 
 
 // Это всё уже будет хранится где-то в другом месте
-// и будет обновляться во время анимация падения и тп.
+// и будет обновляться во время анимации падения и тп.
 
 // Game не отвечает за анимации,
 // он просто сообщает что можно сделать и делает дискретные действия.
+
+// Возможно стоит переименовать этот Game в Tetris, а уже новый Game будет всё вместе делать.
 
 const linesToLvlUp = 10
 const startLevel = 0
@@ -20,7 +22,7 @@ let level = 0
 
 
 
-export class Game {
+export class Tetris {
   field: Field = Field.empty(10, 24, 0, 4)
   
   current: Piece | undefined = randomTetrominoSrs()
@@ -28,11 +30,11 @@ export class Game {
   
   
   copy() {
-    const g = new Game()
-    g.field = this.field.copy()
-    g.current = this.current
-    g.next = this.next
-    return g
+    const t = new Tetris()
+    t.field = this.field.copy()
+    t.current = this.current
+    t.next = this.next
+    return t
   }
   
   

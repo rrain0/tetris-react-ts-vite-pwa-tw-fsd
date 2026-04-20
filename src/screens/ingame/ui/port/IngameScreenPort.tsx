@@ -1,5 +1,5 @@
 import IngameControls from '@/screens/ingame/ui/controls/IngameControls.tsx'
-import type { Game } from '@@/lib/tetris-engine/entities/game/model/game.ts'
+import type { Tetris } from '@@/lib/tetris-engine/entities/tetris/model/tetris.ts'
 import { elemSizeContain } from '@@/utils/css/elemSizeContain.ts'
 import { ingameScreenPortSizes } from '@/screens/ingame/ui/port/ingameScreenPortSizes.ts'
 import TetrisField from '@/widgets/tetris-field/ui/TetrisField.tsx'
@@ -8,13 +8,13 @@ import type { IngameStats } from '@/screens/ingame/model/ingameScreen.ts'
 
 
 export type IngameScreenPortProps = IngameStats & {
-  game: Game
+  tetris: Tetris
 }
 
 export default function IngameScreenPort(props: IngameScreenPortProps) {
-  const { game, hiScore, score, level, lines } = props
+  const { tetris, hiScore, score, level, lines } = props
   
-  const combinedField = game.renderCombinedField()
+  const combinedField = tetris.renderCombinedField()
   
   const {
     blockSz,
