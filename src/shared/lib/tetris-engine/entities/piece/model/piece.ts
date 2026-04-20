@@ -21,11 +21,11 @@ export type PieceCoordBlockPresent = Block<PieceBlockPresent>
 export type PieceType = string
 
 
+// →x ↓y
 export class Piece {
   id: Id
   type: PieceType
-  x: number
-  y: number
+  x: number; y: number
   blocks: PieceBlocks
   // Поворот с системой координат как у часов
   // 0 - 0°, 1 - 90°, 2 - 180°, 3 - 270°/-90°

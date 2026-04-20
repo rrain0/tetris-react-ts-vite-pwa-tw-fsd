@@ -3,9 +3,7 @@ import type { Xy } from '@@/utils/math/rect.ts'
 
 
 export type Block<T = any> = Xy & { value: T }
-// Rectangular matrix
-// → x
-// ↓ y
+// Rectangular matrix →x ↓y
 export type Blocks<T = any> = T[][]
 
 

@@ -24,7 +24,9 @@ export type FieldCoordBlockPresent = Block<FieldBlockPresent>
 
 
 
+// →x ↓y
 export class Field {
+  x0: number; y0: number
   blocks: FieldBlocks
   
   private constructor() { }

@@ -2,9 +2,11 @@ import {
   tetroOSrsOffsets,
 } from '@@/lib/tetris-engine/entities/piece/lib/offsets/tetroOSrsOffsets.ts'
 import type { PieceSrsConfig } from '@@/lib/tetris-engine/entities/piece/model/pieceSrs.ts'
+import { objectMapValues } from '@@/utils/object/objectMap.ts'
 
 
 
+// →x ↓y
 export const pieceOSrs: PieceSrsConfig = {
   type: 'O',
   x: 3, y: -2,
@@ -13,5 +15,5 @@ export const pieceOSrs: PieceSrsConfig = {
     [0, 1, 1],
     [0, 0, 0],
   ],
-  offsets: tetroOSrsOffsets,
+  offsets: objectMapValues(tetroOSrsOffsets, v => v.map(v => ({ ...v, y: -v.y }))),
 }

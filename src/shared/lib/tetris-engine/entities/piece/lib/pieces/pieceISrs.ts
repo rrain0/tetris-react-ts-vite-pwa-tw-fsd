@@ -2,9 +2,11 @@ import {
   tetroISrsOffsets,
 } from '@@/lib/tetris-engine/entities/piece/lib/offsets/tetroISrsOffsets.ts'
 import type { PieceSrsConfig } from '@@/lib/tetris-engine/entities/piece/model/pieceSrs.ts'
+import { objectMapValues } from '@@/utils/object/objectMap.ts'
 
 
 
+// →x ↓y
 export const pieceISrs: PieceSrsConfig = {
   type: 'I',
   x: 2, y: -3,
@@ -15,5 +17,5 @@ export const pieceISrs: PieceSrsConfig = {
     [0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0],
   ],
-  offsets: tetroISrsOffsets,
+  offsets: objectMapValues(tetroISrsOffsets, v => v.map(v => ({ ...v, y: -v.y }))),
 }
