@@ -1,4 +1,4 @@
-import type { AppActivities } from '@@/lib/app/activity-manager/model/app-activity.ts'
+import type { AppActivities } from '@@/lib/app/activity-manager/model/app-activity.model.ts'
 import { createContext } from 'react'
 
 

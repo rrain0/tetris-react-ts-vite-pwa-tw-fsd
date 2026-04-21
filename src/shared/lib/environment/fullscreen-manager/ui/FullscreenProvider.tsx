@@ -1,6 +1,6 @@
 import { FullscreenContext } from '@@/lib/environment/fullscreen-manager/context/FullscreenContext.ts'
 import { PageLifecycleContext } from '@@/lib/environment/page-lifecycle/context/PageLifecycleContext.ts'
-import type { PageLifecycleEv } from '@@/lib/environment/page-lifecycle/model/page-lifecycle.ts'
+import type { PageLifecycleEv } from '@@/lib/environment/page-lifecycle/model/page-lifecycle.model.ts'
 import { isElement } from '@@/utils/elem/elem.ts'
 import type { Children } from '@@/utils/react/props/propTypes.ts'
 import { useRefGetSet } from '@@/utils/react/state/useRefGetSet.ts'

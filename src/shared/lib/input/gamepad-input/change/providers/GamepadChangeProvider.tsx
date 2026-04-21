@@ -4,7 +4,7 @@ import {
 } from '@@/lib/input/gamepad-input/change/context/GamepadChangeContext.ts'
 import type {
   GamepadChangeEv, GamepadChanges,
-} from '@@/lib/input/gamepad-input/change/model/GamepadChange.model.ts'
+} from '@@/lib/input/gamepad-input/change/model/gamepadChange.model.ts'
 import {
   MappedGamepadContext,
 } from '@@/lib/input/gamepad-input/mapped/context/MappedGamepadContext.ts'

@@ -1,5 +1,5 @@
 import { GamepadChangeContext } from '@@/lib/input/gamepad-input/change/context/GamepadChangeContext.ts'
-import type { GamepadChangeEv } from '@@/lib/input/gamepad-input/change/model/GamepadChange.model.ts'
+import type { GamepadChangeEv } from '@@/lib/input/gamepad-input/change/model/gamepadChange.model.ts'
 import type {
   GamepadKeyHoldEv, GamepadKeyHoldEvHandler,
 } from '@@/lib/input/gamepad-key-events/gamepad-key-hold/gamepadKeyHold.model.ts'

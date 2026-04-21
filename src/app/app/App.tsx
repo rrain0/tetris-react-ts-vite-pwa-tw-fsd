@@ -3,7 +3,7 @@ import AppActivitiesProvider from '@@/lib/app/activity-manager/ui/AppActivitiesP
 import AppActivity from '@@/lib/app/activity-manager/ui/AppActivity.tsx'
 import FullscreenProvider from '@@/lib/environment/fullscreen-manager/ui/FullscreenProvider.tsx'
 import GamepadInputProvider
-  from '@@/lib/input/gamepad-input/gamepad-input/providers/GamepadInputProvider.tsx'
+  from '@@/lib/input/gamepad-input/provider/providers/GamepadInputProvider.tsx'
 import InputLayoutProvider from '@/entities/input-layout/providers/InputLayoutProvider.tsx'
 import PageLifecycleProvider from '@@/lib/environment/page-lifecycle/ui/PageLifecycleProvider.tsx'
 import { useState } from 'react'

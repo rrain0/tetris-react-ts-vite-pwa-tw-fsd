@@ -2,7 +2,7 @@ import {
   getInitialPageState,
   type PageState,
   type PageTransition,
-} from '@@/lib/environment/page-lifecycle/model/page-lifecycle.ts'
+} from '@@/lib/environment/page-lifecycle/model/page-lifecycle.model.ts'
 import { createContext } from 'react'
 
 

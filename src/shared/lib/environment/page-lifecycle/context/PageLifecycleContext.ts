@@ -1,6 +1,6 @@
 import {
   type OnPageLifecycle,
-} from '@@/lib/environment/page-lifecycle/model/page-lifecycle.ts'
+} from '@@/lib/environment/page-lifecycle/model/page-lifecycle.model.ts'
 import type { Cb1 } from '@@/utils/ts/ts.ts'
 import { createContext } from 'react'
 

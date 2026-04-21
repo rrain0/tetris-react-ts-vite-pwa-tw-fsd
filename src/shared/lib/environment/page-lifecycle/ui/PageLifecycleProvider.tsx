@@ -3,7 +3,7 @@ import {
   getInitialPageState, getCurrPageState, getCurrPageTransition,
   type PageNativeLifecycleEv,
   type PageState, type PageLifecycleEv, type PageTransition,
-} from '@@/lib/environment/page-lifecycle/model/page-lifecycle.ts'
+} from '@@/lib/environment/page-lifecycle/model/page-lifecycle.model.ts'
 import {
   PageLifecycleStateContext,
 } from '@@/lib/environment/page-lifecycle/context/PageLifecycleStateContext.ts'

@@ -1,6 +1,6 @@
 import { AppActivitiesContext } from '@@/lib/app/activity-manager/context/AppActivitiesContext.ts'
 import { AppActivityContext } from '@@/lib/app/activity-manager/context/AppActivityContext.ts'
-import type { AppActivityState } from '@@/lib/app/activity-manager/model/app-activity.ts'
+import type { AppActivityState } from '@@/lib/app/activity-manager/model/app-activity.model.ts'
 import type { Children } from '@@/utils/react/props/propTypes.ts'
 import { isundef } from '@@/utils/ts/ts.ts'
 import { use } from 'react'
