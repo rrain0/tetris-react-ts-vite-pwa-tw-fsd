@@ -1,5 +1,5 @@
 import IngameControls from '@/screens/ingame/ui/controls/IngameControls.tsx'
-import type { Tetris } from '@@/lib/tetris-engine/entities/tetris/model/tetris.ts'
+import type { Field } from '@@/lib/tetris-engine/entities/field/model/field.ts'
 import { elemSizeContain } from '@@/utils/css/elemSizeContain.ts'
 import { ingameScreenPortSizes } from '@/screens/ingame/ui/port/ingameScreenPortSizes.ts'
 import TetrisField from '@/widgets/tetris-field/ui/TetrisField.tsx'
@@ -8,13 +8,12 @@ import type { IngameStats } from '@/screens/ingame/model/ingameScreen.ts'
 
 
 export type IngameScreenPortProps = IngameStats & {
-  tetris: Tetris
+  combinedField: Field
+  isCurrentPieceAboveField: boolean
 }
 
 export default function IngameScreenPort(props: IngameScreenPortProps) {
-  const { tetris, hiScore, score, level, lines } = props
-  
-  const combinedField = tetris.renderCombinedField()
+  const { combinedField, isCurrentPieceAboveField, hiScore, score, level, lines } = props
   
   const {
     blockSz,
@@ -44,7 +43,7 @@ export default function IngameScreenPort(props: IngameScreenPortProps) {
   const fieldSt = { borderWidth: h(fieldBoxBdSz), height: h(fullFieldBoxH), borderTop: 'none' }
   const topSt = { height: h(topH) }
   const topTitleBoxSt = { width: h(topTitleBoxW), height: h(topTitleBoxH) }
-  const topTitleSt = { fontSize: h(topTitleH) }
+  const topTitleSt = { fontSize: h(topTitleH), opacity: isCurrentPieceAboveField ? 0.5 : 1 }
   const bottomSt = {
     height: h(bottomH), paddingTop: h(bottomG), paddingBottom: h(bottomG), gap: h(bottomG),
   }
@@ -57,12 +56,12 @@ export default function IngameScreenPort(props: IngameScreenPortProps) {
   return (
     <>
       <div cn='h-full container-size' st={containerSt}>
-        <div cn='sz-full grid' st={gameSt}>
+        <div cn='sz-full grid isolate' st={gameSt}>
           
           <div cn='flex row w-full in-area-[top]' st={topSt}>
             
             <div cn='flexrc center2' st={topTitleBoxSt}>
-              <div cn='txHudTitle' st={topTitleSt}>
+              <div cn='txHudTitle z-[-1000]' st={topTitleSt}>
                 NEXT
               </div>
             </div>

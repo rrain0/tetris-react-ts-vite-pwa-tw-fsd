@@ -1,6 +1,6 @@
 import type { IngameStats } from '@/screens/ingame/model/ingameScreen.ts'
 import IngameControls from '@/screens/ingame/ui/controls/IngameControls.tsx'
-import type { Tetris } from '@@/lib/tetris-engine/entities/tetris/model/tetris.ts'
+import type { Field } from '@@/lib/tetris-engine/entities/field/model/field.ts'
 import { elemSizeContain } from '@@/utils/css/elemSizeContain.ts'
 import { ingameScreenLandSmSizes } from '@/screens/ingame/ui/land-sm/ingameScreenLandSmSizes.ts'
 import TetrisField from '@/widgets/tetris-field/ui/TetrisField.tsx'
@@ -8,14 +8,12 @@ import TetrisField from '@/widgets/tetris-field/ui/TetrisField.tsx'
 
 
 export type IngameScreenLandSmProps = IngameStats & {
-  tetris: Tetris
+  field: Field
+  nextField: Field
 }
 
 export default function IngameScreenLandSm(props: IngameScreenLandSmProps) {
-  const { tetris, hiScore, score, level, lines } = props
-  
-  const field = tetris.renderField()
-  const nextField = tetris.renderNextField()
+  const { field, nextField, hiScore, score, level, lines } = props
   
   const {
     blockSz,

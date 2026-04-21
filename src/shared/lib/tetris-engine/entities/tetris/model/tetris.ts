@@ -5,23 +5,6 @@ import { matrixCopy } from '@@/lib/tetris-engine/shared/utils/matrix.ts'
 
 
 
-// Это всё уже будет хранится где-то в другом месте
-// и будет обновляться во время анимации падения и тп.
-
-// Game не отвечает за анимации,
-// он просто сообщает что можно сделать и делает дискретные действия.
-
-// Возможно стоит переименовать этот Game в Tetris, а уже новый Game будет всё вместе делать.
-
-const linesToLvlUp = 10
-const startLevel = 0
-
-let lines = 0
-let score = 0
-let level = 0
-
-
-
 export class Tetris {
   field: Field = Field.empty(10, 24, 0, 4)
   
@@ -78,7 +61,6 @@ export class Tetris {
       if (this.tryPlaceNewCurrentPiece(rotated)) return
     }
   }
-  // Only drop instantly
   dropCurrentPiece() {
     const curr = this.current
     if (curr) {
@@ -134,6 +116,9 @@ export class Tetris {
   }
   
   
+  get isCurrentPieceAboveField() { return !!this.current && this.current.toTrimmed().y < 0 }
+  
+  
   renderField() {
     const { y0, blocks } = this.field
     const f = Field.ofBlocks(matrixCopy(blocks).slice(y0), 0, 0)
@@ -149,13 +134,7 @@ export class Tetris {
   renderCombinedField() {
     const { blocks, y0 } = this.field
     const f = Field.ofBlocks(matrixCopy(blocks).slice(y0 - 2), 0, 2)
-    
-    const curr = this.current
-    
-    let nextType
-    if (curr && curr.toTrimmed().y < 0) nextType = 'Ghost' as const
-    
-    f.addPiece(this.next, nextType)
+    f.addPiece(this.next, this.isCurrentPieceAboveField ? 'Ghost' : undefined)
     f.addPiece(this.current)
     return f
   }
