@@ -26,7 +26,7 @@ import { assertNever, type Setter } from '@@/utils/ts/ts.ts'
 import { InputLayoutContext } from '@/entities/input-layout/context/InputLayoutContext.ts'
 import { isGamepadKeyAction } from '@/entities/input-layout/model/isGamepadKeyAction.ts'
 import { isKeyboardAction } from '@/entities/input-layout/model/isKeyboardAction.ts'
-import React, { use, useState } from 'react'
+import React, { use, useEffect, useLayoutEffect, useState } from 'react'
 import { ingameScreenLandSmSizes } from '@/screens/ingame/ui/land-sm/ingameScreenLandSmSizes.ts'
 import IngameScreenLand from '@/screens/ingame/ui/land/IngameScreenLand.tsx'
 import IngameScreenLandSm from '@/screens/ingame/ui/land-sm/IngameScreenLandSm.tsx'
@@ -65,6 +65,17 @@ const getIngameData = () => gameToIngameData(game)
 export default function IngameScreen() {
   const [ingameData, setIngameData] = useState<IngameData>(getIngameData)
   
+  useEffect(() => {
+    const onAutoChange = () => { setIngameData(gameToIngameData(game)) }
+    game.onAutoChange(onAutoChange)
+    game.resume()
+    return () => {
+      game.pause()
+      game.offAutoChange(onAutoChange)
+    }
+  }, [])
+  
+  
   
   const [layout, setLayout] = useState<Layout>(undefined)
   const [getWh, setWh] = useRefGetSet({ w: 0, h: 0 })
@@ -85,6 +96,11 @@ export default function IngameScreen() {
     }
   })
   
+  
+  
+  
+  
+  
   const { interactive } = use(AppActivityContext)
   
   const canUseInput = ({ key, mx, my }: {
@@ -95,6 +111,8 @@ export default function IngameScreen() {
     if (!interactive) return false
     return true
   }
+  
+  
   
   const refToFocus = useFocusWithinElem()
   
