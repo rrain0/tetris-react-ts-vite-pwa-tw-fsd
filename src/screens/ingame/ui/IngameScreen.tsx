@@ -78,6 +78,7 @@ export default function IngameScreen() {
     if (!elem) setLayout(undefined)
     else {
       const { ratio, wh } = elemProps(elem)
+      //console.log('wh', wh, 'ratio', ratio)
       setWh(wh)
       if (ratio >= landSizes.gameRatio) setLayout('land')
       else if (ratio >= landSmSizes.gameRatio) setLayout('landSm')

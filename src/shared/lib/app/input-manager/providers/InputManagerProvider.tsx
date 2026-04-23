@@ -16,6 +16,7 @@ export default function InputManagerProvider({ children }: Children) {
     getInputLocks().getOrInsert(type, setOf()).add(inputId)
   }
   const unlock = (inputId: InputId, type: InputType) => {
+    //console.log('input unlock', type, inputId)
     const locks = getInputLocks()
     const ids = locks.get(type)
     if (ids) {
@@ -24,12 +25,14 @@ export default function InputManagerProvider({ children }: Children) {
     }
   }
   const tryLock = (inputId: InputId, type: InputType) => {
+    //console.log('input tryLock', type, inputId)
     const locks = getInputLocks()
     if (locks.has(type)) return false
     locks.set(type, setOf(inputId))
     return true
   }
   const allow = (inputId: InputId, type: InputType) => {
+    //console.log('input allow', type, inputId)
     const ids = getInputLocks().get(type)
     if (!ids?.size) return true
     if (ids.has(inputId)) return true

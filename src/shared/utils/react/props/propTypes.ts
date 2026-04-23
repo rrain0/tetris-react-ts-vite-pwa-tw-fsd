@@ -18,3 +18,9 @@ export type Img = ImgProps
 export type Children = ChildrenProp
 export type CnSt = ClassNameProp & StyleProp
 export type CnStChl = ClassNameProp & StyleProp & ChildrenProp
+
+
+
+// Modern browser treat 'click' event as pointer event
+// so native 'click' event must be pointer event.
+export type ReactOnClickEventModern<E = Element> = React.MouseEvent<E, PointerEvent>

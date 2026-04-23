@@ -1,4 +1,6 @@
-import { PageLifecycleContext } from '@@/lib/environment/page-lifecycle/context/PageLifecycleContext.ts'
+import {
+  PageLifecycleContext,
+} from '@@/lib/environment/page-lifecycle/context/PageLifecycleContext.ts'
 import {
   getInitialPageState, getCurrPageState, getCurrPageTransition,
   type PageNativeLifecycleEv,

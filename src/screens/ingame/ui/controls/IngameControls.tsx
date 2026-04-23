@@ -8,7 +8,7 @@ import FullscreenIc from '@@/assets/ic/svg/ui/fullscreen.svg?react'
 import WindowedIc from '@@/assets/ic/svg/ui/windowed.svg?react'
 import SpinnerTwoQuarterArcsIc from '@@/assets/ic/svg/ui/spinner-two-quarter-arcs.svg?react'
 import PauseIc from '@@/assets/ic/svg/ui/pause.svg?react'
-import { use } from 'react'
+import React, { use } from 'react'
 
 
 
@@ -42,7 +42,6 @@ export default function IngameControls(props: IngameControlsProps) {
             cn={`stack center2 no-pointer ${!fscreen.enabled ? 'fscreen-on' : 'fscreen-off'}`}
             st={controlsIcSt}
             {...onFscreenClick}
-            onClick={() => {}}
           >
             {!fscreen.enabled && <FullscreenIc cn='sz-full'/>}
             {fscreen.enabled && <WindowedIc cn='sz-full'/>}

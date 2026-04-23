@@ -29,7 +29,7 @@ export function useFocusWithinElem(enable = true): RefCallback<HSElem> {
 export function makeFocusWithinElem(element: HSElem) {
   const windowFocused = document.hasFocus()
   if (!windowFocused) return
-  const desiredElemHasFocus = element.contains(document.activeElement)
-  if (desiredElemHasFocus) return
+  const desiredElemContainsFocus = element.contains(document.activeElement)
+  if (desiredElemContainsFocus) return
   element.focus({ preventScroll: true })
 }
