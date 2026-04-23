@@ -1,4 +1,4 @@
-import { usePointersData } from '@@/lib/input/pointer/usePointersData.ts'
+import { usePointersData } from '@@/lib/input/shared/usePointersData.ts'
 import type { Xy } from '@@/utils/math/rect.ts'
 import type { Consumer } from '@@/utils/ts/ts.ts'
 import React from 'react'

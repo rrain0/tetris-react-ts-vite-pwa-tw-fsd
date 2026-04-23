@@ -1,6 +1,5 @@
 import { ingameScreenPortSizes } from '@/screens/ingame/ui/port/ingameScreenPortSizes.ts'
 import { AppActivityContext } from '@@/lib/app/activity-manager/context/AppActivityContext.ts'
-import { InputManagerContext } from '@@/lib/app/input-manager/context/InputManagerContext.ts'
 import {
   useGamepadDownClick
 } from '@@/lib/input/gamepad-key/useGamepadDownClick.ts'
@@ -9,9 +8,10 @@ import {
 } from '@@/lib/input/gamepad-key/useGamepadKeyHold.ts'
 import { useKeyDownClick } from '@@/lib/input/key/useKeyDownClick.ts'
 import { useKeyHold } from '@@/lib/input/key/useKeyHold.ts'
-import useLockSelection from '@@/lib/input/pointer/useLockSelection.ts'
+import { useLockPointerDrag } from '@@/lib/input/shared/useLockPointerDrag.ts'
+import useLockSelection from '@@/lib/input/shared/useLockSelection.ts'
 import { usePointer } from '@@/lib/input/pointer/usePointer.ts'
-import { usePointersData } from '@@/lib/input/pointer/usePointersData.ts'
+import { usePointersData } from '@@/lib/input/shared/usePointersData.ts'
 import { Game } from '@@/lib/tetris/tetris-engine/entities/game/model/game.ts'
 import {
   newISrs, newJSrs, newLSrs, newOSrs, newSSrs, newTSrs, newZSrs,
@@ -26,7 +26,7 @@ import { assertNever, type Setter } from '@@/utils/ts/ts.ts'
 import { InputLayoutContext } from '@/entities/input-layout/context/InputLayoutContext.ts'
 import { isGamepadKeyAction } from '@/entities/input-layout/model/isGamepadKeyAction.ts'
 import { isKeyboardAction } from '@/entities/input-layout/model/isKeyboardAction.ts'
-import React, { use, useLayoutEffect, useState } from 'react'
+import React, { use, useState } from 'react'
 import { ingameScreenLandSmSizes } from '@/screens/ingame/ui/land-sm/ingameScreenLandSmSizes.ts'
 import IngameScreenLand from '@/screens/ingame/ui/land/IngameScreenLand.tsx'
 import IngameScreenLandSm from '@/screens/ingame/ui/land-sm/IngameScreenLandSm.tsx'
@@ -35,7 +35,6 @@ import IngameScreenPort from '@/screens/ingame/ui/port/IngameScreenPort.tsx'
 import PageFullVp from '@@/components/elems/PageFullVp.tsx'
 import bg from '@@/assets/im/bg4.jpg'
 import type { IngameData } from '@/screens/ingame/model/ingameScreen.model.ts'
-import * as uuid from 'uuid'
 
 
 
@@ -107,26 +106,12 @@ export default function IngameScreen() {
   const [getDPos, setDPos] = usePointersData<{ dCol: number, dRot: number }>()
   
   
-  const inputId = uuid.v4()
-  const { tryLock, unlock, allow } = use(InputManagerContext)
-  
-  useLayoutEffect(() => {
-    const onPointer = (ev: PointerEvent) => {
-      unlock(inputId, `pointer[${ev.pointerId}]`)
-    }
-    window.addEventListener('pointercancel', onPointer)
-    window.addEventListener('pointerup', onPointer)
-    return () => {
-      window.removeEventListener('pointercancel', onPointer)
-      window.removeEventListener('pointerup', onPointer)
-    }
-  })
-  
+  const { tryLock, unlock } = useLockPointerDrag()
   const onPointer = usePointer((move, upd) => {
     const { ev, start, wasStart, first, last, move: m, vp0, vp, pointerId } = move
     if (wasStart) {
       if (first) {
-        if (!tryLock(inputId, `pointer[${pointerId}]`)) {
+        if (!tryLock(`pointer[${pointerId}]`)) {
           upd({ wasStart: false })
           return
         }
@@ -137,8 +122,8 @@ export default function IngameScreen() {
       if (layout) {
         const blockSz = (() => {
           if (layout === 'land') return landSizes.wOfH(landSizes.blockSz, getWh().h)
-          if (layout === 'landSm') return landSmSizes.wOfH(landSizes.blockSz, getWh().h)
-          if (layout === 'port') return portSizes.hOfW(landSizes.blockSz, getWh().w)
+          if (layout === 'landSm') return landSmSizes.wOfH(landSmSizes.blockSz, getWh().h)
+          if (layout === 'port') return portSizes.hOfW(portSizes.blockSz, getWh().w)
           assertNever(layout)
         })()
         
@@ -164,7 +149,7 @@ export default function IngameScreen() {
       
       if (last) {
         setDPos(pointerId, undefined)
-        unlock(inputId, `pointer[${ev.pointerId}]`)
+        unlock(`pointer[${pointerId}]`)
         unlockSelection()
       }
     }

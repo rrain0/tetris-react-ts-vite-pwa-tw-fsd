@@ -12,10 +12,10 @@ export default function InputManagerProvider({ children }: Children) {
   const [getInputLocks] = useRefGetSetInit<InputLocks>(mapOf)
   
   
-  const lock = (inputId: InputId, type: InputType) => {
+  const lock = (type: InputType, inputId: InputId) => {
     getInputLocks().getOrInsert(type, setOf()).add(inputId)
   }
-  const unlock = (inputId: InputId, type: InputType) => {
+  const unlock = (type: InputType, inputId: InputId) => {
     //console.log('input unlock', type, inputId)
     const locks = getInputLocks()
     const ids = locks.get(type)
@@ -24,15 +24,15 @@ export default function InputManagerProvider({ children }: Children) {
       if (!ids.size) locks.delete(type)
     }
   }
-  const tryLock = (inputId: InputId, type: InputType) => {
+  const tryLock = (type: InputType, inputId: InputId) => {
     //console.log('input tryLock', type, inputId)
     const locks = getInputLocks()
     if (locks.has(type)) return false
     locks.set(type, setOf(inputId))
     return true
   }
-  const allow = (inputId: InputId, type: InputType) => {
-    //console.log('input allow', type, inputId)
+  const allowed = (type: InputType, inputId: InputId) => {
+    //console.log('input allowed', type, inputId)
     const ids = getInputLocks().get(type)
     if (!ids?.size) return true
     if (ids.has(inputId)) return true
@@ -41,7 +41,7 @@ export default function InputManagerProvider({ children }: Children) {
   
   
   return (
-    <InputManagerContext value={{ lock, unlock, tryLock, allow }}>
+    <InputManagerContext value={{ lock, unlock, tryLock, allowed }}>
       {children}
     </InputManagerContext>
   )

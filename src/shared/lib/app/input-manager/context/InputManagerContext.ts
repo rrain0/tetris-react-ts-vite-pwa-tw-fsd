@@ -5,15 +5,15 @@ import { createContext } from 'react'
 
 
 export type InputManagerContextValue = {
-  lock: (inputId: InputId, type: InputType) => void,
-  unlock: (inputId: InputId, type: InputType) => void,
-  tryLock: (inputId: InputId, type: InputType) => boolean,
-  allow: (inputId: InputId, type: InputType) => boolean,
+  lock: (type: InputType, inputId: InputId) => void,
+  unlock: (type: InputType, inputId: InputId) => void,
+  tryLock: (type: InputType, inputId: InputId) => boolean,
+  allowed: (type: InputType, inputId: InputId) => boolean,
 }
 
 export const InputManagerContext = createContext<InputManagerContextValue>({
   lock: noop,
   unlock: noop,
   tryLock: () => false,
-  allow: () => false,
+  allowed: () => false,
 })
