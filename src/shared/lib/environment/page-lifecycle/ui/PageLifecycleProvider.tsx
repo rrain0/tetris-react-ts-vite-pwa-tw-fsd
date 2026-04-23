@@ -35,7 +35,7 @@ export default function PageLifecycleProvider({ children }: Children) {
       setPageTransition(transition)
       //setPageEv(lEv)
       
-      console.log('pagestatechange', state, transition, 'ts', ev.timeStamp)
+      //console.log('pagestatechange', state, transition, 'ts', ev.timeStamp)
     }
     
     const onDocLoad = (ev: Event) => { onPageEv('load', ev) }

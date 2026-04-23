@@ -42,6 +42,7 @@ export default function IngameControls(props: IngameControlsProps) {
             cn={`stack center2 no-pointer ${!fscreen.enabled ? 'fscreen-on' : 'fscreen-off'}`}
             st={controlsIcSt}
             {...onFscreenClick}
+            onClick={() => {}}
           >
             {!fscreen.enabled && <FullscreenIc cn='sz-full'/>}
             {fscreen.enabled && <WindowedIc cn='sz-full'/>}

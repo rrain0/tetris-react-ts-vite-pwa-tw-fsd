@@ -27,9 +27,10 @@ export function useOnClick<E>(onClick: (ev: React.MouseEvent<E>) => void) {
     onPointerDown: (ev: React.PointerEvent) => {
       tryLock(inputId, `pointer[${ev.pointerId}]`)
     },
-    onClick: (ev: React.PointerEvent<E>) => {
-      if (allow(inputId, `pointer[${ev.pointerId}]`)) {
-        unlock(inputId, `pointer[${ev.pointerId}]`)
+    onClick: (ev: React.MouseEvent<E, PointerEvent>) => {
+      const p = ev.nativeEvent.pointerId
+      if (allow(inputId, `pointer[${p}]`)) {
+        unlock(inputId, `pointer[${p}]`)
         onClickStable(ev)
       }
     },
