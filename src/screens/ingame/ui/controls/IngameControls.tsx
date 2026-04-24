@@ -8,6 +8,7 @@ import FullscreenIc from '@@/assets/ic/svg/ui/fullscreen.svg?react'
 import WindowedIc from '@@/assets/ic/svg/ui/windowed.svg?react'
 import SpinnerTwoQuarterArcsIc from '@@/assets/ic/svg/ui/spinner-two-quarter-arcs.svg?react'
 import PauseIc from '@@/assets/ic/svg/ui/pause.svg?react'
+import type { Cb } from '@@/utils/ts/ts.ts'
 import React, { use } from 'react'
 
 

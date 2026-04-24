@@ -1,4 +1,4 @@
-import { setOf } from '@@/utils/react/state/state.ts'
+import { setOf } from '@@/utils/js/factory.ts'
 import { useRefGetSetInit } from '@@/utils/react/state/useRefGetSetInit.ts'
 import type { EvCb } from '@@/utils/ts/ts.ts'
 

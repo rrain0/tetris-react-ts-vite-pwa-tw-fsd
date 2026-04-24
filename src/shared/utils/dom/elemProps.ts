@@ -1,4 +1,4 @@
-import { type HSElem, isHTMLElement, isWindow } from '@@/utils/elem/elem.ts'
+import { type HSElem, isHTMLElement, isWindow } from '@@/utils/dom/elem.ts'
 
 
 

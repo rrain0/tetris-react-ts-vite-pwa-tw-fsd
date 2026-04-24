@@ -1,7 +1,8 @@
 import type {
   MappedGamepadEv, MappedGamepads,
 } from '@@/lib/input/gamepad-input/mapped/model/mappedGamepad.model.ts'
-import { mapOf, noop } from '@@/utils/react/state/state.ts'
+import { noop } from '@@/utils/js/constants.ts'
+import { mapOf } from '@@/utils/js/factory.ts'
 import type { Cb1, Getter } from '@@/utils/ts/ts.ts'
 import { createContext } from 'react'
 

@@ -15,9 +15,9 @@ import { Game } from '@@/lib/tetris/tetris-engine/entities/game/model/game.ts'
 import {
   newISrs, newJSrs, newLSrs, newOSrs, newSSrs, newTSrs, newZSrs,
 } from '@@/lib/tetris/tetris-engine/entities/piece/model/tetrominoSrs.ts'
-import { elemProps } from '@@/utils/elem/elemProps.ts'
-import { useFocusWithinElem } from '@@/utils/elem/useFocusWithinElem.ts'
-import { useResizeRef } from '@@/utils/elem/useResizeRef.ts'
+import { elemProps } from '@@/utils/dom/elemProps.ts'
+import { useFocusWithinElem } from '@@/utils/dom/useFocusWithinElem.ts'
+import { useResizeRef } from '@@/utils/dom/useResizeRef.ts'
 import { floorTo0 } from '@@/utils/math/rounding.ts'
 import { propsOf } from '@@/utils/react/props/combineProps.ts'
 import { useRefGetSet } from '@@/utils/react/state/useRefGetSet.ts'
@@ -65,12 +65,12 @@ export default function IngameScreen() {
   const [ingameData, setIngameData] = useState<IngameData>(getIngameData)
   
   useEffect(() => {
-    const onAutoChange = () => { setIngameData(gameToIngameData(game)) }
-    game.onAutoChange(onAutoChange)
+    const onChange = () => { setIngameData(gameToIngameData(game)) }
+    game.onChange(onChange)
     game.resume()
     return () => {
       game.pause()
-      game.offAutoChange(onAutoChange)
+      game.offChange(onChange)
     }
   }, [])
   
@@ -101,7 +101,7 @@ export default function IngameScreen() {
   
   const refToFocus = useFocusWithinElem()
   
-  const { onKeyboardKeyHold, onKeyboardKeyDownClick } = useAppActions({ game, setIngameData })
+  const { onKeyboardKeyHold, onKeyboardKeyDownClick } = useAppActions(game)
   
   const [lockSelection, unlockSelection] = useLockSelection()
   
@@ -134,16 +134,16 @@ export default function IngameScreen() {
         const dCol = floorTo0(m.x / blockSz)
         const dRot = floorTo0(m.y / blockSz)
         for (let d = prev.dCol + 1; d <= dCol; d++) {
-          game.tetris.moveCurrentPieceRight()
+          game.tetris.moveRight()
         }
         for (let d = prev.dCol - 1; d >= dCol; d--) {
-          game.tetris.moveCurrentPieceLeft()
+          game.tetris.moveLeft()
         }
         for (let d = prev.dRot + 1; d <= dRot; d++) {
-          game.tetris.rotateCurrentPieceRight()
+          game.tetris.rotateRight()
         }
         for (let d = prev.dRot - 1; d >= dRot; d--) {
-          game.tetris.rotateCurrentPieceLeft()
+          game.tetris.rotateLeft()
         }
         setDPos(pointerId, { dCol, dRot })
         
@@ -210,106 +210,66 @@ function ScreenLayout(props: IngameData & { layout: Layout }) {
 
 
 
-type UseAppActionParams = {
-  game: Game,
-  setIngameData: Setter<IngameData>,
-}
 
-function useAppActions(params: UseAppActionParams) {
+function useAppActions(game: Game) {
   const { inputLayout } = use(InputLayoutContext)
   
   const onKeyboardKeyHold = useKeyHold({ interval: 150 }, ev => {
     if (isKeyboardAction('ingame', 'moveLeft', ev, inputLayout)) {
-      moveLeft(params)
+      game.moveLeft()
     }
     if (isKeyboardAction('ingame', 'moveRight', ev, inputLayout)) {
-      moveRight(params)
+      game.moveRight()
     }
     if (isKeyboardAction('ingame', 'moveDown', ev, inputLayout)) {
-      moveDown(params)
+      game.moveDown()
     }
     if (isKeyboardAction('ingame', 'moveUp', ev, inputLayout)) {
-      moveUp(params)
+      game.moveUp()
     }
   })
   
   const onKeyboardKeyDownClick = useKeyDownClick(ev => {
     if (isKeyboardAction('ingame', 'rotateLeft', ev, inputLayout)) {
-      rotateLeft(params)
+      game.rotateLeft()
     }
     if (isKeyboardAction('ingame', 'rotateRight', ev, inputLayout)) {
-      rotateRight(params)
+      game.rotateRight()
     }
     if (isKeyboardAction('ingame', 'hardDrop', ev, inputLayout)) {
-      hardDrop(params)
+      game.hardDrop()
     }
   })
   
   
   useGamepadKeyHold({ interval: 150 }, ev => {
     if (isGamepadKeyAction('ingame', 'moveLeft', ev, inputLayout)) {
-      moveLeft(params)
+      game.moveLeft()
     }
     if (isGamepadKeyAction('ingame', 'moveRight', ev, inputLayout)) {
-      moveRight(params)
+      game.moveRight()
     }
     if (isGamepadKeyAction('ingame', 'moveDown', ev, inputLayout)) {
-      moveDown(params)
+      game.moveDown()
     }
     if (isGamepadKeyAction('ingame', 'moveUp', ev, inputLayout)) {
-      moveUp(params)
+      game.moveUp()
     }
   })
   
   useGamepadDownClick(ev => {
     if (isGamepadKeyAction('ingame', 'rotateLeft', ev, inputLayout)) {
-      rotateLeft(params)
+      game.rotateLeft()
     }
     if (isGamepadKeyAction('ingame', 'rotateRight', ev, inputLayout)) {
-      rotateRight(params)
+      game.rotateRight()
     }
     if (isGamepadKeyAction('ingame', 'hardDrop', ev, inputLayout)) {
-      hardDrop(params)
+      game.hardDrop()
     }
   })
   
   return { onKeyboardKeyHold, onKeyboardKeyDownClick }
-}
-
-
-
-function moveLeft({ game, setIngameData }: UseAppActionParams) {
-  game.tetris.moveCurrentPieceLeft()
-  setIngameData(gameToIngameData(game))
-}
-function moveRight({ game, setIngameData }: UseAppActionParams) {
-  game.tetris.moveCurrentPieceRight()
-  setIngameData(gameToIngameData(game))
-}
-function moveDown({ game, setIngameData }: UseAppActionParams) {
-  game.tetris.moveCurrentPieceDown()
-  setIngameData(gameToIngameData(game))
-}
-function moveUp({ game, setIngameData }: UseAppActionParams) {
-  game.tetris.moveCurrentPieceUp()
-  setIngameData(gameToIngameData(game))
-}
-function rotateLeft({ game, setIngameData }: UseAppActionParams) {
-  game.tetris.rotateCurrentPieceLeft()
-  setIngameData(gameToIngameData(game))
-}
-function rotateRight({ game, setIngameData }: UseAppActionParams) {
-  game.tetris.rotateCurrentPieceRight()
-  setIngameData(gameToIngameData(game))
-}
-function hardDrop({ game, setIngameData }: UseAppActionParams) {
-  game.tetris.dropCurrentPiece()
-  game.tetris.lockCurrentPiece()
-  const lines = game.tetris.getFullLines()
-  game.tetris.clearLines(lines)
-  game.tetris.dropLines(lines)
-  game.tetris.spawnNewPieceOrGameOver()
-  setIngameData(gameToIngameData(game))
 }
 
 

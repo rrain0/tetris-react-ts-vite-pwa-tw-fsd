@@ -1,4 +1,4 @@
-import type { HSElem } from '@@/utils/elem/elem.ts'
+import type { HSElem } from '@@/utils/dom/elem.ts'
 import { useRefGetOnSet } from '@@/utils/react/state/useRefGetOnSet.ts'
 import { type RefCallback, useEffectEvent, useLayoutEffect } from 'react'
 

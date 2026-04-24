@@ -1,9 +1,6 @@
 
 
 
-export const noop = () => {}
-export const emptyArr = []
-
 export const setFrom = <T>(values?: Iterable<T> | null) => new Set<T>(values)
 export const setOf = <T>(...values: T[]) => new Set<T>(values)
 

@@ -1,7 +1,7 @@
 import {
   type OnPageLifecycle,
 } from '@@/lib/environment/page-lifecycle/model/page-lifecycle.model.ts'
-import { noop } from '@@/utils/react/state/state.ts'
+import { noop } from '@@/utils/js/constants.ts'
 import type { Cb1 } from '@@/utils/ts/ts.ts'
 import { createContext } from 'react'
 

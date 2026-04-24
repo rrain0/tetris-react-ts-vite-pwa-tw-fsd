@@ -1,4 +1,4 @@
-import { noop } from '@@/utils/react/state/state.ts'
+import { noop } from '@@/utils/js/constants.ts'
 import type { Cb } from '@@/utils/ts/ts.ts'
 import { createContext } from 'react'
 

@@ -9,7 +9,6 @@ import { array } from '@@/utils/array/arrCreate.ts'
 
 
 
-
 export type FieldBlockType = 'Ghost'
 export type FieldBlockPresent = {
   id: Id
@@ -19,12 +18,9 @@ export type FieldBlockPresent = {
 }
 export type FieldBlock = FieldBlockPresent | null
 export type FieldBlocks = FieldBlock[][]
-export type FieldCoordBlock = {
-  x: number, y: number, fx: number, fy: number, value: FieldBlock
-}
-export type FieldCoordBlockPresent = {
-  x: number, y: number, fx: number, fy: number, value: FieldBlockPresent
-}
+export type FieldCoords = { x: number, y: number, fx: number, fy: number }
+export type FieldCoordBlock = FieldCoords & { value: FieldBlock }
+export type FieldCoordBlockPresent = FieldCoords & { value: FieldBlockPresent }
 
 
 
@@ -87,13 +83,11 @@ export class Field {
   ;[Symbol.iterator](): IterableIterator<FieldCoordBlock> { return this.blocksIterator() }
   
   
-  firstBlockUnder(fx: number, fy: number): FieldCoordBlockPresent | null {
+  firstCollisionBelow(fx: number, fy: number): FieldCoords | null {
     const { fx0, fy0, fyEnd } = this
-    fy++
-    for (; fy < fyEnd; fy++) {
+    for (fy++; fy <= fyEnd; fy++) {
       const x = fx0 + fx, y = fy0 + fy
-      const value = this.blocks[y]?.[x]
-      if (value) return { x, y, fx, fy, value }
+      if (fy === fyEnd || this.blocks[y]?.[x]) return { x, y, fx, fy }
     }
     return null
   }
