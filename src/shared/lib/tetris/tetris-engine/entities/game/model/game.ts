@@ -19,6 +19,8 @@ export class Game {
   get dropInterval() { return this.dropIntervalForLvl1 }
   get lockDelay() { return this.lockDelayLvl1 }
   
+  scoresForDroppedBlock = 2
+  
   
   
   // Progress
@@ -94,7 +96,7 @@ export class Game {
         const locked = docTime - this.lastActionAt >= this.lockDelay
         if (locked) {
           this.lastActionAt = docTime
-          this.endTurn()
+          this.goNextPiece()
         }
       }
     }
@@ -113,11 +115,12 @@ export class Game {
       if (fallen) { this.goFall(); return }
       else {
         if (moved) this.currLockDelayLeftMoves--
-        if (this.currLockDelayLeftMoves <= 0) { this.endTurn(); return }
+        if (this.currLockDelayLeftMoves <= 0) { this.goNextPiece(); return }
       }
     }
     this.notifyChange()
   }
+  
   goLockDelay() {
     this.state = 'lockDelay'
     this.notifyChange()
@@ -127,7 +130,7 @@ export class Game {
     this.currLockDelayLeftMoves = this.lockDelayMovesLeft
     this.syncState()
   }
-  endTurn() {
+  goNextPiece() {
     this.tetris.lockCurrentPiece()
     const lines = this.tetris.getFullLines()
     this.tetris.clearLines(lines)
@@ -152,12 +155,12 @@ export class Game {
   ;*dropAnim(): IterableIterator<void, void, number> {
     while (true) {
       const docTime = yield
-      const { lastActionAt, dropInterval } = this
+      const { lastActionAt, dropInterval, scoresForDroppedBlock } = this
       const fallDepth = Math.floor((docTime - lastActionAt) / dropInterval)
       this.lastActionAt = lastActionAt + fallDepth * dropInterval
       const fallen = this.tetris.fallBy(fallDepth)
-      this.addScore(fallen * 2)
-      if (!this.tetris.canMoveDown()) { this.endTurn(); return }
+      this.addScore(fallen * scoresForDroppedBlock)
+      if (!this.tetris.canMoveDown()) { this.goNextPiece(); return }
     }
   }
   
