@@ -52,13 +52,19 @@ export default function InputManagerProvider({ children }: Children) {
     
     if (type === 'pointer') {
       const { pointerId } = data
-      // If no such lock then add it
+      
+      // If has such element then allowed
       if (locks.find(it => it.inputId === inputId &&
         it.type === type &&
         it.pointerId === pointerId
       )) {
+        return true
+      }
+      // If has such lock then forbid
+      if (locks.find(it => it.type === type && it.pointerId === pointerId)) {
         return false
       }
+      // Else add lock and allow
       locks.push(lock)
       return true
     }

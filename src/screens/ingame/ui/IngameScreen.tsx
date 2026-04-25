@@ -38,8 +38,7 @@ import type { IngameData } from '@/screens/ingame/model/ingameScreen.model.ts'
 
 
 
-
-const game = (() => {
+const createGame = () => {
   const game = new Game()
   game.tetris.current!.x = 4
   game.tetris.current!.y = 5
@@ -54,15 +53,16 @@ const game = (() => {
   game.tetris.field.addPiece(newOSrs({ x: 6, y: 18 }))
   game.tetris.field.addPiece(newTSrs({ x: 8, y: 16 }).toRotatedLeft().next().value!)
   return game
-})()
-const getIngameData = () => gameToIngameData(game)
+}
+
 
 
 
 
 
 export default function IngameScreen() {
-  const [ingameData, setIngameData] = useState<IngameData>(getIngameData)
+  const [game, setGame] = useState<Game>(createGame)
+  const [ingameData, setIngameData] = useState<IngameData>(() => gameToIngameData(game))
   
   useEffect(() => {
     const onChange = () => { setIngameData(gameToIngameData(game)) }
@@ -72,7 +72,7 @@ export default function IngameScreen() {
       game.pause()
       game.offChange(onChange)
     }
-  }, [])
+  }, [game])
   
   
   
@@ -114,10 +114,7 @@ export default function IngameScreen() {
     const { ev, start, wasStart, first, last, move: m, vp0, vp, pointerId } = move
     if (wasStart) {
       if (first) {
-        if (!tryLock(pointerId)) {
-          upd({ wasStart: false })
-          return
-        }
+        if (!tryLock(pointerId)) { upd({ wasStart: false }); return }
         ev.currentTarget.setPointerCapture(pointerId)
         lockSelection()
       }

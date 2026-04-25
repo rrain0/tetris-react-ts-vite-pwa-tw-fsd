@@ -21,3 +21,4 @@ export function objectMap<const O1 extends object, const O2 extends object>(
     .map(entry => mapper(entry, object))
   )
 }
+

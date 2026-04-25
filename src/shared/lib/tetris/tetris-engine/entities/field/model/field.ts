@@ -83,6 +83,16 @@ export class Field {
   ;[Symbol.iterator](): IterableIterator<FieldCoordBlock> { return this.blocksIterator() }
   
   
+  
+  hasAnyBlocksAtOrAbove(fy: number) {
+    const { fyStart, fy0 } = this
+    for (let fy = fyStart; fy <= 0; fy++) {
+      const y = fy + fy0
+      for (const value of this.blocks[y]) if (value) return true
+    }
+    return false
+  }
+  
   firstCollisionBelow(fx: number, fy: number): FieldCoords | null {
     const { fx0, fy0, fyEnd } = this
     for (fy++; fy <= fyEnd; fy++) {
@@ -107,7 +117,9 @@ export class Field {
     return true
   }
   
-  addPiece(piece?: Piece, type?: FieldBlockType) {
+  
+  
+  addPiece(piece?: Piece, type?: FieldBlockType, underlay = false) {
     if (!piece) return
     const { fx0, fy0, fxStart, fyStart, fxEnd, fyEnd } = this
     const { x: px, y: py, type: pieceType, id: pieceId } = piece
@@ -117,10 +129,13 @@ export class Field {
       const bfx = px + bpx, bfy = py + bpy
       if (bfx >= fxStart && bfx < fxEnd && bfy >= fyStart && bfy < fyEnd) {
         const x = fx0 + bfx, y = fy0 + bfy
+        if (underlay && this.blocks[y][x]) continue
         this.blocks[y][x] = { id, type, pieceId, pieceType }
       }
     }
   }
+  
+  
   
   getFullLines(): number[] {
     const linesFy = []

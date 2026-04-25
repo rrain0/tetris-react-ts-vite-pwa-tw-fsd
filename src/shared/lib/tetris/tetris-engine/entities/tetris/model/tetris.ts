@@ -136,8 +136,6 @@ export class Tetris {
   }
   
   
-  get isCurrentPieceAboveField() { return !!this.current && this.current.toTrimmed().y < 0 }
-  
   
   renderField() {
     const { y0, blocks } = this.field
@@ -156,8 +154,10 @@ export class Tetris {
   renderCombinedField() {
     const { blocks, y0 } = this.field
     const f = Field.ofBlocks(matrixCopy(blocks).slice(y0 - 2), 0, 2)
-    f.addPiece(this.next, this.isCurrentPieceAboveField ? 'Ghost' : undefined)
+    
     f.addPiece(this.current)
+    const nextGhost = f.hasAnyBlocksAtOrAbove(0)
+    f.addPiece(this.next, nextGhost ? 'Ghost' : undefined, true)
     return f
   }
   

@@ -1,7 +1,6 @@
 import { Tetris } from '@@/lib/tetris/tetris-engine/entities/tetris/model/tetris.ts'
 import { getDocTime } from '@@/utils/dom/getDocTime.ts'
 import { setOf } from '@@/utils/js/factory.ts'
-import { incIntOrZero } from '@@/utils/js/mutations.ts'
 import { type Cb, isdef } from '@@/utils/ts/ts.ts'
 
 
@@ -9,39 +8,39 @@ import { type Cb, isdef } from '@@/utils/ts/ts.ts'
 export class Game {
   
   // Config - gameplay
-  startLevel = 1
-  linesToLvlUp = 10
-  fallIntervalForLvl1 = 1000
-  lockDelayLvl1 = 500
-  lockDelayMovesLeft = 15
+  startLevel: count = 1
+  linesToLvlUp: count = 10
+  fallIntervalForLvl1: ms = 1000
+  lockDelayLvl1: ms = 500
+  lockDelayMaxPlayerActions: count = 15
   
-  get fallInterval() { return this.fallIntervalForLvl1 }
-  get lockDelay() { return this.lockDelayLvl1 }
+  get fallInterval(): ms { return this.fallIntervalForLvl1 }
+  get lockDelay(): ms { return this.lockDelayLvl1 }
   
   
   
   // Config - animations
-  dropIntervalForLvl1 = 10
-  clearLinesDelay = 200
-  removeLinesDelay = 400
+  dropIntervalForLvl1: ms = 10
+  clearLinesDelay: ms = 200
+  removeLinesDelay: ms = 400
   
-  get dropInterval() { return this.dropIntervalForLvl1 }
+  get dropInterval(): ms { return this.dropIntervalForLvl1 }
   
   
   
   // Config - scores
-  scoresForDroppedBlock = 2
+  scoresForDroppedBlock: count = 2
   
   
   
   // Progress
-  hiScore = 0
-  lines = 0
-  score = 0
-  level = this.startLevel
+  hiScore: count = 0
+  lines: count = 0
+  score: count = 0
+  level: count = this.startLevel
   tetris: Tetris = new Tetris()
   
-  addScore(score: number) {
+  addScore(score: count) {
     this.score += score
     this.hiScore = Math.max(this.hiScore, this.score)
   }
@@ -59,45 +58,41 @@ export class Game {
   // Running state & actions
   gameOver = false
   animation: GameAnimation | undefined
-  lastActionAt = 0 // document time ms
+  lastActionAt: ms = 0 // document time ms
   allowActionsDuringAnimation = false
-  pausedAt: number | undefined = 0 // document time ms
+  pausedAt: ms | undefined = 0 // document time ms
   rafPaused = true
-  userActionsCnt = 0
+  playerActionsCnt: count = 0
   
   nextAnimation(animation: GameAnimation | undefined) {
     this.allowActionsDuringAnimation = false
     this.animation = animation
   }
-  isPause(): this is { get pausedAt(): number; set pausedAt(pausedAt: number | undefined) } {
+  isPause(): this is { get pausedAt(): ms; set pausedAt(pausedAt: ms | undefined) } {
     return isdef(this.pausedAt)
   }
   get isPlaying() { return !this.isPause() && !this.gameOver }
   
-  get allowUserAction() {
+  get allowPlayerAction() {
     return !this.isPause() && this.allowActionsDuringAnimation && !this.gameOver
   }
-  incUserActionsCnt() { this.userActionsCnt = incIntOrZero(this.userActionsCnt) }
   
-  setTime(time: number) { this.lastActionAt = time }
-  elapsed(to: number) { return to - this.lastActionAt }
-  advance(time: number) { this.lastActionAt += time }
-  tick(delay: number, now: number): boolean {
-    if (this.lastActionAt + delay <= now) {
-      this.advance(delay)
-      return true
-    }
+  setTime(time: ms) { this.lastActionAt = time }
+  elapsed(to: ms) { return to - this.lastActionAt }
+  advance(time: ms) { this.lastActionAt += time }
+  tick(advance: ms, now: ms): boolean {
+    if (this.lastActionAt + advance <= now) { this.advance(advance); return true }
     return false
   }
   
   resume() {
     if (this.isPause() && !this.gameOver) {
       const pausedFor = getDocTime() - this.pausedAt
-      this.lastActionAt += pausedFor
+      this.advance(pausedFor)
       this.pausedAt = undefined
       if (this.rafPaused) {
         this.rafPaused = false
-        requestAnimationFrame(this.run(this.userActionsCnt))
+        requestAnimationFrame(this.run)
       }
     }
   }
@@ -106,213 +101,176 @@ export class Game {
   
   
   // Lifecycle methods
-  run = (prevUserActionsCnt: number) => (docTime: number) => {
+  run = (time: ms) => {
     if (!this.isPlaying) { this.rafPaused = true; return }
     
-    if (!this.animation) this.nextAnimation(this.fallAnimation(docTime))
+    if (!this.animation) this.nextAnimation(this.fallAnimation(time))
     
-    let changed = this.userActionsCnt !== prevUserActionsCnt
+    const dPlayerActionsCnt = this.playerActionsCnt
+    this.playerActionsCnt = 0
+    let changed = !!dPlayerActionsCnt
     let done = true
     while (this.animation && done) {
-      const result = this.animation.next(docTime)
+      const result = this.animation.next({ time, dPlayerActionsCnt })
       done = !!result.done
       changed ||= result.value.changed
-      const next = result.value.next
-      if (done) this.nextAnimation(next)
+      if (result.done) {
+        const next = result.value.next
+        this.nextAnimation(next)
+      }
     }
     if (changed) this.notifyChange()
     
-    /* if (!this.animation) {
-      if (this.state === 'lockDelay') {
-        const locked = docTime - this.lastActionAt >= this.lockDelay
-        if (locked) {
-          this.lastActionAt = docTime
-          this.goNextPiece()
-        }
-      }
-    } */
-    
-    requestAnimationFrame(this.run(this.userActionsCnt))
-  }
-  /*
-  syncState(moved = false) {
-    const { state, tetris } = this
-    if (!this.animation) {
-      if (state === 'lockDelay') {
-        if (moved) this.lastActionAt = getDocTime()
-        const fallen = tetris.moveDown()
-        if (fallen) { this.goFall(); return }
-        else {
-          if (moved) this.currLockDelayLeftMoves--
-          if (this.currLockDelayLeftMoves <= 0) { this.goNextPiece(); return }
-        }
-      }
-      this.notifyChange()
-    }
+    requestAnimationFrame(this.run)
   }
   
-  goLockDelay() {
-    this.state = 'lockDelay'
-    this.notifyChange()
-  }
-  goFall() {
-    this.state = undefined
-    this.currLockDelayLeftMoves = this.lockDelayMovesLeft
-    this.syncState()
-  }
-  goNextPiece() {
-    this.tetris.lockCurrentPiece()
-    const lines = this.tetris.getFullLines()
-    this.tetris.clearLines(lines)
-    this.tetris.removeLines(lines)
-    const spawned = this.tetris.spawnNextPiece()
-    if (!spawned) { this.state = 'gameOver'; return }
-    this.goFall()
-  }
-   */
   
   
   // Engine animations
-  
-  // eslint-disable-next-line require-yield
-  /* ;*fallAction0(docTime: number): GameAnimation {
-    const { fallInterval } = this
-    const fallDepth = Math.floor(this.elapsed(docTime) / fallInterval)
-    this.advance(fallDepth * fallInterval)
-    const fallen = this.tetris.fallBy(fallDepth)
-    if (!this.tetris.canMoveDown()) this.goLockDelay()
-    return { changed: !!fallen }
-  } */
-  
-  ;*fallAnimation(docTime: number): GameAnimation {
+  ;*fallAnimation(time: ms): GameAnimation {
     this.allowActionsDuringAnimation = true
-    let changed = false
     do {
       const { fallInterval } = this
       
-      const fallDepth = Math.floor(this.elapsed(docTime) / fallInterval)
-      this.advance(fallDepth * fallInterval)
-      
+      const fallDepth = Math.floor(this.elapsed(time) / fallInterval)
       const fallen = this.tetris.fallBy(fallDepth)
-      changed = !!fallen
+      this.advance(fallen * fallInterval)
+      const changed = !!fallen
       
       const canFall = this.tetris.canMoveDown()
-      if (!canFall) return { changed, next: this.lockDelayAnimation(docTime) }
+      if (!canFall) return { changed, next: this.lockDelayAnimation(time) }
       
-      docTime = yield { changed }; changed = false
+      ;({ time } = yield { changed })
     } while (true)
   }
-  ;*lockDelayAnimation(docTime: number): GameAnimation {
+  
+  ;*lockDelayAnimation(time: ms): GameAnimation {
     this.allowActionsDuringAnimation = true
+    let playerActionsCnt = 0
+    let dPlayerActionsCnt = 0
     do {
-      const { lockDelay } = this
+      const { lockDelay, lockDelayMaxPlayerActions } = this
       
       const fallen = this.tetris.moveDown()
       if (fallen) {
-        this.setTime(docTime)
-        return { changed: true, next: this.fallAnimation(docTime) }
+        // TODO
+        this.setTime(time)
+        return { changed: true, next: this.fallAnimation(time) }
       }
       
-      const locked = this.elapsed(docTime) >= lockDelay
+      // TODO
+      const locked = this.elapsed(time) >= lockDelay ||
+        playerActionsCnt >= lockDelayMaxPlayerActions
       if (locked) {
         this.tetris.lockCurrentPiece()
-        this.setTime(docTime)
-        return { changed: false, next: this.clearLinesAnimation(docTime) }
+        this.advance(lockDelay)
+        return { changed: false, next: this.clearLinesAnimation(time) }
       }
       
-      docTime = yield { changed: false }
+      // TODO
+      const playerMadeMove = !!dPlayerActionsCnt
+      if (playerMadeMove) {
+        // TODO
+        this.setTime(time)
+      }
+      
+      ;({ time, dPlayerActionsCnt } = yield { changed: false })
+      playerActionsCnt += dPlayerActionsCnt
     } while (true)
   }
+  
   ;*dropAnimation(): GameAnimation {
-    let docTime = getDocTime()
-    this.setTime(docTime)
-    let changed = false
+    // TODO
+    let time = getDocTime()
+    this.setTime(time)
     do {
       const { dropInterval, scoresForDroppedBlock } = this
-      const fallDepth = Math.floor(this.elapsed(docTime) / dropInterval)
+      const fallDepth = Math.floor(this.elapsed(time) / dropInterval)
       this.advance(fallDepth * dropInterval)
       const fallen = this.tetris.fallBy(fallDepth)
       this.addScore(fallen * scoresForDroppedBlock)
-      changed = !!fallen
+      const changed = !!fallen
       if (!this.tetris.canMoveDown()) {
         this.tetris.lockCurrentPiece()
-        return { changed, next: this.clearLinesAnimation(docTime) }
+        return { changed, next: this.clearLinesAnimation(time) }
       }
-      docTime = yield { changed }; changed = false
+      ;({ time } = yield { changed })
     } while (true)
   }
-  ;*clearLinesAnimation(docTime: number): GameAnimation {
+  
+  ;*clearLinesAnimation(time: ms): GameAnimation {
     const lines = this.tetris.getFullLines()
-    if (!lines.length) return { changed: false, next: this.spawnNextPieceAnimation() }
+    if (!lines.length) return { changed: false, next: this.spawnNextPieceAnimation(time) }
     let changed = false
     do {
-      if (this.tick(this.clearLinesDelay, docTime)) {
+      if (this.tick(this.clearLinesDelay, time)) {
         this.tetris.clearLines(lines)
         changed = !!lines.length
         break
       }
-      docTime = yield { changed }; changed = false
+      ;({ time } = yield { changed }); changed = false
     } while (true)
     do {
-      if (this.tick(this.removeLinesDelay, docTime)) {
+      if (this.tick(this.removeLinesDelay, time)) {
         this.tetris.removeLines(lines)
-        return { changed: !!lines.length, next: this.spawnNextPieceAnimation() }
+        return { changed: !!lines.length, next: this.spawnNextPieceAnimation(time) }
       }
-      docTime = yield { changed }; changed = false
+      ;({ time } = yield { changed }); changed = false
     } while (true)
   }
+  
   // eslint-disable-next-line require-yield
-  ;*spawnNextPieceAnimation(): GameAnimation {
+  ;*spawnNextPieceAnimation(time: ms): GameAnimation {
     const spawned = this.tetris.spawnNextPiece()
     if (!spawned) {
       this.gameOver = true
       return { changed: false }
     }
-    return { changed: true }
+    return { changed: true, next: this.fallAnimation(time) }
   }
   
   
   
-  processUserAction(moved: boolean) {
+  processPlayerAction(moved: boolean) {
     if (moved) {
-      this.incUserActionsCnt()
+      this.playerActionsCnt++
     }
   }
   
   
-  // User actions
+  // Player actions
   moveLeft() {
-    if (!this.allowUserAction) return
+    if (!this.allowPlayerAction) return
     const moved = this.tetris.moveLeft()
-    this.processUserAction(moved)
+    this.processPlayerAction(moved)
   }
   moveRight() {
-    if (!this.allowUserAction) return
+    if (!this.allowPlayerAction) return
     const moved = this.tetris.moveRight()
-    this.processUserAction(moved)
+    this.processPlayerAction(moved)
   }
   moveDown() {
-    if (!this.allowUserAction) return
+    if (!this.allowPlayerAction) return
     const moved = this.tetris.moveDown()
-    this.processUserAction(moved)
+    this.processPlayerAction(moved)
   }
   moveUp() {
-    if (!this.allowUserAction) return
+    if (!this.allowPlayerAction) return
     const moved = this.tetris.moveUp()
-    this.processUserAction(moved)
+    this.processPlayerAction(moved)
   }
   rotateLeft() {
-    if (!this.allowUserAction) return
+    if (!this.allowPlayerAction) return
     const moved = this.tetris.rotateLeft()
-    this.processUserAction(moved)
+    this.processPlayerAction(moved)
   }
   rotateRight() {
-    if (!this.allowUserAction) return
+    if (!this.allowPlayerAction) return
     const moved = this.tetris.rotateRight()
-    this.processUserAction(moved)
+    this.processPlayerAction(moved)
   }
   hardDrop() {
-    if (!this.allowUserAction) return
+    if (!this.allowPlayerAction) return
     this.nextAnimation(this.dropAnimation())
   }
   
@@ -320,9 +278,19 @@ export class Game {
 
 
 
-export type GameActionResult = { changed: boolean, next?: GameAnimation | undefined }
-export type GameAnimation = IterableIterator<
-  GameActionResult, // Is changed
-  GameActionResult, // Is changed & next action
-  number // Get current document time
+export type GameAnimationParams = {
+  time: ms
+  dPlayerActionsCnt: count
+}
+export type GameAnimationNext = {
+  changed: boolean // Is game state changed
+}
+export type GameAnimationResult = {
+  changed: boolean // Is game state changed
+  next?: GameAnimation | undefined // Next animation to run
+}
+export type GameAnimation = IteratorObject<
+  GameAnimationNext, // yield <value>
+  GameAnimationResult, // return <value>
+  GameAnimationParams // <value> = yield; iterator.next(<value>)
 > | undefined

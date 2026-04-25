@@ -88,7 +88,7 @@ export default function FullscreenProvider(props: FullscreenManagerProps) {
       const wasBrowserExit = !active && (getLastRestored()?.ts ?? 0) >= ev.timeStamp - 200
       if (!active && !wasBrowserExit) setEnabled(false)
       
-      console.log('fullscreenchange', active, 'ts', ev.timeStamp)
+      //console.log('fullscreenchange', active, 'ts', ev.timeStamp)
     }
     document.addEventListener('fullscreenchange', onFullscreen)
     return () => { document.removeEventListener('fullscreenchange', onFullscreen) }
