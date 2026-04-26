@@ -264,9 +264,6 @@ export type ValueOrProducer<T> = T | Producer<T>
 export type Updater<T> = (mapper: Mapper<T>) => void
 export type SetterOrUpdater<T> = (valueOrMapper: T | Mapper<T>) => void
 
-export type ComparatorEq<A, B = A> = (a: A, b: B) => boolean
-export const defaultComparatorEq: ComparatorEq<any> = (a, b) => a === b
-
 export type FunOrObj<F extends anyfun> = (
   F extends (...args: infer A) => infer R ? ((...args: A) => R) | R : never
 )

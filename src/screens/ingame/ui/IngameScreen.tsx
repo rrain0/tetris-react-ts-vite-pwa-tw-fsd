@@ -197,7 +197,7 @@ function ScreenLayout(props: IngameData & { layout: Layout }) {
       {layout === 'port' && (
         <IngameScreenPort
           combinedField={tetris.renderCombinedField()}
-          isCurrentPieceAboveField={tetris.isCurrentPieceAboveField}
+          hasAnyBlocksAtOrAbove0={tetris.field.hasAnyBlocksAtOrAbove(0)}
           {...stats}
         />
       )}
@@ -212,9 +212,18 @@ function useAppActions(game: Game) {
   const { inputLayout } = use(InputLayoutContext)
   
   const onKeyboardKeyHold = useKeyHold({ interval: 150 }, ev => {
-    if (isKeyboardAction('ingame', 'moveLeft', ev, inputLayout)) {
-      game.moveLeft()
+    
+    if (ev.type === 'keydown') {
+      if (isKeyboardAction('ingame', 'moveLeft', ev, inputLayout)) {
+        game.startMoveLeft()
+      }
     }
+    if (ev.type === 'keyup') {
+      if (isKeyboardAction('ingame', 'moveLeft', ev, inputLayout)) {
+        game.stopMoveLeft()
+      }
+    }
+    
     if (isKeyboardAction('ingame', 'moveRight', ev, inputLayout)) {
       game.moveRight()
     }

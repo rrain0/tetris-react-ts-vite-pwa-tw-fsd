@@ -1,5 +1,7 @@
+import { Timer } from '@@/lib/tetris/game-engine/shared/timer.ts'
 import { Tetris } from '@@/lib/tetris/tetris-engine/entities/tetris/model/tetris.ts'
 import { getDocTime } from '@@/utils/dom/getDocTime.ts'
+import { type Comparator, compareNumbers } from '@@/utils/js/compare.ts'
 import { setOf } from '@@/utils/js/factory.ts'
 import { type Cb, isdef } from '@@/utils/ts/ts.ts'
 
@@ -89,11 +91,17 @@ export class Game {
   
   // Running state & actions
   gameOver = false
-  animation: GameAnimation | undefined
-  lastActionAt: ms = 0 // document time ms
-  allowActionsDuringAnimation = false
   pausedAt: ms | undefined = 0 // document time ms
   rafPaused = true
+  
+  // TODO
+  animating: GameAnimation | undefined
+  lastActionAt: ms = 0 // document time ms
+  allowMove = false
+  
+  // TODO
+  movingLeft: GameAnimation | undefined
+  movingRight: GameAnimation | undefined
   
   // TODO
   playerActions: PlayerActionsQueue = []
@@ -102,8 +110,8 @@ export class Game {
   
   
   nextAnimation(animation: GameAnimation | undefined) {
-    this.allowActionsDuringAnimation = false
-    this.animation = animation
+    this.allowMove = false
+    this.animating = animation
   }
   isPause(): this is { get pausedAt(): ms; set pausedAt(pausedAt: ms | undefined) } {
     return isdef(this.pausedAt)
@@ -111,7 +119,7 @@ export class Game {
   get isPlaying() { return !this.isPause() && !this.gameOver }
   
   get allowPlayerAction() {
-    return !this.isPause() && this.allowActionsDuringAnimation && !this.gameOver
+    return !this.isPause() && this.allowMove && !this.gameOver
   }
   
   setTime(time: ms) { this.lastActionAt = time }
@@ -145,22 +153,51 @@ export class Game {
   run = (time: ms) => {
     if (!this.isPlaying) { this.rafPaused = true; return }
     
-    if (!this.animation) this.nextAnimation(this.fallAnimation(time))
+    const actions = this.playerActions
+    actions.sort(playerActionsComparator)
     
     const dPlayerActionsCnt = this.playerActionsCnt
     this.playerActionsCnt = 0
-    let changed = !!dPlayerActionsCnt
-    let done = true
     
-    while (this.animation && done) {
-      const result = this.animation.next({ time, dPlayerActionsCnt })
-      done = !!result.done
-      changed ||= result.value.changed
-      if (result.done) {
-        const next = result.value.next
-        this.nextAnimation(next)
+    let changed = !!dPlayerActionsCnt
+    let i = 0
+    for (; i <= actions.length; i++) {
+      const action = actions[i]
+      const { type, actionAt = time } = action ?? { }
+      const t = Math.min(time, actionAt)
+      
+      if (!this.animating) this.nextAnimation(this.fallAnimation(t))
+      while (this.animating) {
+        const result = this.animating.next({ time: t, dPlayerActionsCnt })
+        changed ||= result.value.changed
+        if (result.done) {
+          const next = result.value.next
+          this.nextAnimation(next)
+        }
+        else break
       }
+      
+      
+      if (type === 'startMoveLeft') {
+        if (!this.movingLeft) this.movingLeft = this.moveLeftAnimation(actionAt, actionAt)
+      }
+      while (this.movingLeft) {
+        const result = this.movingLeft.next({ time: t, dPlayerActionsCnt })
+        changed ||= result.value.changed
+        if (result.done) {
+          //const next = result.value.next
+          //this.nextAnimation(next)
+        }
+        else break
+      }
+      if (type === 'stopMoveLeft') {
+        this.movingLeft = undefined
+      }
+      
+      if (!action || actionAt >= time) break
     }
+    actions.splice(0, i)
+    
     if (changed) this.notifyChange()
     
     requestAnimationFrame(this.run)
@@ -170,7 +207,7 @@ export class Game {
   
   // Engine animations
   ;*fallAnimation(time: ms): GameAnimation {
-    this.allowActionsDuringAnimation = true
+    this.allowMove = true
     do {
       const { fallInterval } = this
       
@@ -188,7 +225,7 @@ export class Game {
   
   // TODO Check it works correctly
   ;*lockDelayAnimation(time: ms): GameAnimation {
-    this.allowActionsDuringAnimation = true
+    this.allowMove = true
     let playerActionsCnt = 0
     let dPlayerActionsCnt = 0
     do {
@@ -221,14 +258,42 @@ export class Game {
     } while (true)
   }
   
-  // TODO
   ;*moveLeftAnimation(time: ms, moveAt: ms): GameAnimation {
+    const lastActionAt = Timer.at(moveAt)
+    let changed = false
+    
+    const onChange = () => {
+      this.lastPlayerActionAt = lastActionAt.time
+      this.playerActionsCnt++
+    }
+    
     do {
-      if (this.tickTo(moveAt, time)) {
-        const changed = this.tetris.moveLeft()
-        return { changed }
+      const { allowMove } = this
+      if (time >= moveAt) {
+        if (allowMove) changed = this.tetris.moveLeft()
+        if (changed) onChange()
+        break
       }
-      ;({ time } = yield { changed: false })
+      ;({ time } = yield { changed }); changed = false
+    } while (true)
+    
+    do {
+      const { allowMove, moveLeftRightDas } = this
+      if (lastActionAt.tickBy(moveLeftRightDas, time)) {
+        if (allowMove) changed = this.tetris.moveLeft()
+        if (changed) onChange()
+        break
+      }
+      ;({ time } = yield { changed }); changed = false
+    } while (true)
+    
+    do {
+      const { allowMove, moveLeftRightArr } = this
+      if (lastActionAt.tickBy(moveLeftRightArr, time)) {
+        if (allowMove) changed = this.tetris.moveLeft()
+        if (changed) onChange()
+      }
+      ;({ time } = yield { changed }); changed = false
     } while (true)
   }
   
@@ -313,6 +378,16 @@ export class Game {
   }
   
   
+  
+  startMoveLeft() {
+    this.playerActions.push({ type: 'startMoveLeft', actionAt: getDocTime() })
+  }
+  stopMoveLeft() {
+    this.playerActions.push({ type: 'stopMoveLeft', actionAt: getDocTime() })
+  }
+  
+  
+  
   // TODO how to process them?
   // Player actions
   moveLeft() {
@@ -333,7 +408,7 @@ export class Game {
   moveUp() {
     if (!this.allowPlayerAction) return
     const moved = this.tetris.moveUp()
-    if (moved) this.animation = this.fallAnimation(getDocTime())
+    if (moved) this.animating = this.fallAnimation(getDocTime())
     this.processPlayerAction(moved)
   }
   rotateLeft() {
@@ -358,7 +433,9 @@ export class Game {
 
 
 export type PlayerActionType =
-  | 'moveLeft'
+  | 'startMoveLeft'
+  | 'stopMoveLeft'
+  
   | 'moveRight'
   | 'moveDown' // 'softDrop'
   | 'moveUp'
@@ -366,8 +443,12 @@ export type PlayerActionType =
   | 'rotateRight'
   | 'hardDrop'
 
-export type PlayerAction = { type: PlayerActionType, time: ms }
+export type PlayerAction = { type: PlayerActionType, actionAt: ms }
 export type PlayerActionsQueue = PlayerAction[]
+// TODO add sort that if time is equals so start becomes before stop
+const playerActionsComparator: Comparator<PlayerAction> = (a, b) => {
+  return compareNumbers(a.actionAt, b.actionAt)
+}
 
 
 
