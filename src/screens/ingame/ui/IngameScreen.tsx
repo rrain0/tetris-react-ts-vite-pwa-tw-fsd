@@ -6,11 +6,12 @@ import {
   useGamepadKeyHold,
 } from '@@/lib/input/gamepad-key/useGamepadKeyHold.ts'
 import { useKeyDownClick } from '@@/lib/input/key/useKeyDownClick.ts'
-import { useKeyHold } from '@@/lib/input/key/useKeyHold.ts'
+import { useKeyHold } from '@/_unused/useKeyHold.ts'
+import { useKeyStartEnd } from '@@/lib/input/key/useKeyStartEnd.ts'
 import { useLockPointerDrag } from '@@/lib/input/shared/useLockPointerDrag.ts'
 import useLockSelection from '@@/lib/input/shared/useLockSelection.ts'
 import { usePointer } from '@@/lib/input/pointer/usePointer.ts'
-import { usePointersData } from '@@/lib/input/shared/usePointersData.ts'
+import { useRecord } from '@@/utils/react/more/useRecord.ts'
 import { Game } from '@@/lib/tetris/game-engine/entities/game/model/game.ts'
 import {
   newISrs, newJSrs, newLSrs, newOSrs, newSSrs, newTSrs, newZSrs,
@@ -34,6 +35,7 @@ import IngameScreenPort from '@/screens/ingame/ui/port/IngameScreenPort.tsx'
 import PageFullVp from '@@/components/elems/PageFullVp.tsx'
 import bg from '@@/assets/im/bg4.jpg'
 import type { IngameData } from '@/screens/ingame/model/ingameScreen.model.ts'
+import type { PointerId } from '@/shared/utils/pointer/types'
 
 
 
@@ -101,12 +103,12 @@ export default function IngameScreen() {
   
   const refToFocus = useFocusWithinElem()
   
-  const { onKeyboardKeyHold, onKeyboardKeyDownClick } = useAppActions(game)
+  const { onKeyboardKeyStartEnd, onKeyboardKeyHold, onKeyboardKeyDownClick } = useAppActions(game)
   
   const [lockSelection, unlockSelection] = useLockSelection()
   
   
-  const [getDPos, setDPos] = usePointersData<{ dCol: number, dRot: number }>()
+  const [getDPos, setDPos] = useRecord<PointerId, { dCol: number, dRot: number }>()
   
   
   const { tryLock, unlock } = useLockPointerDrag()
@@ -162,7 +164,7 @@ export default function IngameScreen() {
         st={{ backgroundImage: `url(${bg})` }}
         ref={refToFocus}
         tabIndex={-1}
-        {...propsOf(onKeyboardKeyHold, onKeyboardKeyDownClick, onPointer())}
+        {...propsOf(onKeyboardKeyStartEnd, onKeyboardKeyHold, onKeyboardKeyDownClick, onPointer())}
       >
         <div cn='sz-full stack center2 container-size' ref={refFun}>
           <ScreenLayout layout={layout} {...ingameData}/>
@@ -211,19 +213,20 @@ function ScreenLayout(props: IngameData & { layout: Layout }) {
 function useAppActions(game: Game) {
   const { inputLayout } = use(InputLayoutContext)
   
-  const onKeyboardKeyHold = useKeyHold({ interval: 150 }, ev => {
-    
-    if (ev.type === 'keydown') {
-      if (isKeyboardAction('ingame', 'moveLeft', ev, inputLayout)) {
+  const onKeyboardKeyStartEnd = useKeyStartEnd(ev => {
+    if (ev.type === 'keyStart') {
+      if (isKeyboardAction('ingame', 'moveLeft', { code: ev.keyId }, inputLayout)) {
         game.startMoveLeft()
       }
     }
-    if (ev.type === 'keyup') {
-      if (isKeyboardAction('ingame', 'moveLeft', ev, inputLayout)) {
+    if (ev.type === 'keyEnd') {
+      if (isKeyboardAction('ingame', 'moveLeft', { code: ev.keyId }, inputLayout)) {
         game.stopMoveLeft()
       }
     }
-    
+  })
+  
+  const onKeyboardKeyHold = useKeyHold({ interval: 150 }, ev => {
     if (isKeyboardAction('ingame', 'moveRight', ev, inputLayout)) {
       game.moveRight()
     }
@@ -275,7 +278,7 @@ function useAppActions(game: Game) {
     }
   })
   
-  return { onKeyboardKeyHold, onKeyboardKeyDownClick }
+  return { onKeyboardKeyStartEnd, onKeyboardKeyHold, onKeyboardKeyDownClick }
 }
 
 

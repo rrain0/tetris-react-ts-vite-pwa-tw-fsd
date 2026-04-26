@@ -116,6 +116,17 @@ export function useGamepadKeyHold(
 
 
 
+export interface GamepadKeyHoldEv {
+  type: 'gamepadKeyHold'
+  ts: number
+  gpId: string
+  signalId: string
+}
+
+export type GamepadKeyHoldEvHandler = EvCb<GamepadKeyHoldEv>
+
+
+
 type KeyId = string
 type IntervalId = any
 
@@ -132,14 +143,3 @@ interface KeyEv {
 function getKeyId(gpId: NativeGamepadId, signalId: MappedGamepadSignalId): KeyId {
   return JSON.stringify({ gpId, signalId })
 }
-
-
-
-export interface GamepadKeyHoldEv {
-  type: 'gamepadKeyHold'
-  ts: number
-  gpId: string
-  signalId: string
-}
-
-export type GamepadKeyHoldEvHandler = EvCb<GamepadKeyHoldEv>

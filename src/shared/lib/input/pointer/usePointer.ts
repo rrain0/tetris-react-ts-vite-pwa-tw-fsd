@@ -1,4 +1,5 @@
-import { usePointersData } from '@@/lib/input/shared/usePointersData.ts'
+import type { PointerId } from '@@/utils/pointer/types.ts'
+import { useRecord } from '@@/utils/react/more/useRecord.ts'
 import type { Xy } from '@@/utils/math/rect.ts'
 import type { Consumer } from '@@/utils/ts/ts.ts'
 import React from 'react'
@@ -7,7 +8,7 @@ import React from 'react'
 
 export function usePointer<A extends any[]>(onDrag: OnDrag<A>) {
   
-  const [getMove, setMove] = usePointersData<MoveData>()
+  const [getMove, setMove] = useRecord<PointerId, MoveData>()
   
   // Performs shallow update of current move object with props that exists in update.
   // If your move does not start from 'down' then you can update { wasStarted: true }.

@@ -63,8 +63,11 @@ export type AllOrNone<O extends object> = O | {
 
 // ℹ️ Records
 
-export type RecordPartial<K extends keyof any, T> = {
+export type RecordPart<K extends keyof any, T> = {
   [P in K]+?: T
+}
+export type RecordOpt<K extends keyof any, T> = {
+  [P in K]+?: T | undefined
 }
 export type RecordRo<K extends keyof any, T> = {
   +readonly [P in K]: T
