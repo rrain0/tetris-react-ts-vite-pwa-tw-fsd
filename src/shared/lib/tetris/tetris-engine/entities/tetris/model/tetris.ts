@@ -158,7 +158,7 @@ export class Tetris {
     f.addPiece(this.current)
     const nextGhost = f.hasAnyBlocksAtOrAbove(0)
     f.addPiece(this.next, nextGhost ? 'NextGhost' : 'Next', true)
-    return f
+    return { field: f, nextGhost }
   }
   
   

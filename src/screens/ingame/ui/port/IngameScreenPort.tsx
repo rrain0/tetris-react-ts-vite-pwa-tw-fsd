@@ -9,11 +9,11 @@ import type { IngameStats } from '@/screens/ingame/model/ingameScreen.model.ts'
 
 export type IngameScreenPortProps = IngameStats & {
   combinedField: Field
-  hasAnyBlocksAtOrAbove0: boolean
+  nextGhost: boolean
 }
 
 export default function IngameScreenPort(props: IngameScreenPortProps) {
-  const { combinedField, hasAnyBlocksAtOrAbove0, hiScore, score, level, lines } = props
+  const { combinedField, nextGhost, hiScore, score, level, lines } = props
   
   const {
     blockSz,
@@ -47,7 +47,7 @@ export default function IngameScreenPort(props: IngameScreenPortProps) {
   }
   const topSt = { height: hOfCqw(topH) }
   const topTitleBoxSt = { width: hOfCqw(topTitleBoxW), height: hOfCqw(topTitleBoxH) }
-  const topTitleSt = { fontSize: hOfCqw(topTitleH), opacity: hasAnyBlocksAtOrAbove0 ? 0.5 : 1 }
+  const topTitleSt = { fontSize: hOfCqw(topTitleH), opacity: nextGhost ? 0.5 : 1 }
   const bottomSt = {
     height: hOfCqw(bottomH),
     paddingTop: hOfCqw(bottomG),

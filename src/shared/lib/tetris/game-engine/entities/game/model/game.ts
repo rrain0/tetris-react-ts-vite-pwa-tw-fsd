@@ -1,5 +1,4 @@
 import { IntervalTimer } from '@@/lib/tetris/game-engine/shared/intervalTimer.ts'
-import { Timer } from '@@/lib/tetris/game-engine/shared/timer.ts'
 import { Tetris } from '@@/lib/tetris/tetris-engine/entities/tetris/model/tetris.ts'
 import { getDocTime } from '@@/utils/dom/getDocTime.ts'
 import { type Comparator, compareNumbers } from '@@/utils/js/compare.ts'

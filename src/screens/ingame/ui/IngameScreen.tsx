@@ -204,13 +204,16 @@ function ScreenLayout(props: IngameData & { layout: Layout }) {
           {...stats}
         />
       )}
-      {layout === 'port' && (
-        <IngameScreenPort
-          combinedField={tetris.renderCombinedField()}
-          hasAnyBlocksAtOrAbove0={tetris.field.hasAnyBlocksAtOrAbove(0)}
-          {...stats}
-        />
-      )}
+      {layout === 'port' && (() => {
+        const { field, nextGhost } = tetris.renderCombinedField()
+        return (
+          <IngameScreenPort
+            combinedField={field}
+            nextGhost={nextGhost}
+            {...stats}
+          />
+        )
+      })()}
     </>
   )
 }
