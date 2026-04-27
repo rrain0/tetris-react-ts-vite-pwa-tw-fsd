@@ -7,7 +7,7 @@ export class IntervalTimer {
   intervals: IntervalData[]
   intervalsI: count = 0
   intervalI: count = 0
-  dTime: number = 0
+  duration: number = 0
   
   private constructor() { }
   static of(startAt: number, delays: IntervalData[]) {
@@ -17,18 +17,16 @@ export class IntervalTimer {
     return it
   }
   
-  advanceTo(to: number) {
-    if (to < this.startAt + this.dTime) return {
-      advanceCnt: 0, advanceTime: 0,
-      time: this.startAt + this.dTime,
-    }
+  #timeTo(to: number) {
+    const { intervals } = this
+    let { intervalsI, intervalI } = this
+    let dCnt = 0, dTime = 0, time = this.startAt + this.duration
     
-    let advanceCnt = 0, advanceTime = 0
+    if (to < this.startAt + this.duration) return { dCnt, dTime, time, intervalsI, intervalI }
+    
     while (true) {
-      const { startAt, intervals, intervalsI, intervalI, dTime } = this
       const { interval, cnt } = intervals[intervalsI]
       
-      const time = startAt + dTime
       const infiniteIntervals = isundef(cnt)
       const infiniteInterval = !interval
       
@@ -43,24 +41,35 @@ export class IntervalTimer {
       const cntUp = Math.min(cntUpTo, cntUpCnt)
       const dTimeUp = interval * cntUp
       
-      advanceCnt += cntUp
-      advanceTime += dTimeUp
-      
-      this.dTime += dTimeUp
+      dCnt += cntUp
+      dTime += dTimeUp
+      time += dTimeUp
       
       if (canGoNextIntervals) {
-        this.intervalsI++
-        this.intervalI = 0
+        intervalsI++
+        intervalI = 0
       }
       else {
-        this.intervalI += cntUp
+        intervalI += cntUp
         break
       }
     }
-    return {
-      advanceCnt, advanceTime,
-      time: this.startAt + this.dTime,
-    }
+    return { dCnt, dTime, time, intervalsI, intervalI }
+  }
+  
+  
+  
+  timeTo(to: number) {
+    const { dCnt, dTime, time } = this.#timeTo(to)
+    return { dCnt, dTime, time }
+  }
+  
+  forwardTo(to: number) {
+    const { dCnt, dTime, time, intervalsI, intervalI } = this.#timeTo(to)
+    this.intervalsI = intervalsI
+    this.intervalI = intervalI
+    this.duration += dTime
+    return { dCnt, dTime, time }
   }
 }
 

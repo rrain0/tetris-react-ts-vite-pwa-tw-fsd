@@ -9,6 +9,10 @@ import { type Cb, isdef } from '@@/utils/ts/ts.ts'
 
 // TODO Add scores for T-Spins
 // TODO May be add scores for combos
+// TODO Tweak levels count
+// TODO Tweak dependence of fallInterval, dropInterval, lockDelay on curr level
+
+// TODO If raf doesn't run but somehow softDrop was started then ended, then run raf ???
 
 export class Game {
   
@@ -23,6 +27,7 @@ export class Game {
   entryDelay: ms = 400
   
   fallIntervalForLvl1: ms = 1000
+  softDropSpeedMult: number = 20
   
   // Delay after first left/right move
   // DAS - Delay After Shift
@@ -101,6 +106,7 @@ export class Game {
   animating: GameAnimation | undefined
   lastActionAt: ms = 0 // document time ms
   allowMove = false
+  isSoftDrop = false
   
   // TODO
   movingLeft: GameAnimation | undefined
@@ -169,13 +175,6 @@ export class Game {
       const { type, actionAt = time } = action ?? { }
       const t = Math.min(time, actionAt)
       
-      if (!this.animating) this.nextAnimation(this.fallAnimation(t))
-      while (this.animating) {
-        const result = this.animating.next({ time: t, dPlayerActionsCnt })
-        changed ||= result.value.changed
-        if (!result.done) break
-        this.nextAnimation(result.value.next)
-      }
       
       
       if (type === 'startMoveLeft') {
@@ -183,6 +182,19 @@ export class Game {
       }
       else if (type === 'startMoveRight') {
         if (!this.movingRight) this.movingRight = this.moveRightAnimation(actionAt, actionAt)
+      }
+      else if (type === 'startSoftDrop') {
+        this.isSoftDrop = true
+      }
+      
+      
+      
+      if (!this.animating) this.nextAnimation(this.fallAnimation(t))
+      while (this.animating) {
+        const result = this.animating.next({ time: t, dPlayerActionsCnt })
+        changed ||= result.value.changed
+        if (!result.done) break
+        this.nextAnimation(result.value.next)
       }
       
       while (this.movingLeft) {
@@ -198,8 +210,11 @@ export class Game {
         this.movingRight = undefined
       }
       
+      
+      
       if (type === 'stopMoveLeft') this.movingLeft = undefined
       else if (type === 'stopMoveRight') this.movingRight = undefined
+      else if (type === 'stopSoftDrop') this.isSoftDrop = false
       
       
       if (!action || actionAt >= time) break
@@ -216,11 +231,13 @@ export class Game {
   ;*fallAnimation(time: ms): GameAnimation {
     this.allowMove = true
     do {
-      const { fallInterval } = this
+      const { fallInterval, softDropSpeedMult, isSoftDrop } = this
+      const fallMult = isSoftDrop ? 1 / softDropSpeedMult : 1
+      const fallInterv = fallInterval * fallMult
       
-      const fallDepth = Math.floor(this.elapsed(time) / fallInterval)
+      const fallDepth = Math.floor(this.elapsed(time) / fallInterv)
       const fallen = this.tetris.fallBy(fallDepth)
-      this.advance(fallen * fallInterval)
+      this.advance(fallen * fallInterv)
       const changed = !!fallen
       
       const canFall = this.tetris.canMoveDown()
@@ -285,11 +302,11 @@ export class Game {
     do {
       const { allowMove } = this
       if (allowMove) {
-        const { time: currTime, advanceCnt } = lastActionAt.advanceTo(time)
-        if (advanceCnt) {
+        const { time: newTime, dCnt } = lastActionAt.forwardTo(time)
+        if (dCnt) {
           // TODO field method to move at once
-          for (let i = 0; i < advanceCnt; i++) this.tetris.moveLeft()
-          onChange(currTime, advanceCnt)
+          for (let i = 0; i < dCnt; i++) this.tetris.moveLeft()
+          onChange(newTime, dCnt)
         }
       }
       ;({ time } = yield { changed }); changed = false
@@ -316,11 +333,11 @@ export class Game {
     do {
       const { allowMove } = this
       if (allowMove) {
-        const { time: currTime, advanceCnt } = lastActionAt.advanceTo(time)
-        if (advanceCnt) {
+        const { time: newTime, dCnt } = lastActionAt.forwardTo(time)
+        if (dCnt) {
           // TODO field method to move at once
-          for (let i = 0; i < advanceCnt; i++) this.tetris.moveRight()
-          onChange(currTime, advanceCnt)
+          for (let i = 0; i < dCnt; i++) this.tetris.moveRight()
+          onChange(newTime, dCnt)
         }
       }
       ;({ time } = yield { changed }); changed = false
@@ -412,6 +429,12 @@ export class Game {
   stopMoveRight() {
     this.playerActions.push({ type: 'stopMoveRight', actionAt: getDocTime() })
   }
+  startSoftDrop() {
+    this.playerActions.push({ type: 'startSoftDrop', actionAt: getDocTime() })
+  }
+  stopSoftDrop() {
+    this.playerActions.push({ type: 'stopSoftDrop', actionAt: getDocTime() })
+  }
   
   
   
@@ -423,11 +446,6 @@ export class Game {
       this.lastPlayerActionAt = getDocTime()
       this.playerActionsCnt++
     }
-  }
-  moveDown() {
-    if (!this.allowPlayerAction) return
-    const moved = this.tetris.moveDown()
-    this.processPlayerAction(moved)
   }
   moveUp() {
     if (!this.allowPlayerAction) return
@@ -461,8 +479,9 @@ export type PlayerActionType =
   | 'stopMoveLeft'
   | 'startMoveRight'
   | 'stopMoveRight'
+  | 'startSoftDrop'
+  | 'stopSoftDrop'
   
-  | 'moveDown' // 'softDrop'
   | 'moveUp'
   | 'rotateLeft'
   | 'rotateRight'
