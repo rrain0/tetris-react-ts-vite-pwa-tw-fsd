@@ -170,29 +170,36 @@ export class Game {
       while (this.animating) {
         const result = this.animating.next({ time: t, dPlayerActionsCnt })
         changed ||= result.value.changed
-        if (result.done) {
-          const next = result.value.next
-          this.nextAnimation(next)
-        }
-        else break
+        if (!result.done) break
+        this.nextAnimation(result.value.next)
       }
       
       
       if (type === 'startMoveLeft') {
         if (!this.movingLeft) this.movingLeft = this.moveLeftAnimation(actionAt, actionAt)
       }
+      else if (type === 'startMoveRight') {
+        if (!this.movingRight) this.movingRight = this.moveRightAnimation(actionAt, actionAt)
+      }
+      
       while (this.movingLeft) {
         const result = this.movingLeft.next({ time: t, dPlayerActionsCnt })
         changed ||= result.value.changed
-        if (result.done) {
-          //const next = result.value.next
-          //this.nextAnimation(next)
-        }
-        else break
+        if (!result.done) break
       }
+      while (this.movingRight) {
+        const result = this.movingRight.next({ time: t, dPlayerActionsCnt })
+        changed ||= result.value.changed
+        if (!result.done) break
+      }
+      
       if (type === 'stopMoveLeft') {
         this.movingLeft = undefined
       }
+      else if (type === 'stopMoveRight') {
+        this.movingRight = undefined
+      }
+      
       
       if (!action || actionAt >= time) break
     }
@@ -297,6 +304,45 @@ export class Game {
     } while (true)
   }
   
+  ;*moveRightAnimation(time: ms, moveAt: ms): GameAnimation {
+    const lastActionAt = Timer.at(moveAt)
+    let changed = false
+    
+    const onChange = () => {
+      this.lastPlayerActionAt = lastActionAt.time
+      this.playerActionsCnt++
+    }
+    
+    do {
+      const { allowMove } = this
+      if (time >= moveAt) {
+        if (allowMove) changed = this.tetris.moveRight()
+        if (changed) onChange()
+        break
+      }
+      ;({ time } = yield { changed }); changed = false
+    } while (true)
+    
+    do {
+      const { allowMove, moveLeftRightDas } = this
+      if (lastActionAt.tickBy(moveLeftRightDas, time)) {
+        if (allowMove) changed = this.tetris.moveRight()
+        if (changed) onChange()
+        break
+      }
+      ;({ time } = yield { changed }); changed = false
+    } while (true)
+    
+    do {
+      const { allowMove, moveLeftRightArr } = this
+      if (lastActionAt.tickBy(moveLeftRightArr, time)) {
+        if (allowMove) changed = this.tetris.moveRight()
+        if (changed) onChange()
+      }
+      ;({ time } = yield { changed }); changed = false
+    } while (true)
+  }
+  
   ;*dropAnimation(time: ms): GameAnimation {
     do {
       const { dropInterval, scoresHardDropPerBlock } = this
@@ -369,36 +415,30 @@ export class Game {
   
   
   
-  // TODO
-  processPlayerAction(moved: boolean) {
-    if (moved) {
-      this.lastPlayerActionAt = getDocTime()
-      this.playerActionsCnt++
-    }
-  }
-  
-  
-  
+  // Player actions
   startMoveLeft() {
     this.playerActions.push({ type: 'startMoveLeft', actionAt: getDocTime() })
   }
   stopMoveLeft() {
     this.playerActions.push({ type: 'stopMoveLeft', actionAt: getDocTime() })
   }
+  startMoveRight() {
+    this.playerActions.push({ type: 'startMoveRight', actionAt: getDocTime() })
+  }
+  stopMoveRight() {
+    this.playerActions.push({ type: 'stopMoveRight', actionAt: getDocTime() })
+  }
   
   
   
   // TODO how to process them?
   // Player actions
-  moveLeft() {
-    if (!this.allowPlayerAction) return
-    const moved = this.tetris.moveLeft()
-    this.processPlayerAction(moved)
-  }
-  moveRight() {
-    if (!this.allowPlayerAction) return
-    const moved = this.tetris.moveRight()
-    this.processPlayerAction(moved)
+  // TODO
+  processPlayerAction(moved: boolean) {
+    if (moved) {
+      this.lastPlayerActionAt = getDocTime()
+      this.playerActionsCnt++
+    }
   }
   moveDown() {
     if (!this.allowPlayerAction) return
@@ -435,8 +475,9 @@ export class Game {
 export type PlayerActionType =
   | 'startMoveLeft'
   | 'stopMoveLeft'
+  | 'startMoveRight'
+  | 'stopMoveRight'
   
-  | 'moveRight'
   | 'moveDown' // 'softDrop'
   | 'moveUp'
   | 'rotateLeft'

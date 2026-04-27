@@ -1,12 +1,11 @@
-import { setOf } from '@@/utils/js/factory.ts'
+import { useSet } from '@@/utils/react/more/useSet.ts'
 import { useAsCb } from '@@/utils/react/state/useAsCb.ts'
-import { useRefGetSet } from '@@/utils/react/state/useRefGetSet.ts'
 import type { EvCb } from '@@/utils/ts/ts.ts'
 import React from 'react'
 
 
 
-export function useKeyStartEnd<T = HTMLDivElement>(
+export function useKeyStartEnd<T = Element>(
   onKeyHold: KeyStartEndEvHandler, // unstable
 ) {
   const onKeyStartEndCb = useAsCb(onKeyHold)
@@ -14,21 +13,21 @@ export function useKeyStartEnd<T = HTMLDivElement>(
   
   // ⬤⬤ State layer ⬤⬤
   
-  const [getState] = useRefGetSet<Set<string>>(setOf())
-  const startKey = (keyId: string) => {
-    getState().add(keyId)
+  const state = useSet<string>()
+  const startKey = (key: string) => {
+    state.add(key)
   }
-  const endKey = (keyId: KeyId) => {
-    getState().delete(keyId)
+  const endKey = (key: string) => {
+    state.remove(key)
   }
-  const checkKey = (keyId: KeyId) => {
-    return getState().has(keyId)
+  const hasKey = (key: string) => {
+    return state.has(key)
   }
   const cancelAllKeys = () => {
-    getState().clear()
+    state.clear()
   }
   const getAllKeys = () => {
-    return getState()
+    return state.getAll()
   }
   
   
@@ -48,7 +47,7 @@ export function useKeyStartEnd<T = HTMLDivElement>(
   }
   // Check if there is keyDown for current button then remove saved button
   const endEv = (ev: React.KeyboardEvent<T>) => {
-    if (checkKey(ev.code)) {
+    if (hasKey(ev.code)) {
       const keyEndEv: KeyStartEndEv = {
         type: 'keyEnd',
         ts: ev.timeStamp,
@@ -91,22 +90,9 @@ export function useKeyStartEnd<T = HTMLDivElement>(
 
 
 
+export type KeyStartEndEvHandler = EvCb<KeyStartEndEv>
 export interface KeyStartEndEv {
   type: 'keyStart' | 'keyEnd'
   ts: number
   key: string
-}
-
-export type KeyStartEndEvHandler = EvCb<KeyStartEndEv>
-
-
-
-type CodeKey = { code: string, key: string }
-type KeyId = string
-
-
-
-function getKeyId(codeKey: CodeKey): KeyId {
-  const { code, key } = codeKey
-  return JSON.stringify({ code, key })
 }

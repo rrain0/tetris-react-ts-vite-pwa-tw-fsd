@@ -4,19 +4,18 @@ import { isundef, type ValueOrProducer } from '@@/utils/ts/ts.ts'
 
 
 
-// set(undefined) removes entry from object
 export function useMap<K, V>(initialData?: ValueOrProducer<Map<K, V>>) {
-  const [getMap, setMap] = useRefGetSetInit<Map<K, V>>(initialData ?? mapOf)
+  const [getAll, setAll] = useRefGetSetInit<Map<K, V>>(initialData ?? mapOf)
   
-  const get = (key: K) => getMap().get(key)
+  const get = (key: K) => getAll().get(key)
+  // set(undefined) removes entry from map
   const set = (key: K, value?: V) => {
-    if (isundef(value)) getMap().delete(key)
-    else getMap().set(key, value)
+    if (isundef(value)) getAll().delete(key)
+    else getAll().set(key, value)
   }
-  const has = (key: K) => getMap().has(key)
+  const has = (key: K) => getAll().has(key)
   
-  return [
-    get, set, has,
-    getMap, setMap,
-  ] as const
+  const clear = () => getAll().clear()
+  
+  return { get, set, has, clear, getAll, setAll }
 }
