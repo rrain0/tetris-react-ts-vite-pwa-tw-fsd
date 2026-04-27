@@ -2,13 +2,13 @@ import type { ActionConfig, InputLayoutConfig } from '@/entities/input-layout/mo
 
 
 
-export function isGamepadKeyAction<T extends keyof InputLayoutConfig>(
+export function isKeyboardKeyAction<T extends keyof InputLayoutConfig>(
   inputLayout: InputLayoutConfig,
   type: T,
   action: keyof InputLayoutConfig[T],
-  signalId: string,
+  key: string, // <KeyboardEvent>.code
 ) {
   // @ts-expect-error
   const actionConfig: ActionConfig = inputLayout[type][action]
-  return actionConfig.some(it => it.inputMethod === 'gamepad' && it.key === signalId)
+  return actionConfig.some(it => it.inputMethod === 'keyboard' && it.key === key)
 }

@@ -25,7 +25,7 @@ import { useRefGetSet } from '@@/utils/react/state/useRefGetSet.ts'
 import { assertNever } from '@@/utils/ts/ts.ts'
 import { InputLayoutContext } from '@/entities/input-layout/context/InputLayoutContext.ts'
 import { isGamepadKeyAction } from '@/entities/input-layout/model/isGamepadKeyAction.ts'
-import { isKeyboardAction } from '@/entities/input-layout/model/isKeyboardAction.ts'
+import { isKeyboardKeyAction } from '@/entities/input-layout/model/isKeyboardKeyAction.ts'
 import React, { use, useEffect, useState } from 'react'
 import { ingameScreenLandSmSizes } from '@/screens/ingame/ui/land-sm/ingameScreenLandSmSizes.ts'
 import IngameScreenLand from '@/screens/ingame/ui/land/IngameScreenLand.tsx'
@@ -215,65 +215,65 @@ function useAppActions(game: Game) {
   
   const onKeyboardKeyStartEnd = useKeyStartEnd(ev => {
     if (ev.type === 'keyStart') {
-      if (isKeyboardAction('ingame', 'moveLeft', { code: ev.keyId }, inputLayout)) {
+      if (isKeyboardKeyAction(inputLayout, 'ingame', 'moveLeft', ev.key)) {
         game.startMoveLeft()
       }
     }
     if (ev.type === 'keyEnd') {
-      if (isKeyboardAction('ingame', 'moveLeft', { code: ev.keyId }, inputLayout)) {
+      if (isKeyboardKeyAction(inputLayout, 'ingame', 'moveLeft', ev.key)) {
         game.stopMoveLeft()
       }
     }
   })
   
   const onKeyboardKeyHold = useKeyHold({ interval: 150 }, ev => {
-    if (isKeyboardAction('ingame', 'moveRight', ev, inputLayout)) {
+    if (isKeyboardKeyAction(inputLayout, 'ingame', 'moveRight', ev.code)) {
       game.moveRight()
     }
-    if (isKeyboardAction('ingame', 'moveDown', ev, inputLayout)) {
+    if (isKeyboardKeyAction(inputLayout, 'ingame', 'moveDown', ev.code)) {
       game.moveDown()
     }
-    if (isKeyboardAction('ingame', 'moveUp', ev, inputLayout)) {
+    if (isKeyboardKeyAction(inputLayout, 'ingame', 'moveUp', ev.code)) {
       game.moveUp()
     }
   })
   
   const onKeyboardKeyDownClick = useKeyDownClick(ev => {
-    if (isKeyboardAction('ingame', 'rotateLeft', ev, inputLayout)) {
+    if (isKeyboardKeyAction(inputLayout, 'ingame', 'rotateLeft', ev.code)) {
       game.rotateLeft()
     }
-    if (isKeyboardAction('ingame', 'rotateRight', ev, inputLayout)) {
+    if (isKeyboardKeyAction(inputLayout, 'ingame', 'rotateRight', ev.code)) {
       game.rotateRight()
     }
-    if (isKeyboardAction('ingame', 'hardDrop', ev, inputLayout)) {
+    if (isKeyboardKeyAction(inputLayout, 'ingame', 'hardDrop', ev.code)) {
       game.hardDrop()
     }
   })
   
   
   useGamepadKeyHold({ interval: 150 }, ev => {
-    if (isGamepadKeyAction('ingame', 'moveLeft', ev, inputLayout)) {
+    if (isGamepadKeyAction(inputLayout, 'ingame', 'moveLeft', ev.signalId)) {
       game.moveLeft()
     }
-    if (isGamepadKeyAction('ingame', 'moveRight', ev, inputLayout)) {
+    if (isGamepadKeyAction(inputLayout, 'ingame', 'moveRight', ev.signalId)) {
       game.moveRight()
     }
-    if (isGamepadKeyAction('ingame', 'moveDown', ev, inputLayout)) {
+    if (isGamepadKeyAction(inputLayout, 'ingame', 'moveDown', ev.signalId)) {
       game.moveDown()
     }
-    if (isGamepadKeyAction('ingame', 'moveUp', ev, inputLayout)) {
+    if (isGamepadKeyAction(inputLayout, 'ingame', 'moveUp', ev.signalId)) {
       game.moveUp()
     }
   })
   
   useGamepadDownClick(ev => {
-    if (isGamepadKeyAction('ingame', 'rotateLeft', ev, inputLayout)) {
+    if (isGamepadKeyAction(inputLayout, 'ingame', 'rotateLeft', ev.signalId)) {
       game.rotateLeft()
     }
-    if (isGamepadKeyAction('ingame', 'rotateRight', ev, inputLayout)) {
+    if (isGamepadKeyAction(inputLayout, 'ingame', 'rotateRight', ev.signalId)) {
       game.rotateRight()
     }
-    if (isGamepadKeyAction('ingame', 'hardDrop', ev, inputLayout)) {
+    if (isGamepadKeyAction(inputLayout, 'ingame', 'hardDrop', ev.signalId)) {
       game.hardDrop()
     }
   })

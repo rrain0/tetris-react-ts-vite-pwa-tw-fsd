@@ -21,11 +21,11 @@ export function useKeyStartEnd<T = HTMLDivElement>(
   const endKey = (keyId: KeyId) => {
     getState().delete(keyId)
   }
-  const cancelAllKeys = () => {
-    getState().clear()
-  }
   const checkKey = (keyId: KeyId) => {
     return getState().has(keyId)
+  }
+  const cancelAllKeys = () => {
+    getState().clear()
   }
   const getAllKeys = () => {
     return getState()
@@ -36,10 +36,12 @@ export function useKeyStartEnd<T = HTMLDivElement>(
   
   // Save the pressed button
   const startEv = (ev: React.KeyboardEvent<T>) => {
+    // ev.code => key: 'KeyA', 'ShiftLeft', 'ShiftRight', ...
+    // ev.key => char: 'a', 'A', 'ф', 'Ф', 'Shift', ...
     const keyStartEv: KeyStartEndEv = {
       type: 'keyStart',
       ts: ev.timeStamp,
-      keyId: ev.code,
+      key: ev.code,
     }
     onKeyStartEndCb(keyStartEv)
     startKey(ev.code)
@@ -50,7 +52,7 @@ export function useKeyStartEnd<T = HTMLDivElement>(
       const keyEndEv: KeyStartEndEv = {
         type: 'keyEnd',
         ts: ev.timeStamp,
-        keyId: ev.code,
+        key: ev.code,
       }
       onKeyStartEndCb(keyEndEv)
       endKey(ev.code)
@@ -61,7 +63,7 @@ export function useKeyStartEnd<T = HTMLDivElement>(
       const keyEndEv: KeyStartEndEv = {
         type: 'keyEnd',
         ts: ev.timeStamp,
-        keyId: key,
+        key: key,
       }
       onKeyStartEndCb(keyEndEv)
     }
@@ -92,7 +94,7 @@ export function useKeyStartEnd<T = HTMLDivElement>(
 export interface KeyStartEndEv {
   type: 'keyStart' | 'keyEnd'
   ts: number
-  keyId: string
+  key: string
 }
 
 export type KeyStartEndEvHandler = EvCb<KeyStartEndEv>
