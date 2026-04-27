@@ -18,7 +18,11 @@ export class IntervalTimer {
   }
   
   advanceTo(to: number) {
-    to = Math.max(to, this.startAt + this.dTime)
+    if (to < this.startAt + this.dTime) return {
+      advanceCnt: 0, advanceTime: 0,
+      time: this.startAt + this.dTime,
+    }
+    
     let advanceCnt = 0, advanceTime = 0
     while (true) {
       const { startAt, intervals, intervalsI, intervalI, dTime } = this
@@ -26,12 +30,15 @@ export class IntervalTimer {
       
       const time = startAt + dTime
       const infiniteIntervals = isundef(cnt)
+      const infiniteInterval = !!interval
       
-      const cntUpTo = interval ? Math.floor((to - time) / interval) : to - time
+      const cntUpTo = !infiniteInterval
+        ? Math.floor((to - time) / interval)
+        : Number.POSITIVE_INFINITY
       
       const cntUpCnt = !infiniteIntervals ? cnt - intervalI : cntUpTo
       
-      const goNextIntervals = !infiniteIntervals && cntUpTo >= cntUpCnt
+      const canGoNextIntervals = !infiniteIntervals && cntUpTo >= cntUpCnt
       
       const cntUp = Math.min(cntUpTo, cntUpCnt)
       const dTimeUp = interval * cntUp
@@ -41,7 +48,7 @@ export class IntervalTimer {
       
       this.dTime += dTimeUp
       
-      if (goNextIntervals) {
+      if (canGoNextIntervals) {
         this.intervalsI++
         this.intervalI = 0
       }
