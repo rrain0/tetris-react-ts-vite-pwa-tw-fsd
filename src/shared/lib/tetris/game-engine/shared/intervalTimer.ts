@@ -30,7 +30,7 @@ export class IntervalTimer {
       
       const time = startAt + dTime
       const infiniteIntervals = isundef(cnt)
-      const infiniteInterval = !!interval
+      const infiniteInterval = !interval
       
       const cntUpTo = !infiniteInterval
         ? Math.floor((to - time) / interval)
