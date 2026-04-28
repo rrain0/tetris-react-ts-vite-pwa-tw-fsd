@@ -13,6 +13,14 @@ export type ObjectEntries<O extends object> = ObjectEntry<O>[]
 
 
 
+export type ObjectEntrySimple<O extends object> = [keyof O, O[keyof O]]
+
+
+
+export type ObjectEntriesSimple<O extends object> = ObjectEntrySimple<O>[]
+
+
+
 export type ObjectFromEntriesArr<A extends readonly (readonly [PropertyKey, any])[]> = {
   [E in A[number] as E[0]]: E[1]
 }

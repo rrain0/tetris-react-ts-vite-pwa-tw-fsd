@@ -31,9 +31,10 @@ export class StepTimer {
     const { multisteps } = this
     let { multistepI, stepI } = this
     let dCnt = 0, dTime = 0, time = this.startAt + this.duration
+    const stepsAt: ms[] = []
     
     if (to < this.startAt + this.duration) {
-      return { dCnt, dTime, time, multistepI, stepI }
+      return { dCnt, dTime, time, multistepI, stepI, stepsAt }
     }
     
     while (multistepI < multisteps.length) {
@@ -54,6 +55,7 @@ export class StepTimer {
       const dTimeUp = step * dCntUp
       
       dCnt += dCntUp
+      for (let i = 0; i < dCnt; i++) stepsAt.push(time + step * i)
       dTime += dTimeUp
       time += dTimeUp
       
@@ -66,28 +68,29 @@ export class StepTimer {
         break
       }
     }
-    return { dCnt, dTime, time, multistepI, stepI }
+    return { dCnt, dTime, time, multistepI, stepI, stepsAt }
   }
   
   
   
   calculateTo(to: number) {
-    const { dCnt, dTime, time } = this.#calculateTo(to)
-    return { dCnt, dTime, time }
+    const { dCnt, dTime, time, stepsAt } = this.#calculateTo(to)
+    return { dCnt, dTime, time, stepsAt }
   }
   
   forwardTo(to: number) {
-    const { dCnt, dTime, time, multistepI, stepI } = this.#calculateTo(to)
+    const { dCnt, dTime, time, multistepI, stepI, stepsAt } = this.#calculateTo(to)
     this.multistepI = multistepI
     this.stepI = stepI
     this.duration += dTime
-    return { dCnt, dTime, time }
+    return { dCnt, dTime, time, stepsAt }
   }
   
   forwardByCnt(count: count) {
     const { multisteps } = this
     let { multistepI, stepI } = this
     let dCnt = 0, dTime = 0, time = this.startAt + this.duration
+    const stepsAt: ms[] = []
     
     while (count > 0 && multistepI < multisteps.length) {
       const { step, cnt } = multisteps[multistepI]
@@ -100,6 +103,7 @@ export class StepTimer {
       const goNextIntervals = !infiniteRepeat && cnt - stepI - dCntUp <= 0
       
       dCnt += dCntUp
+      for (let i = 0; i < dCnt; i++) stepsAt.push(time + step * i)
       dTime += dTimeUp
       time += dTimeUp
       count -= dCntUp
@@ -113,7 +117,7 @@ export class StepTimer {
         break
       }
     }
-    return { dCnt, dTime, time }
+    return { dCnt, dTime, time, stepsAt }
   }
 }
 

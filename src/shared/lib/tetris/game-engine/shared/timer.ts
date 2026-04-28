@@ -7,7 +7,7 @@ export class Timer {
   constructor(time: number) { this.time = time }
   static at(time: number) { return new Timer(time) }
   
-  elapsedTo(to: number): number { return to - this.time }
+  timeTo(to: number): number { return to - this.time }
   advanceBy(duration: number): void { this.time += duration }
   tickBy(duration: number, limit: number): boolean {
     if (this.time + duration <= limit) { this.advanceBy(duration); return true }

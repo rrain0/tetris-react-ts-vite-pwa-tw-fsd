@@ -1,6 +1,6 @@
 export { }
 import type {
-  ObjectEntries,
+  ObjectEntriesSimple,
   ObjectFromEntriesArr,
   ObjectValues,
 } from '@@/utils/object/objectTypes.ts'
@@ -12,7 +12,7 @@ declare global {
     
     values<O extends object>(object: O): ObjectValues<O>
     
-    entries<O extends object>(object: O): ObjectEntries<O>
+    entries<O extends object>(object: O): ObjectEntriesSimple<O>
     
     fromEntries<
       E extends readonly (readonly [PropertyKey, any])[]
