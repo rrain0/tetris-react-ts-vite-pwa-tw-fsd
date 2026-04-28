@@ -105,6 +105,22 @@ export class Game {
   // TODO
   animating: GameAnimation | undefined
   lastActionAt: ms = 0
+  
+  animations: Animations = {
+    spawnNextPiece: undefined,
+    clearLines: undefined,
+    hardDrop: undefined,
+    
+    lockDelay: undefined,
+    
+    softDrop: undefined,
+    
+    fall: undefined,
+    
+    moveLeft: undefined,
+    moveRight: undefined,
+  }
+  
   forbidPlayerMove = false
   allowMove = false
   isSoftDrop = false
@@ -182,26 +198,26 @@ export class Game {
       
       
       if (type === 'startMoveLeft') {
-        if (!this.movingLeft) this.movingLeft = this.moveLeftAnimation(actionAt)
+        if (!this.movingLeft) this.movingLeft = moveLeftAnimation(this, actionAt)
       }
       else if (type === 'stopMoveLeft') {
         this.movingLeft = undefined
       }
       else if (type === 'startMoveRight') {
-        if (!this.movingRight) this.movingRight = this.moveRightAnimation(actionAt)
+        if (!this.movingRight) this.movingRight = moveRightAnimation(this, actionAt)
       }
       else if (type === 'stopMoveRight') {
         this.movingRight = undefined
       }
       else if (type === 'startSoftDrop') {
-        this.softDropping = this.softDropAnimation(actionAt)
+        this.softDropping = softDropAnimation(this, actionAt)
       }
       else if (type === 'stopSoftDrop') {
         this.softDropping = undefined
       }
       
       
-      if (!this.animating) this.nextAnimation(this.fallAnimation(t))
+      if (!this.animating) this.nextAnimation(fallAnimation(this, t))
       while (this.animating) {
         const result = this.animating.next({ time: t, dPlayerActionsCnt })
         changed ||= result.value.changed
@@ -235,251 +251,6 @@ export class Game {
   }
   
   
-  
-  // Animations
-  ;*fallAnimation(time: ms): GameAnimation {
-    this.allowMove = true
-    const { fallInterval } = this
-    const multisteps = [{ step: fallInterval }]
-    const lastActionAt = StepTimer.of(time, multisteps)
-    
-    let changed = false
-    
-    const onChange = (time: number) => {
-      this.lastActionAt = time
-      changed = true
-    }
-    
-    do {
-      const prevLastActionAt = lastActionAt.copy()
-      const { time: t, dCnt } = lastActionAt.forwardTo(time)
-      if (dCnt) {
-        const realDCnt = this.tetris.fallBy(dCnt)
-        if (realDCnt) {
-          const { time: t, dCnt } = prevLastActionAt.forwardByCnt(realDCnt)
-          onChange(t)
-        }
-      }
-      
-      const canFall = this.tetris.canMoveDown()
-      if (!canFall) return { changed, next: this.lockDelayAnimation(time) }
-      
-      ;({ time } = yield { changed })
-    } while (true)
-  }
-  
-  ;*softDropAnimation(time: ms): GameAnimation {
-    this.allowMove = true
-    const { softDropInterval } = this
-    const multisteps = [{ step: 0, cnt: 1 }, { step: softDropInterval }]
-    const lastActionAt = StepTimer.of(time, multisteps)
-    
-    let changed = false
-    
-    const onChange = (time: number) => {
-      this.lastActionAt = time
-      changed = true
-    }
-    
-    do {
-      const prevLastActionAt = lastActionAt.copy()
-      const { time: t, dCnt } = lastActionAt.forwardTo(time)
-      if (dCnt) {
-        const realDCnt = this.tetris.fallBy(dCnt)
-        if (realDCnt) {
-          const { time: t, dCnt } = prevLastActionAt.forwardByCnt(realDCnt)
-          onChange(t)
-        }
-      }
-      
-      const canFall = this.tetris.canMoveDown()
-      if (!canFall) return { changed, next: this.lockDelayAnimation(time) }
-      
-      ;({ time } = yield { changed })
-    } while (true)
-  }
-  
-  // TODO Check it works correctly
-  ;*lockDelayAnimation(time: ms): GameAnimation {
-    this.allowMove = true
-    let playerActionsCnt = 0
-    let dPlayerActionsCnt = 0
-    do {
-      const { lockDelay, lockDelayMaxPlayerActions } = this
-      
-      const anyLastActionAt = Math.max(this.lastActionAt, this.lastPlayerActionAt)
-      this.setTime(anyLastActionAt)
-      
-      const fallen = this.tetris.moveDown()
-      if (fallen) return { changed: true, next: this.fallAnimation(time) }
-      
-      const locked = this.elapsed(time) >= lockDelay ||
-        // TODO
-        playerActionsCnt >= lockDelayMaxPlayerActions
-      if (locked) {
-        this.tetris.lockCurrentPiece()
-        this.advance(lockDelay)
-        return { changed: false, next: this.clearLinesAnimation(time) }
-      }
-      
-      // TODO
-      const playerMadeMove = !!dPlayerActionsCnt
-      if (playerMadeMove) {
-        // TODO
-        this.setTime(time)
-      }
-      
-      ;({ time, dPlayerActionsCnt } = yield { changed: false })
-      playerActionsCnt += dPlayerActionsCnt
-    } while (true)
-  }
-  
-  ;*moveLeftAnimation(time: ms): GameAnimation {
-    const { moveLeftRightDas, moveLeftRightArr } = this
-    const multisteps = [
-      { step: 0, cnt: 1 },
-      { step: moveLeftRightDas, cnt: 1 },
-      { step: moveLeftRightArr },
-    ]
-    const lastActionAt = StepTimer.of(time, multisteps)
-    
-    let changed = false
-    
-    const onChange = (time: number, cnt: count) => {
-      this.lastPlayerActionAt = time
-      this.playerActionsCnt += cnt
-      changed = true
-    }
-    
-    
-    do {
-      const { allowMove } = this
-      if (allowMove) {
-        const prevLastActionAt = lastActionAt.copy()
-        const { time: t, dCnt } = lastActionAt.forwardTo(time)
-        if (dCnt) {
-          let realDCnt = 0
-          for (; realDCnt < dCnt; realDCnt++) {
-            // TODO make field method to move at once
-            if (!this.tetris.moveLeft()) break
-          }
-          if (realDCnt) {
-            const { time: t, dCnt } = prevLastActionAt.forwardByCnt(realDCnt)
-            onChange(t, dCnt)
-          }
-        }
-      }
-      ;({ time } = yield { changed }); changed = false
-    } while (true)
-  }
-  
-  ;*moveRightAnimation(time: ms): GameAnimation {
-    const { moveLeftRightDas, moveLeftRightArr } = this
-    const multisteps = [
-      { step: 0, cnt: 1 },
-      { step: moveLeftRightDas, cnt: 1 },
-      { step: moveLeftRightArr },
-    ]
-    const lastActionAt = StepTimer.of(time, multisteps)
-    
-    let changed = false
-    
-    const onChange = (time: number, cnt: count) => {
-      this.lastPlayerActionAt = time
-      this.playerActionsCnt += cnt
-      changed = true
-    }
-    
-    do {
-      const { allowMove } = this
-      if (allowMove) {
-        const prevLastActionAt = lastActionAt.copy()
-        const { time: t, dCnt } = lastActionAt.forwardTo(time)
-        if (dCnt) {
-          let realDCnt = 0
-          for (; realDCnt < dCnt; realDCnt++) {
-            // TODO make field method to move at once
-            if (!this.tetris.moveRight()) break
-          }
-          if (realDCnt) {
-            const { time: t, dCnt } = prevLastActionAt.forwardByCnt(realDCnt)
-            onChange(t, dCnt)
-          }
-        }
-      }
-      ;({ time } = yield { changed }); changed = false
-    } while (true)
-  }
-  
-  ;*hardDropAnimation(time: ms): GameAnimation {
-    do {
-      const { dropInterval, scoresHardDropPerBlock } = this
-      
-      const fallDepth = Math.floor(this.elapsed(time) / dropInterval)
-      this.advance(fallDepth * dropInterval)
-      
-      const fallen = this.tetris.fallBy(fallDepth)
-      this.addScore(fallen * scoresHardDropPerBlock)
-      const changed = !!fallen
-      
-      if (!this.tetris.canMoveDown()) {
-        this.tetris.lockCurrentPiece()
-        return { changed, next: this.clearLinesAnimation(time) }
-      }
-      ;({ time } = yield { changed })
-    } while (true)
-  }
-  
-  ;*clearLinesAnimation(time: ms): GameAnimation {
-    const lines = this.tetris.getFullLines()
-    if (!lines.length) return { changed: false, next: this.spawnNextPieceAnimation(time) }
-    
-    let changed = false
-    do {
-      const { clearLinesDelay, linesToLvlUp } = this
-      
-      if (this.tickFor(clearLinesDelay, time)) {
-        this.tetris.clearLines(lines)
-        const prevLines = this.lines
-        
-        this.lines += lines.length
-        
-        this.level += Math.floor(this.lines / linesToLvlUp) - Math.floor(prevLines / linesToLvlUp)
-        
-        this.addScore(this.getScoresClearLines(lines.length))
-        if (this.tetris.field.bottomEmpty) this.addScore(this.scoresAllClear)
-        
-        changed = !!lines.length
-        break
-      }
-      ;({ time } = yield { changed }); changed = false
-    } while (true)
-    
-    do {
-      const { removeLinesDelay } = this
-      if (this.tickFor(removeLinesDelay, time)) {
-        this.tetris.removeLines(lines)
-        return { changed: !!lines.length, next: this.spawnNextPieceAnimation(time) }
-      }
-      ;({ time } = yield { changed }); changed = false
-    } while (true)
-  }
-  
-  ;*spawnNextPieceAnimation(time: ms): GameAnimation {
-    do {
-      const { entryDelay } = this
-      if (this.tickFor(entryDelay, time)) break
-      ;({ time } = yield { changed: false })
-    } while (true)
-    
-    const spawned = this.tetris.spawnNextPiece()
-    if (!spawned) {
-      this.gameOver = true
-      return { changed: false }
-    }
-    
-    return { changed: true, next: this.fallAnimation(time) }
-  }
   
   
   
@@ -517,7 +288,7 @@ export class Game {
   moveUp() {
     if (!this.allowPlayerAction) return
     const moved = this.tetris.moveUp()
-    if (moved) this.animating = this.fallAnimation(getDocTime())
+    if (moved) this.animating = fallAnimation(this, getDocTime())
     this.processPlayerAction(moved)
   }
   rotateLeft() {
@@ -534,10 +305,258 @@ export class Game {
     if (!this.allowPlayerAction) return
     const time = getDocTime()
     this.setTime(time)
-    this.nextAnimation(this.hardDropAnimation(time))
+    this.nextAnimation(hardDropAnimation(this, time))
   }
   
 }
+
+
+
+// Animations
+function *fallAnimation(game: Game, time: ms): GameAnimation {
+  game.allowMove = true
+  const { fallInterval } = game
+  const multisteps = [{ step: fallInterval }]
+  const lastActionAt = StepTimer.of(time, multisteps)
+  
+  let changed = false
+  
+  const onChange = (time: number) => {
+    game.lastActionAt = time
+    changed = true
+  }
+  
+  do {
+    const prevLastActionAt = lastActionAt.copy()
+    const { time: t, dCnt } = lastActionAt.forwardTo(time)
+    if (dCnt) {
+      const realDCnt = game.tetris.fallBy(dCnt)
+      if (realDCnt) {
+        const { time: t, dCnt } = prevLastActionAt.forwardByCnt(realDCnt)
+        onChange(t)
+      }
+    }
+    
+    const canFall = game.tetris.canMoveDown()
+    if (!canFall) return { changed, next: lockDelayAnimation(game, time) }
+    
+    ;({ time } = yield { changed })
+  } while (true)
+}
+
+function *softDropAnimation(game: Game, time: ms): GameAnimation {
+  game.allowMove = true
+  const { softDropInterval } = game
+  const multisteps = [{ step: 0, cnt: 1 }, { step: softDropInterval }]
+  const lastActionAt = StepTimer.of(time, multisteps)
+  
+  let changed = false
+  
+  const onChange = (time: number) => {
+    game.lastActionAt = time
+    changed = true
+  }
+  
+  do {
+    const prevLastActionAt = lastActionAt.copy()
+    const { time: t, dCnt } = lastActionAt.forwardTo(time)
+    if (dCnt) {
+      const realDCnt = game.tetris.fallBy(dCnt)
+      if (realDCnt) {
+        const { time: t, dCnt } = prevLastActionAt.forwardByCnt(realDCnt)
+        onChange(t)
+      }
+    }
+    
+    const canFall = game.tetris.canMoveDown()
+    if (!canFall) return { changed, next: lockDelayAnimation(game, time) }
+    
+    ;({ time } = yield { changed })
+  } while (true)
+}
+
+// TODO Check it works correctly
+function *lockDelayAnimation(game: Game, time: ms): GameAnimation {
+  game.allowMove = true
+  let playerActionsCnt = 0
+  let dPlayerActionsCnt = 0
+  do {
+    const { lockDelay, lockDelayMaxPlayerActions } = game
+    
+    const anyLastActionAt = Math.max(game.lastActionAt, game.lastPlayerActionAt)
+    game.setTime(anyLastActionAt)
+    
+    const fallen = game.tetris.moveDown()
+    if (fallen) return { changed: true, next: fallAnimation(game, time) }
+    
+    const locked = game.elapsed(time) >= lockDelay ||
+      // TODO
+      playerActionsCnt >= lockDelayMaxPlayerActions
+    if (locked) {
+      game.tetris.lockCurrentPiece()
+      game.advance(lockDelay)
+      return { changed: false, next: clearLinesAnimation(game, time) }
+    }
+    
+    // TODO
+    const playerMadeMove = !!dPlayerActionsCnt
+    if (playerMadeMove) {
+      // TODO
+      game.setTime(time)
+    }
+    
+    ;({ time, dPlayerActionsCnt } = yield { changed: false })
+    playerActionsCnt += dPlayerActionsCnt
+  } while (true)
+}
+
+function *moveLeftAnimation(game: Game, time: ms): GameAnimation {
+  const { moveLeftRightDas, moveLeftRightArr } = game
+  const multisteps = [
+    { step: 0, cnt: 1 },
+    { step: moveLeftRightDas, cnt: 1 },
+    { step: moveLeftRightArr },
+  ]
+  const lastActionAt = StepTimer.of(time, multisteps)
+  
+  let changed = false
+  
+  const onChange = (time: number, cnt: count) => {
+    game.lastPlayerActionAt = time
+    game.playerActionsCnt += cnt
+    changed = true
+  }
+  
+  
+  do {
+    const { allowMove } = game
+    if (allowMove) {
+      const prevLastActionAt = lastActionAt.copy()
+      const { time: t, dCnt } = lastActionAt.forwardTo(time)
+      if (dCnt) {
+        let realDCnt = 0
+        for (; realDCnt < dCnt; realDCnt++) {
+          // TODO make field method to move at once
+          if (!game.tetris.moveLeft()) break
+        }
+        if (realDCnt) {
+          const { time: t, dCnt } = prevLastActionAt.forwardByCnt(realDCnt)
+          onChange(t, dCnt)
+        }
+      }
+    }
+    ;({ time } = yield { changed }); changed = false
+  } while (true)
+}
+
+function *moveRightAnimation(game: Game, time: ms): GameAnimation {
+  const { moveLeftRightDas, moveLeftRightArr } = game
+  const multisteps = [
+    { step: 0, cnt: 1 },
+    { step: moveLeftRightDas, cnt: 1 },
+    { step: moveLeftRightArr },
+  ]
+  const lastActionAt = StepTimer.of(time, multisteps)
+  
+  let changed = false
+  
+  const onChange = (time: number, cnt: count) => {
+    game.lastPlayerActionAt = time
+    game.playerActionsCnt += cnt
+    changed = true
+  }
+  
+  do {
+    const { allowMove } = game
+    if (allowMove) {
+      const prevLastActionAt = lastActionAt.copy()
+      const { time: t, dCnt } = lastActionAt.forwardTo(time)
+      if (dCnt) {
+        let realDCnt = 0
+        for (; realDCnt < dCnt; realDCnt++) {
+          // TODO make field method to move at once
+          if (!game.tetris.moveRight()) break
+        }
+        if (realDCnt) {
+          const { time: t, dCnt } = prevLastActionAt.forwardByCnt(realDCnt)
+          onChange(t, dCnt)
+        }
+      }
+    }
+    ;({ time } = yield { changed }); changed = false
+  } while (true)
+}
+
+function *hardDropAnimation(game: Game, time: ms): GameAnimation {
+  do {
+    const { dropInterval, scoresHardDropPerBlock } = game
+    
+    const fallDepth = Math.floor(game.elapsed(time) / dropInterval)
+    game.advance(fallDepth * dropInterval)
+    
+    const fallen = game.tetris.fallBy(fallDepth)
+    game.addScore(fallen * scoresHardDropPerBlock)
+    const changed = !!fallen
+    
+    if (!game.tetris.canMoveDown()) {
+      game.tetris.lockCurrentPiece()
+      return { changed, next: clearLinesAnimation(game, time) }
+    }
+    ;({ time } = yield { changed })
+  } while (true)
+}
+
+function *clearLinesAnimation(game: Game, time: ms): GameAnimation {
+  const lines = game.tetris.getFullLines()
+  if (!lines.length) return { changed: false, next: spawnNextPieceAnimation(game, time) }
+  
+  let changed = false
+  do {
+    const { clearLinesDelay, linesToLvlUp } = game
+    
+    if (game.tickFor(clearLinesDelay, time)) {
+      game.tetris.clearLines(lines)
+      const prevLines = game.lines
+      
+      game.lines += lines.length
+      
+      game.level += Math.floor(game.lines / linesToLvlUp) - Math.floor(prevLines / linesToLvlUp)
+      
+      game.addScore(game.getScoresClearLines(lines.length))
+      if (game.tetris.field.bottomEmpty) game.addScore(game.scoresAllClear)
+      
+      changed = !!lines.length
+      break
+    }
+    ;({ time } = yield { changed }); changed = false
+  } while (true)
+  
+  do {
+    const { removeLinesDelay } = game
+    if (game.tickFor(removeLinesDelay, time)) {
+      game.tetris.removeLines(lines)
+      return { changed: !!lines.length, next: spawnNextPieceAnimation(game, time) }
+    }
+    ;({ time } = yield { changed }); changed = false
+  } while (true)
+}
+
+function *spawnNextPieceAnimation(game: Game, time: ms): GameAnimation {
+  do {
+    const { entryDelay } = game
+    if (game.tickFor(entryDelay, time)) break
+    ;({ time } = yield { changed: false })
+  } while (true)
+  
+  const spawned = game.tetris.spawnNextPiece()
+  if (!spawned) {
+    game.gameOver = true
+    return { changed: false }
+  }
+  
+  return { changed: true, next: fallAnimation(game, time) }
+}
+
 
 
 
@@ -556,7 +575,6 @@ export type PlayerActionType =
 
 export type PlayerAction = { type: PlayerActionType, actionAt: ms }
 export type PlayerActionsQueue = PlayerAction[]
-// TODO add sort that if time is equals so start becomes before stop
 const playerActionsComparator: Comparator<PlayerAction> = (a, b) => {
   return compareNumbers(a.actionAt, b.actionAt)
 }
@@ -579,3 +597,20 @@ export type GameAnimation = IteratorObject<
   GameAnimationResult, // return <value>
   GameAnimationParams // <value> = yield; iterator.next(<value>)
 > | undefined
+
+
+
+export type Animations = {
+  spawnNextPiece: GameAnimation | undefined
+  clearLines: GameAnimation | undefined
+  hardDrop: GameAnimation | undefined
+  
+  lockDelay: GameAnimation | undefined
+  
+  softDrop: GameAnimation | undefined
+  
+  fall: GameAnimation | undefined
+  
+  moveLeft: GameAnimation | undefined
+  moveRight: GameAnimation | undefined
+}
