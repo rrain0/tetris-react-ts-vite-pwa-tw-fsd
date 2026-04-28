@@ -31,7 +31,7 @@ export default function IngameControls(props: IngameControlsProps) {
   const fscreen = use(FullscreenContext)
   
   const onClickFscreen = useOnClick(!fscreen.enabled ? fscreen.enter : fscreen.exit)
-  const onClickPause = useOnClick(() => { })
+  //const onClickPause = useOnClick(() => { })
   
   return (
     <div cn='jus-end flex row start-end no-pointer container-size' st={containerSt}>
@@ -49,9 +49,9 @@ export default function IngameControls(props: IngameControlsProps) {
           </IngameControlsButton>
         )}
         
-        <IngameControlsButton cn='flexrc center2' st={controlsIcSt} {...onClickPause}>
+        {/* <IngameControlsButton cn='flexrc center2' st={controlsIcSt} {...onClickPause}>
           <PauseIc cn='sz-full'/>
-        </IngameControlsButton>
+        </IngameControlsButton> */}
       
       </div>
     </div>

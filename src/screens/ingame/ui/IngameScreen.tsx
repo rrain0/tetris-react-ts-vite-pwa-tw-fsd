@@ -225,6 +225,12 @@ function useAppActions(game: Game) {
       if (isKeyboardKeyAction(inputLayout, 'ingame', 'moveRight', ev.key)) {
         game.startMoveRight()
       }
+      if (isKeyboardKeyAction(inputLayout, 'ingame', 'rotateLeft', ev.key)) {
+        game.startRotateLeft()
+      }
+      if (isKeyboardKeyAction(inputLayout, 'ingame', 'rotateRight', ev.key)) {
+        game.startRotateRight()
+      }
       if (isKeyboardKeyAction(inputLayout, 'ingame', 'moveUp', ev.key)) {
         game.startMoveUp()
       }
@@ -239,6 +245,12 @@ function useAppActions(game: Game) {
       if (isKeyboardKeyAction(inputLayout, 'ingame', 'moveRight', ev.key)) {
         game.stopMoveRight()
       }
+      if (isKeyboardKeyAction(inputLayout, 'ingame', 'rotateLeft', ev.key)) {
+        game.stopRotateLeft()
+      }
+      if (isKeyboardKeyAction(inputLayout, 'ingame', 'rotateRight', ev.key)) {
+        game.stopRotateRight()
+      }
       if (isKeyboardKeyAction(inputLayout, 'ingame', 'moveUp', ev.key)) {
         game.stopMoveUp()
       }
@@ -249,12 +261,6 @@ function useAppActions(game: Game) {
   })
   
   const onKeyboardKeyDownClick = useKeyDownClick(ev => {
-    if (isKeyboardKeyAction(inputLayout, 'ingame', 'rotateLeft', ev.code)) {
-      game.rotateLeft()
-    }
-    if (isKeyboardKeyAction(inputLayout, 'ingame', 'rotateRight', ev.code)) {
-      game.rotateRight()
-    }
     if (isKeyboardKeyAction(inputLayout, 'ingame', 'hardDrop', ev.code)) {
       game.startHardDrop()
     }
@@ -268,6 +274,12 @@ function useAppActions(game: Game) {
       }
       if (isGamepadKeyAction(inputLayout, 'ingame', 'moveRight', ev.signalId)) {
         game.startMoveRight()
+      }
+      if (isGamepadKeyAction(inputLayout, 'ingame', 'rotateLeft', ev.signalId)) {
+        game.startRotateLeft()
+      }
+      if (isGamepadKeyAction(inputLayout, 'ingame', 'rotateRight', ev.signalId)) {
+        game.startRotateRight()
       }
       if (isGamepadKeyAction(inputLayout, 'ingame', 'moveDown', ev.signalId)) {
         game.startSoftDrop()
@@ -283,6 +295,12 @@ function useAppActions(game: Game) {
       if (isGamepadKeyAction(inputLayout, 'ingame', 'moveRight', ev.signalId)) {
         game.stopMoveRight()
       }
+      if (isGamepadKeyAction(inputLayout, 'ingame', 'rotateLeft', ev.signalId)) {
+        game.stopRotateLeft()
+      }
+      if (isGamepadKeyAction(inputLayout, 'ingame', 'rotateRight', ev.signalId)) {
+        game.stopRotateRight()
+      }
       if (isGamepadKeyAction(inputLayout, 'ingame', 'moveDown', ev.signalId)) {
         game.stopSoftDrop()
       }
@@ -293,12 +311,6 @@ function useAppActions(game: Game) {
   })
   
   useGamepadDownClick(ev => {
-    if (isGamepadKeyAction(inputLayout, 'ingame', 'rotateLeft', ev.signalId)) {
-      game.rotateLeft()
-    }
-    if (isGamepadKeyAction(inputLayout, 'ingame', 'rotateRight', ev.signalId)) {
-      game.rotateRight()
-    }
     if (isGamepadKeyAction(inputLayout, 'ingame', 'hardDrop', ev.signalId)) {
       game.startHardDrop()
     }

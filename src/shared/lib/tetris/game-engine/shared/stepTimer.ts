@@ -32,9 +32,11 @@ export class StepTimer {
     let { multistepI, stepI } = this
     let dCnt = 0, dTime = 0, time = this.startAt + this.duration
     
-    if (to < this.startAt + this.duration) return { dCnt, dTime, time, multistepI, stepI }
+    if (to < this.startAt + this.duration) {
+      return { dCnt, dTime, time, multistepI, stepI }
+    }
     
-    while (true) {
+    while (multistepI < multisteps.length) {
       const { step, cnt } = multisteps[multistepI]
       
       const infiniteRepeat = isundef(cnt)
@@ -87,7 +89,7 @@ export class StepTimer {
     let { multistepI, stepI } = this
     let dCnt = 0, dTime = 0, time = this.startAt + this.duration
     
-    while (count > 0) {
+    while (count > 0 && multistepI < multisteps.length) {
       const { step, cnt } = multisteps[multistepI]
       
       const infiniteRepeat = isundef(cnt)

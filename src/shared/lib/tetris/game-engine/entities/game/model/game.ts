@@ -142,6 +142,8 @@ export class Game {
     
     moveLeft: undefined,
     moveRight: undefined,
+    rotateLeft: undefined,
+    rotateRight: undefined,
   }
   
   isPause(): this is { get pausedAt(): ms; set pausedAt(pausedAt: ms | undefined) } {
@@ -202,6 +204,7 @@ export class Game {
       
       
       
+      
       if (type === 'startMoveLeft') {
         anims.moveLeft ??= moveLeftAnimation(this, animParams)
       }
@@ -213,6 +216,18 @@ export class Game {
       }
       else if (type === 'stopMoveRight') {
         anims.moveRight = undefined
+      }
+      else if (type === 'startRotateLeft') {
+        anims.rotateLeft ??= rotateLeftAnimation(this, animParams)
+      }
+      else if (type === 'stopRotateLeft') {
+        anims.rotateLeft = undefined
+      }
+      else if (type === 'startRotateRight') {
+        anims.rotateRight ??= rotateRightAnimation(this, animParams)
+      }
+      else if (type === 'stopRotateRight') {
+        anims.rotateRight = undefined
       }
       else if (type === 'startSoftDrop') {
         anims.softDrop ??= softDropAnimation(this, animParams)
@@ -229,6 +244,7 @@ export class Game {
       else if (type === 'startHardDrop') {
         anims.hardDrop ??= hardDropAnimation(this, animParams)
       }
+      
       
       
       
@@ -263,6 +279,18 @@ export class Game {
   stopMoveRight() {
     this.playerActions.push({ type: 'stopMoveRight', actionAt: getDocTime() })
   }
+  startRotateLeft() {
+    this.playerActions.push({ type: 'startRotateLeft', actionAt: getDocTime() })
+  }
+  stopRotateLeft() {
+    this.playerActions.push({ type: 'stopRotateLeft', actionAt: getDocTime() })
+  }
+  startRotateRight() {
+    this.playerActions.push({ type: 'startRotateRight', actionAt: getDocTime() })
+  }
+  stopRotateRight() {
+    this.playerActions.push({ type: 'stopRotateRight', actionAt: getDocTime() })
+  }
   startMoveUp() {
     this.playerActions.push({ type: 'startMoveUp', actionAt: getDocTime() })
   }
@@ -279,26 +307,6 @@ export class Game {
     this.playerActions.push({ type: 'startHardDrop', actionAt: getDocTime() })
   }
   
-  
-  
-  // TODO refactor & remove
-  // Player actions
-  // processPlayerAction(moved: boolean) {
-  //   if (moved) {
-  //     this.lastPlayerActionAt = getDocTime()
-  //     this.playerActionsCnt++
-  //   }
-  // }
-  // rotateLeft() {
-  //   if (!this.allowPlayerAction) return
-  //   const moved = this.tetris.rotateLeft()
-  //   this.processPlayerAction(moved)
-  // }
-  // rotateRight() {
-  //   if (!this.allowPlayerAction) return
-  //   const moved = this.tetris.rotateRight()
-  //   this.processPlayerAction(moved)
-  // }
 }
 
 
@@ -540,6 +548,72 @@ function *moveRightAnimation(game: Game, params: GameAnimationParams): GameAnima
   } while (true)
 }
 
+function *rotateLeftAnimation(game: Game, params: GameAnimationParams): GameAnimation {
+  let { time, canPlayerMove } = params
+  const multisteps = [{ step: 0, cnt: 1 }]
+  const lastActionAt = StepTimer.of(time, multisteps)
+  
+  let changed = false
+  
+  const onChange = (time: number, cnt: count) => {
+    game.lastPlayerActionAt = time
+    game.playerActionsCnt += cnt
+    changed = true
+  }
+  
+  do {
+    if (canPlayerMove) {
+      const prevLastActionAt = lastActionAt.copy()
+      const { time: t, dCnt } = lastActionAt.forwardTo(time)
+      if (dCnt) {
+        let realDCnt = 0
+        for (; realDCnt < dCnt; realDCnt++) {
+          if (!game.tetris.rotateLeft()) break
+        }
+        if (realDCnt) {
+          const { time: t, dCnt } = prevLastActionAt.forwardByCnt(realDCnt)
+          onChange(t, dCnt)
+        }
+      }
+    }
+    params = yield { changed }; ({ time, canPlayerMove } = params)
+    changed = false
+  } while (true)
+}
+
+function *rotateRightAnimation(game: Game, params: GameAnimationParams): GameAnimation {
+  let { time, canPlayerMove } = params
+  const multisteps = [{ step: 0, cnt: 1 }]
+  const lastActionAt = StepTimer.of(time, multisteps)
+  
+  let changed = false
+  
+  const onChange = (time: number, cnt: count) => {
+    game.lastPlayerActionAt = time
+    game.playerActionsCnt += cnt
+    changed = true
+  }
+  
+  do {
+    if (canPlayerMove) {
+      const prevLastActionAt = lastActionAt.copy()
+      const { time: t, dCnt } = lastActionAt.forwardTo(time)
+      if (dCnt) {
+        let realDCnt = 0
+        for (; realDCnt < dCnt; realDCnt++) {
+          if (!game.tetris.rotateRight()) break
+        }
+        if (realDCnt) {
+          const { time: t, dCnt } = prevLastActionAt.forwardByCnt(realDCnt)
+          onChange(t, dCnt)
+        }
+      }
+    }
+    params = yield { changed }; ({ time, canPlayerMove } = params)
+    changed = false
+  } while (true)
+}
+
 function *hardDropAnimation(game: Game, params: GameAnimationParams): GameAnimation {
   let { time } = params
   const { hardDropInterval, scoresHardDropPerBlock } = game
@@ -650,12 +724,10 @@ export type PlayerActionType =
   | 'startMoveLeft' | 'stopMoveLeft'
   | 'startMoveRight' | 'stopMoveRight'
   | 'startMoveUp' | 'stopMoveUp'
+  | 'startRotateLeft' | 'stopRotateLeft'
+  | 'startRotateRight' | 'stopRotateRight'
   | 'startSoftDrop' | 'stopSoftDrop'
   | 'startHardDrop'
-  
-  | 'moveUp'
-  | 'rotateLeft'
-  | 'rotateRight'
 
 export type PlayerAction = { type: PlayerActionType, actionAt: ms }
 export type PlayerActionsQueue = PlayerAction[]
@@ -700,6 +772,8 @@ const animationNamesOrdered = [
   
   'moveLeft',
   'moveRight',
+  'rotateLeft',
+  'rotateRight',
 ] as const
 
 export type GameAnimationNames = typeof animationNamesOrdered[number]
