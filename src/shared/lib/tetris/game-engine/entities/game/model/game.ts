@@ -26,6 +26,7 @@ export class Game {
   
   fallIntervalForLvl1: ms = 1000
   softDropSpeedMult: number = 20
+  hardDropIntervalForLvl1: ms = 10
   
   // Delay after first left/right move
   // DAS - Delay After Shift
@@ -34,8 +35,6 @@ export class Game {
   // ARR - Auto Repeat Rate
   moveArr: ms = 33
   
-  dropIntervalForLvl1: ms = 10
-  
   lockDelayLvl1: ms = 500
   lockDelayMaxPlayerActions: count = 15
   
@@ -43,9 +42,15 @@ export class Game {
   removeLinesDelay: ms = 400
   
   get lockDelay(): ms { return this.lockDelayLvl1 }
-  get fallInterval(): ms { return this.fallIntervalForLvl1 * (20 - Math.min(20, this.level)) / 20 }
-  get dropInterval(): ms { return this.dropIntervalForLvl1 * (20 - Math.min(20, this.level)) / 20 }
+  get fallInterval(): ms {
+    return this.fallIntervalForLvl1 * (20 - Math.min(20, this.level)) / 20
+  }
+  get hardDropInterval(): ms {
+    return this.hardDropIntervalForLvl1 * (20 - Math.min(20, this.level)) / 20
+  }
   get softDropInterval(): ms { return this.fallInterval / this.softDropSpeedMult }
+  
+  
   
   
   // Config - scores
@@ -74,6 +79,7 @@ export class Game {
   
   
   
+  
   // Progress
   hiScore: count = 0
   lines: count = 0
@@ -88,6 +94,7 @@ export class Game {
   
   
   
+  
   // Listeners
   listeners: Set<Cb> = setOf()
   onChange(listener: Cb) { this.listeners.add(listener) }
@@ -96,14 +103,30 @@ export class Game {
   
   
   
-  // Running state & actions
+  
+  // Running state
   gameOver = false
   pausedAt: ms | undefined = 0
   rafPaused = true
   
   // TODO
-  animating: GameAnimation | undefined
   lastActionAt: ms = 0
+  setTime(time: ms) { this.lastActionAt = time }
+  elapsed(to: ms) { return to - this.lastActionAt }
+  advance(time: ms) { this.lastActionAt += time }
+  tickFor(advance: ms, now: ms): boolean {
+    if (this.lastActionAt + advance <= now) { this.advance(advance); return true }
+    return false
+  }
+  tickTo(to: ms, now: ms): boolean {
+    if (to <= now) { this.setTime(to); return true }
+    return false
+  }
+  
+  // TODO
+  playerActions: PlayerActionsQueue = []
+  playerActionsCnt: count = 0
+  lastPlayerActionAt: ms = 0
   
   animations: GameAnimations = {
     spawnNextPiece: undefined,
@@ -121,35 +144,11 @@ export class Game {
     moveRight: undefined,
   }
   
-  
-  // TODO
-  softDropping: GameAnimation | undefined
-  
-  // TODO
-  movingLeft: GameAnimation | undefined
-  movingRight: GameAnimation | undefined
-  
-  // TODO
-  playerActions: PlayerActionsQueue = []
-  playerActionsCnt: count = 0
-  lastPlayerActionAt: ms = 0
-  
-  
   isPause(): this is { get pausedAt(): ms; set pausedAt(pausedAt: ms | undefined) } {
     return isdef(this.pausedAt)
   }
-  get isPlaying() { return !this.isPause() && !this.gameOver }
-  
-  setTime(time: ms) { this.lastActionAt = time }
-  elapsed(to: ms) { return to - this.lastActionAt }
-  advance(time: ms) { this.lastActionAt += time }
-  tickFor(advance: ms, now: ms): boolean {
-    if (this.lastActionAt + advance <= now) { this.advance(advance); return true }
-    return false
-  }
-  tickTo(to: ms, now: ms): boolean {
-    if (to <= now) { this.setTime(to); return true }
-    return false
+  get isPlaying() {
+    return !this.isPause() && !this.gameOver
   }
   
   resume() {
@@ -163,11 +162,14 @@ export class Game {
       }
     }
   }
-  pause() { this.pausedAt = getDocTime() }
+  pause() {
+    this.pausedAt = getDocTime()
+  }
   
   
   
-  // Lifecycle methods
+  
+  // Game loop
   run = (time: ms) => {
     if (!this.isPlaying) { this.rafPaused = true; return }
     
@@ -248,7 +250,6 @@ export class Game {
   
   
   
-  
   // Player actions
   startMoveLeft() {
     this.playerActions.push({ type: 'startMoveLeft', actionAt: getDocTime() })
@@ -280,20 +281,13 @@ export class Game {
   
   
   
-  // TODO how to process them?
+  // TODO refactor & remove
   // Player actions
-  // TODO
   // processPlayerAction(moved: boolean) {
   //   if (moved) {
   //     this.lastPlayerActionAt = getDocTime()
   //     this.playerActionsCnt++
   //   }
-  // }
-  // moveUp() {
-  //   if (!this.allowPlayerAction) return
-  //   const moved = this.tetris.moveUp()
-  //   if (moved) this.animating = fallAnimation(this, getDocTime())
-  //   this.processPlayerAction(moved)
   // }
   // rotateLeft() {
   //   if (!this.allowPlayerAction) return
@@ -305,8 +299,8 @@ export class Game {
   //   const moved = this.tetris.rotateRight()
   //   this.processPlayerAction(moved)
   // }
-  
 }
+
 
 
 
@@ -548,8 +542,8 @@ function *moveRightAnimation(game: Game, params: GameAnimationParams): GameAnima
 
 function *hardDropAnimation(game: Game, params: GameAnimationParams): GameAnimation {
   let { time } = params
-  const { dropInterval, scoresHardDropPerBlock } = game
-  const multisteps = [{ step: 0, cnt: 1 }, { step: dropInterval }]
+  const { hardDropInterval, scoresHardDropPerBlock } = game
+  const multisteps = [{ step: 0, cnt: 1 }, { step: hardDropInterval }]
   const lastActionAt = StepTimer.of(time, multisteps)
   
   let changed = false
