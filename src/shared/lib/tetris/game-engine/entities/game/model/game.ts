@@ -4,9 +4,12 @@ import { Tetris } from '@@/lib/tetris/tetris-engine/entities/tetris/model/tetris
 import { getDocTime } from '@@/utils/dom/getDocTime.ts'
 import { type Comparator, compareAny, compareNumbers } from '@@/utils/js/compare.ts'
 import { setOf } from '@@/utils/js/factory.ts'
-import { type Cb, isdef, type Opt, type PartDefined, type RecordUndef } from '@@/utils/ts/ts.ts'
+import { type Cb, isdef, type Opt, type RecordUndef } from '@@/utils/ts/ts.ts'
 
 
+
+// TODO Pause !!! - internal timers inside generators does not update if resumed after pause
+//  maybe need to send them 'time - pausedFor', or send 'skip' parameter to generators
 
 // TODO Refactor - extract common animation code
 // TODO Add scores for T-Spins
@@ -111,21 +114,8 @@ export class Game {
   pausedAt: ms | undefined = 0
   rafPaused = true
   
-  // TODO
-  lastActionAt: ms = 0
-  setTime(time: ms) { this.lastActionAt = time }
-  elapsed(to: ms) { return to - this.lastActionAt }
-  advance(time: ms) { this.lastActionAt += time }
-  tickFor(advance: ms, now: ms): boolean {
-    if (this.lastActionAt + advance <= now) { this.advance(advance); return true }
-    return false
-  }
-  tickTo(to: ms, now: ms): boolean {
-    if (to <= now) { this.setTime(to); return true }
-    return false
-  }
-  
   playerActions: PlayerActionsQueue = []
+  // TODO Pause
   lastPlayerActionsAt: ms[] = []
   
   animations: GameAnimations = {
@@ -156,7 +146,8 @@ export class Game {
   resume() {
     if (this.isPause() && !this.gameOver) {
       const pausedFor = getDocTime() - this.pausedAt
-      this.advance(pausedFor)
+      // TODO Pause
+      //this.advance(pausedFor)
       this.pausedAt = undefined
       if (this.rafPaused) {
         this.rafPaused = false
@@ -327,11 +318,6 @@ function *fallAnimation(game: Game, params: GameAnimationParams): GameAnimation 
   const multisteps = [{ step: fallInterval }]
   const lastActionAt = StepTimer.of(time, multisteps)
   
-  
-  const onChange = (time: number) => {
-    game.lastActionAt = time
-  }
-  
   do {
     let changed = false
     const prevLastActionAt = lastActionAt.copy()
@@ -341,7 +327,6 @@ function *fallAnimation(game: Game, params: GameAnimationParams): GameAnimation 
       if (realDCnt) {
         const { time: t, dCnt } = prevLastActionAt.forwardByCnt(realDCnt)
         changed = true
-        onChange(t)
       }
     }
     
@@ -404,10 +389,6 @@ function *softDropAnimation(game: Game, params: GameAnimationParams): GameAnimat
   const multisteps = [{ step: 0, cnt: 1 }, { step: softDropInterval }]
   const lastActionAt = StepTimer.of(time, multisteps)
   
-  const onChange = (time: number) => {
-    game.lastActionAt = time
-  }
-  
   do {
     let changed = false
     let next
@@ -421,7 +402,6 @@ function *softDropAnimation(game: Game, params: GameAnimationParams): GameAnimat
           game.addScore(realDCnt * scoresSoftDropPerBlock)
           const { time: t, dCnt } = prevLastActionAt.forwardByCnt(realDCnt)
           changed = true
-          onChange(t)
         }
       }
       
@@ -436,9 +416,10 @@ function *softDropAnimation(game: Game, params: GameAnimationParams): GameAnimat
 
 // TODO Check it works correctly
 function *lockDelayAnimation(game: Game, params: GameAnimationParams): GameAnimation {
-  let { time, lastPlayerActionsAt } = params
+  let { time } = params
+  const { lastPlayerActionsAt } = params
   let playerActionsCnt = 0
-  let lastLockDelayStartAt = Timer.at(time)
+  const lastLockDelayStartAt = Timer.at(time)
   
   do {
     const { lockDelay, lockDelayMaxPlayerActions } = game
@@ -458,8 +439,6 @@ function *lockDelayAnimation(game: Game, params: GameAnimationParams): GameAnima
       ) {
         playerActionsCnt++
         lastLockDelayStartAt.time = lastPlayerActionAt
-        // TODO remove
-        game.setTime(lastPlayerActionAt)
       }
     }
     
@@ -467,10 +446,7 @@ function *lockDelayAnimation(game: Game, params: GameAnimationParams): GameAnima
       playerActionsCnt >= lockDelayMaxPlayerActions
     if (locked) {
       game.tetris.lockCurrentPiece()
-      // TODO remove
       lastLockDelayStartAt.advanceBy(lockDelay)
-      // TODO remove
-      game.advance(lockDelay)
       return {
         changed: false,
         next: { clearLines: clearLinesAnimation(game, params) },
@@ -616,11 +592,6 @@ function *hardDropAnimation(game: Game, params: GameAnimationParams): GameAnimat
   const multisteps = [{ step: 0, cnt: 1 }, { step: hardDropInterval }]
   const lastActionAt = StepTimer.of(time, multisteps)
   
-  
-  const onChange = (time: number) => {
-    game.lastActionAt = time
-  }
-  
   do {
     let changed = false
     
@@ -632,7 +603,6 @@ function *hardDropAnimation(game: Game, params: GameAnimationParams): GameAnimat
         game.addScore(realDCnt * scoresHardDropPerBlock)
         const { time: t, dCnt } = prevLastActionAt.forwardByCnt(realDCnt)
         changed = true
-        onChange(t)
       }
     }
     
@@ -652,18 +622,20 @@ function *hardDropAnimation(game: Game, params: GameAnimationParams): GameAnimat
 
 function *clearLinesAnimation(game: Game, params: GameAnimationParams): GameAnimation {
   let { time } = params
+  
   const lines = game.tetris.getFullLines()
   if (!lines.length) return {
     changed: false,
     next: { spawnNextPiece: spawnNextPieceAnimation(game, params) },
   }
   
+  const lastActionAt = Timer.at(time)
   let changed = false
   
   do {
     const { clearLinesDelay, linesToLvlUp } = game
     
-    if (game.tickFor(clearLinesDelay, time)) {
+    if (lastActionAt.tickBy(clearLinesDelay, time)) {
       game.tetris.clearLines(lines)
       const prevLines = game.lines
       
@@ -684,7 +656,7 @@ function *clearLinesAnimation(game: Game, params: GameAnimationParams): GameAnim
   
   do {
     const { removeLinesDelay } = game
-    if (game.tickFor(removeLinesDelay, time)) {
+    if (lastActionAt.tickBy(removeLinesDelay, time)) {
       game.tetris.removeLines(lines)
       return {
         changed: !!lines.length,
@@ -699,9 +671,11 @@ function *clearLinesAnimation(game: Game, params: GameAnimationParams): GameAnim
 
 function *spawnNextPieceAnimation(game: Game, params: GameAnimationParams): GameAnimation {
   let { time } = params
+  const lastActionAt = Timer.at(time)
+  
   do {
     const { entryDelay } = game
-    if (game.tickFor(entryDelay, time)) break
+    if (lastActionAt.tickBy(entryDelay, time)) break
     params = yield { changed: false }
     ;({ time } = params)
   } while (true)
