@@ -68,14 +68,14 @@ if (!envIsDev) {
 
 
 // Intercept manifest.json to cache & generate dynamic manifest
-{
+/* {
   const manifestStrategy = new StaleWhileRevalidate({
     cacheName: 'manifest',
     plugins: [new ExpirationPlugin({ maxEntries: 130 })] as WorkboxPlugin[],
   })
   
-  const getPwaId = (projectMode: string) => {
-    const mode = projectMode ? `-${projectMode}` : ''
+  const getPwaId = (buildMode: string) => {
+    const mode = buildMode ? `-${buildMode}` : ''
     return `tetris${mode}-react`
   }
   
@@ -84,11 +84,11 @@ if (!envIsDev) {
     async ({ request, event, url, params }) => {
       const { searchParams } = url
       const response = await manifestStrategy.handle({ request, event })
-      let manifest = await response.json()
+      let manifest = await response.json() as Record<string, any>
       
       //console.log('manifest', manifest)
       
-      const projectModeMap: Record<string, any> = {
+      const buildModeMap: Record<string, any> = {
         development: {
           id: getPwaId('development'),
           short_name: `Dev ${manifest.short_name}`,
@@ -100,8 +100,8 @@ if (!envIsDev) {
         },
       }
       
-      const projectMode = searchParams.get('projectMode') ?? ''
-      manifest = { ...manifest, ...projectModeMap[projectMode] }
+      const buildMode = searchParams.get('buildMode') ?? ''
+      manifest = { ...manifest, ...buildModeMap[buildMode] }
       
       return new Response(JSON.stringify(manifest), {
         // Save original headers
@@ -109,7 +109,7 @@ if (!envIsDev) {
       })
     }
   )
-}
+} */
 
 
 

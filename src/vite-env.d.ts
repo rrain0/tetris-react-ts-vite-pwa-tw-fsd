@@ -6,5 +6,5 @@
 
 
 declare interface ImportMetaEnv {
-  BUILD_DATE: string
+  BUILD_VER: string
 }

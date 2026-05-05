@@ -1,5 +1,5 @@
 import { fileURLToPath, URL } from 'node:url'
-import { defineConfig } from 'vite'
+import { defineConfig, type Plugin } from 'vite'
 import tailwindcss from '@tailwindcss/vite'
 import react, { reactCompilerPreset } from '@vitejs/plugin-react'
 import babel from '@rolldown/plugin-babel'
@@ -10,29 +10,88 @@ import legacy from '@vitejs/plugin-legacy'
 
 
 
-// https://vite.dev/config/
-export default defineConfig(({ command, mode }) => {
-  
-  const config = {
-    reactDevServerPort: 40109,
+const appBuildConfig = {
+  development: {
+    port: 40109,
+  },
+  appHeadersByLang: {
+    'en': {
+      appLang: 'en-US',
+      appName: 'Tetris',
+      appDescription: 'Tetris Game',
+    },
+  },
+}
+
+function getAppBuildData(
+  buildMode: string,
+  buildLang: string,
+) {
+  const supportedModes = ['development', 'production'] as const
+  // Check if buildMode supported
+  if (!supportedModes.includes(buildMode)) {
+    throw new Error(
+      `Build buildMode [${buildMode}] is not supported, ` +
+      `supported modes are [${JSON.stringify(supportedModes)}]`)
   }
   
+  // Check if lang supported
+  const headersByLang = appBuildConfig.appHeadersByLang
+  const headers = headersByLang[buildLang]
+  if (!headers) throw new Error(
+    `Build appLang [${buildLang}] is not supported, ` +
+    `supported langs are [${JSON.stringify(Object.keys(headersByLang))}]`
+  )
+  
+  
+  let { appLang, appName, appDescription } = headers
+  
+  
+  // Modify headers by buildLang
+  if (buildMode === 'development') {
+    appName = 'Dev ' + headers.appName
+  }
+  
+  
+  // Create manifest search params by buildMode
+  let manifestSearchParams = new URLSearchParams({ buildMode }).toString()
+  if (manifestSearchParams) manifestSearchParams = '?' + manifestSearchParams
+  
+  
   const buildDate = new Date()
-  const buildDateStr = buildDate.toISOString()
+  const buildVer = `${buildMode}-${buildDate.toISOString()}-${buildLang}`
+  
+  
+  return { 
+    appLang, appName, appDescription, 
+    manifestSearchParams,
+    buildDate, buildVer,
+  }
+}
+
+
+
+// https://vite.dev/config/
+export default defineConfig(({ command, mode: buildMode }) => {
+  const {
+    appLang, appName, appDescription,
+    manifestSearchParams,
+    buildDate, buildVer,
+  } = getAppBuildData(buildMode, 'en')
   
   const envVarsRuntime: Record<string, string> = {
     // Add old-fashioned 'process.env.NODE_ENV' property to support legacy libs and node
-    'process.env.NODE_ENV': JSON.stringify(mode),
-    'import.meta.env.BUILD_DATE': JSON.stringify(buildDateStr),
+    'process.env.NODE_ENV': JSON.stringify(buildMode),
+    'import.meta.env.BUILD_VER': JSON.stringify(buildVer),
   }
   /*
-  if (mode === 'development') {
+  if (buildMode === 'development') {
     envVarsRuntime = { ...envVarsRuntime,
       'import.meta.env.BACKEND_HOST': JSON.stringify('80.87.194.16'),
       'import.meta.env.BACKEND_PORT': JSON.stringify('8000'),
     }
   }
-  if (mode === 'production') {
+  if (buildMode === 'production') {
     envVarsRuntime = { ...envVarsRuntime,
       'import.meta.env.BACKEND_HOST': JSON.stringify('80.87.194.16'),
       'import.meta.env.BACKEND_PORT': JSON.stringify('8000'),
@@ -64,12 +123,14 @@ export default defineConfig(({ command, mode }) => {
       // Expose app via IP address from local network
       host: true,
       // React dev server port
-      port: config.reactDevServerPort,
+      port: appBuildConfig.development.port,
       // Allow any host
       allowedHosts: true,
     },
     
     plugins: [
+      addHtmlAppHeadersPlugin(appLang, appName, appDescription, manifestSearchParams),
+      
       tailwindcss(),
       
       react(),
@@ -101,6 +162,26 @@ export default defineConfig(({ command, mode }) => {
     
   }
 })
+
+
+
+function addHtmlAppHeadersPlugin(
+  appLang: string,
+  appName: string,
+  appDescription: string,
+  manifestSearchParams: string,
+): Plugin {
+  return {
+    name: 'html-app-headers-plugin',
+    transformIndexHtml(html) {
+      return html
+        .replace(/%APP_LANG%/g, appLang)
+        .replace(/%APP_NAME%/g, appName)
+        .replace(/%APP_DESCRIPTION%/g, appDescription)
+        .replace(/%MANIFEST_SEARCH_PARAMS%/g, manifestSearchParams)
+    },
+  }
+}
 
 
 

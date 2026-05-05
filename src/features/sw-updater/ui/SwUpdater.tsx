@@ -1,5 +1,5 @@
 import './reload-prompt.css'
-import { envBuildDate } from '@/app/env.ts'
+import { envBuildVer } from '@/app/env.ts'
 import Modal from '@@/components/components/modal/Modal.tsx'
 import { useRegisterSW } from 'virtual:pwa-register/react'
 import { pwaInfo } from 'virtual:pwa-info'
@@ -15,14 +15,15 @@ import { pwaInfo } from 'virtual:pwa-info'
 
 
 
-console.log('pwaInfo', pwaInfo)
 
 
 
 export default function SwUpdater() {
-  const buildDate = envBuildDate
+  const buildVer = envBuildVer
   const autoCheckUpdates = true
-
+  
+  console.log('pwaInfo', pwaInfo)
+  
   const {
     offlineReady: [offlineReady, setOfflineReady],
     needRefresh: [needRefresh, setNeedRefresh],
@@ -90,7 +91,7 @@ export default function SwUpdater() {
   
   return (
     <>
-      <div className='reload-prompt-buildDate'>{buildDate}</div>
+      <div className='reload-prompt-buildDate'>{buildVer}</div>
       {(offlineReady || needRefresh) && (
         <Modal onlyFrame>
           <div className='reload-prompt-container'>
