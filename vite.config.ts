@@ -15,11 +15,11 @@ const appBuildConfig = {
     port: 40109,
   },
   appHeadersByLang: {
-    'en': {
-      appLang: 'en-US',
-      appName: 'Tetris',
-      appDescription: 'Tetris Game',
-    },
+    // 'en': {
+    //   appLang: 'en-US',
+    //   appName: 'Tetris',
+    //   appDescription: 'Tetris Game',
+    // },
     'en': {
       appLang: 'en-US',
       appName: 'HTML Title',
@@ -147,7 +147,7 @@ export default defineConfig(({ command, mode: buildMode }) => {
       
       addSvgrPlugin(),
       
-      addVitePwaPlugin(),
+      //addVitePwaPlugin(),
       
       // Add polyfills to build (dev mode has no polyfills)
       legacy({

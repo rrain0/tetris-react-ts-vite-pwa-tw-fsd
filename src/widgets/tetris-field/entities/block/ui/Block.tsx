@@ -15,7 +15,7 @@ export default function Block(props: BlockProps) {
   
   const src = mapBlockUiTypeToSrc(type)
   
-  const { imPerc, bd2Cqw } = blockSizes.block
+  const { bdSz, sz, imPerc, bd2Cqw } = blockSizes.block
   
   /* TODO colors */
   const bdCl = '#212121'
@@ -32,7 +32,12 @@ export default function Block(props: BlockProps) {
       }}
       {...rest}
     >
-      <div cn='sz-full' st={{ borderWidth: bd2Cqw, borderColor: bdCl }}/>
+      {/* If i make div with border - it drops fps dramatically */}
+      <svg cn='sz-full' viewBox={`0 0 ${sz} ${sz}`}>
+        <rect x={bdSz / 2} y={bdSz / 2} width={sz - bdSz} height={sz - bdSz}
+          stroke={bdCl} strokeWidth={bdSz} fill='transparent'
+        />
+      </svg>
       <img
         st={{ width: imPerc }}
         cn='w-full h-auto square object-center object-cover'
