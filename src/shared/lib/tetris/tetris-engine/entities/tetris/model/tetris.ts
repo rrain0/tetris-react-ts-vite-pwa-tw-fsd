@@ -145,8 +145,9 @@ export class Tetris {
   }
   
   renderNextField() {
-    const nextPiece = this.next.toTrimmed().toMoved({ x: 0, y: 0 })
-    const f = Field.empty(nextPiece.cols, nextPiece.rows)
+    let nextPiece = this.next.toTrimmed().toMoved({ x: 0, y: 0 })
+    nextPiece = nextPiece.toMoved({ dx: 4 - nextPiece.cols })
+    const f = Field.empty(4, nextPiece.rows)
     f.addPiece(nextPiece)
     return f
   }

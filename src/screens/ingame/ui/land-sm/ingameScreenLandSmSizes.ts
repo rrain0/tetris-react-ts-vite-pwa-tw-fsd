@@ -1,39 +1,68 @@
+import { blockSizes } from '@/widgets/tetris-field/entities/block/ui/blockSizes.ts'
+import { fracToCqh } from '@@/utils/css/sz.ts'
 
 
 
-export const ingameScreenLandSmSizes = (nextFieldCols = 4) => {
-  const blockSz = 1.0
+const fieldCols = 10
+const fieldRows = 20
+const nextCols = 4
+
+
+
+export const ingameScreenLandSmSizes = (() => {
+  const block = { sz: 1.0 }
   
-  const fieldBoxBdSz = 0.16
-  const fieldBoxW = fieldBoxBdSz + 10 * blockSz + fieldBoxBdSz
-  const fieldBoxH = fieldBoxBdSz + 20 * blockSz + fieldBoxBdSz
+  const field = (() => {
+    const blockP = (() => {
+      const { blockInFigure: blk } = blockSizes
+      return blk.szOfFsz(blk.outsetSz) * block.sz
+    })()
+    const w = blockP + fieldCols * block.sz + blockP
+    const h =  blockP + fieldRows * block.sz + blockP
+    return { w, h, blockP }
+  })()
   
-  const sideW = 6 * blockSz
-  const sideG = 0.35
-  const nextW = nextFieldCols * blockSz
-  const titleH = 0.8
-  const digitH = 0.9
+  const fieldBox = (() => {
+    const bdSz = 0.16
+    const w = bdSz + field.w + bdSz
+    const h = bdSz + field.h + bdSz
+    return { bdSz, w, h }
+  })()
   
-  const controlsIcSz = 1
-  const controlsG = 0.3
-  const controlsW = controlsIcSz + controlsG + controlsIcSz
+  const side = (() => {
+    const w = 6 * block.sz
+    const g = 0.35
+    const next = { w: field.blockP + nextCols * block.sz + field.blockP }
+    const title = { h: 0.8 }
+    const digit = { h: 0.9 }
+    return { w, g, next, title, digit }
+  })()
   
-  const gameG = 0.5
-  const gameW = fieldBoxW + gameG + sideW + gameG + controlsW
-  const gameH = fieldBoxH
-  const gameRatio = gameW / gameH
+  const gameControls = (() => {
+    const g = 0.3
+    const ic = { sz: 1 }
+    const w = ic.sz + g + ic.sz
+    return { w, g, ic }
+  })()
   
-  const wRel = (w: number) => w / gameW * gameRatio
+  const game = (() => {
+    const g = 0.5
+    const w = fieldBox.w + g + side.w + g + gameControls.w
+    const h = fieldBox.h
+    const ratio = w / h
+    return { w, h, g, ratio }
+  })()
   
-  const wOfCqh = (w: number) => `${wRel(w) * 100}cqh`
-  const wOfH = (w: number, ofH: number) => wRel(w) * ofH
+  const wOfFh = (w: number) => w / game.h
+  const hOfFh = (h: number) => h / game.h
+  
+  const wInCqh = (w: number) => fracToCqh(wOfFh(w))
+  const hInCqh = (h: number) => fracToCqh(hOfFh(h))
+  
+  const wInPxh = (w: number, pxh: number) => wOfFh(w) * pxh
   
   return {
-    blockSz,
-    fieldBoxBdSz, fieldBoxW, fieldBoxH,
-    sideW, sideG, nextW, titleH, digitH,
-    controlsIcSz, controlsG, controlsW,
-    gameG, gameW, gameH, gameRatio,
-    wOfCqh, wOfH,
+    block, field, fieldBox, side, gameControls, game,
+    wInCqh, hInCqh, wInPxh,
   }
-}
+})()

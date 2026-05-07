@@ -1,51 +1,62 @@
+import { fracToCqw, fracToPerc, szOf } from '@@/utils/css/sz.ts'
+import type { StylePropType } from '@@/utils/react/props/propTypes.ts'
 
 
 
-export function blockSizes() {
-  const bdSz = 2
-  const imSz = 37
-  
-  const sz = bdSz + imSz + bdSz
-  const outsetSz = bdSz / 2
-  const innerSz = sz - outsetSz * 2
-  
-  const baseSizes = {
-    bdSz, imSz,
-    innerSz, outsetSz, sz,
-  }
-  
-  const szOf = (size: number, of: number) => size / of
-  
+export const blockSizes = (() => {
   
   const block = (() => {
-    const szOfSz = (size: number) => szOf(size, sz)
-    const szOfCqw = (size: number) => `${szOfSz(size) * 100}cqw`
+    const bdSz = 2
+    const imSz = 37
+    const sz = bdSz + imSz + bdSz
     
-    const imSt = { borderWidth: szOfCqw(bdSz) }
+    const szOfFsz = (size: number) => szOf(size, sz)
+    const szInCqw = (size: number) => fracToCqw(szOfFsz(size))
+    const szInPerc = (size: number) => fracToPerc(szOfFsz(size))
+    
+    const bdPerc = szInPerc(bdSz)
+    const bdAndImPerc = szInPerc(bdSz + imSz)
+    const imPerc = szInPerc(imSz)
+    
+    const bdCqw = szInCqw(bdSz)
+    const bd2Cqw = szInCqw(bdSz * 1.5)
+    
+    const imSt = {
+      //borderWidth: szInCqw(bdSz),
+      padding: szInCqw(bdSz),
+    } satisfies StylePropType
     
     return {
-      ...baseSizes,
-      szOf, szOfSz, szOfCqw,
-      imSt,
+      bdSz, imSz, sz,
+      szOf, szOfFsz, szInCqw, szInPerc,
+      bdPerc, bdAndImPerc, imPerc,
+      bdCqw, bd2Cqw,
+      //imSt,
     }
   })()
   
   const blockInFigure = (() => {
-    const szOfSz = (size: number) => szOf(size, innerSz)
-    const szOfCqw = (size: number) => `${szOfSz(size) * 100}cqw`
+    const outsetSz = block.bdSz / 2
+    const sz = -outsetSz + block.sz - outsetSz
+    const fullSz = block.sz
     
-    const boxSt = {
-      width: szOfCqw(sz),
-      height: szOfCqw(sz),
-      margin: szOfCqw(-outsetSz),
-    }
+    const szOfFsz = (size: number) => szOf(size, sz)
+    const szInCqw = (size: number) => fracToCqw(szOfFsz(size))
+    const szInPerc = (size: number) => fracToPerc(szOfFsz(size))
+    
+    const blockSt = {
+      //width: block.szInCqw(fullSz),
+      //height: block.szInCqw(fullSz),
+      transformOrigin: 'center',
+      scale: szOf(fullSz, sz),
+    } satisfies StylePropType
     
     return {
-      ...baseSizes,
-      szOf, szOfSz, szOfCqw,
-      boxSt,
+      outsetSz, sz,
+      szOf, szOfFsz, szInCqw, szInPerc,
+      blockSt,
     }
   })()
   
   return { block, blockInFigure }
-}
+})()

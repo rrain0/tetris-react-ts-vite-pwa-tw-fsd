@@ -92,9 +92,9 @@ export default function IngameScreen() {
   const [layout, setLayout] = useState<Layout>(undefined)
   const [getWh, setWh] = useRefGetSet({ w: 0, h: 0 })
   
-  const portSizes = ingameScreenPortSizes()
-  const landSmSizes = ingameScreenLandSmSizes()
-  const landSizes = ingameScreenLandSizes()
+  const portSizes = ingameScreenPortSizes
+  const landSmSizes = ingameScreenLandSmSizes
+  const landSizes = ingameScreenLandSizes
   
   const refFun = useResizeRef(elem => {
     if (!elem) setLayout(undefined)
@@ -102,8 +102,8 @@ export default function IngameScreen() {
       const { ratio, wh } = elemProps(elem)
       //console.log('wh', wh, 'ratio', ratio)
       setWh(wh)
-      if (ratio >= landSizes.gameRatio) setLayout('land')
-      else if (ratio >= landSmSizes.gameRatio) setLayout('landSm')
+      if (ratio >= landSizes.game.ratio) setLayout('land')
+      else if (ratio >= landSmSizes.game.ratio) setLayout('landSm')
       else setLayout('port')
     }
   })
@@ -144,9 +144,9 @@ export default function IngameScreen() {
         const { moved } = updatedPointer ?? pointer
         
         const blockSz = (() => {
-          if (layout === 'land') return landSizes.wOfH(landSizes.blockSz, getWh().h)
-          if (layout === 'landSm') return landSmSizes.wOfH(landSmSizes.blockSz, getWh().h)
-          if (layout === 'port') return portSizes.hOfW(portSizes.blockSz, getWh().w)
+          if (layout === 'land') return landSizes.wInPxh(landSizes.block.sz, getWh().h)
+          if (layout === 'landSm') return landSmSizes.wInPxh(landSmSizes.block.sz, getWh().h)
+          if (layout === 'port') return portSizes.hInPxw(portSizes.block.sz, getWh().w)
           assertNever(layout)
         })()
         

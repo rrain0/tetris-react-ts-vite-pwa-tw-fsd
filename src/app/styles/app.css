@@ -8,6 +8,11 @@
 /* TODO colors */
 @layer app {
   
+  .layer-box {
+    display: grid;
+    place-content: stretch;
+  }
+  
   .envSafeAreaPaddings {
     padding-top: env(safe-area-inset-top);
     padding-right: env(safe-area-inset-right);

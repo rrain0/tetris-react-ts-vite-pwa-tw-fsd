@@ -13,33 +13,36 @@ export type IngameScreenLandSmProps = IngameStats & {
 }
 
 export default function IngameScreenLandSm(props: IngameScreenLandSmProps) {
-  const { field, nextField, hiScore, score, level, lines } = props
+  const { field: gameField, nextField, hiScore, score, level, lines } = props
   
   const {
-    blockSz,
-    fieldBoxBdSz, fieldBoxW, fieldBoxH,
-    sideW, sideG, nextW, titleH, digitH,
-    controlsIcSz, controlsG, controlsW,
-    gameG, gameW, gameH, gameRatio,
-    wOfCqh,
-  } = ingameScreenLandSmSizes(nextField.cols)
+    block, field, fieldBox, side, gameControls, game,
+    wInCqh, hInCqh, wInPxh,
+  } = ingameScreenLandSmSizes
   
-  const containerSt = { width: '100%', height: elemSizeContain(gameRatio).height }
+  const containerSt = { height: elemSizeContain(game.ratio).height }
   const gameSt = {
     grid: `
       'spaceL fieldBox ... side spaceR ... controlsSpace' 100%
-      / 1fr ${wOfCqh(fieldBoxW)}
-      ${wOfCqh(gameG)} ${wOfCqh(sideW)} 1fr ${wOfCqh(gameG)}
-      ${wOfCqh(controlsW)}
+      / 1fr ${wInCqh(fieldBox.w)}
+      ${wInCqh(game.g)} ${wInCqh(side.w)} 1fr ${wInCqh(game.g)}
+      ${wInCqh(gameControls.w)}
     `,
   }
-  const fieldBoxSt = { borderWidth: wOfCqh(fieldBoxBdSz), width: wOfCqh(fieldBoxW) }
-  const sideSt = { width: wOfCqh(sideW), gap: wOfCqh(sideG) }
-  const titleSt = { fontSize: wOfCqh(titleH) }
-  const digitsSt = { fontSize: wOfCqh(digitH) }
-  const nextSt = { width: wOfCqh(nextW) }
-  const controlsSt = { gap: wOfCqh(controlsG) }
-  const controlsIcSt = { width: wOfCqh(controlsIcSz), height: wOfCqh(controlsIcSz) }
+  const fieldBoxSt = { borderWidth: wInCqh(fieldBox.bdSz), width: wInCqh(fieldBox.w) }
+  const fieldSt = {
+    width: wInCqh(field.w),
+    height: hInCqh(field.h),
+  }
+  const sideSt = { width: wInCqh(side.w), gap: wInCqh(side.g) }
+  const titleSt = { fontSize: wInCqh(side.title.h) }
+  const digitsSt = { fontSize: wInCqh(side.digit.h) }
+  const nextSt = { width: wInCqh(side.next.w) }
+  const controlsSt = { gap: wInCqh(gameControls.g) }
+  const controlsIcSt = {
+    width: wInCqh(gameControls.ic.sz),
+    height: wInCqh(gameControls.ic.sz),
+  }
   
   return (
     <>
@@ -49,7 +52,7 @@ export default function IngameScreenLandSm(props: IngameScreenLandSmProps) {
           <div cn='flex col in-area-[fieldBox] w-ct bd-cl-[var(--cl-tetris-field-bd)] rad-[1cqh]'
             st={fieldBoxSt}
           >
-            <TetrisField cn='w-full' field={field}/>
+            <TetrisField cn='w-full' st={fieldSt} field={gameField}/>
           </div>
           
           <div cn='flex col in-area-[side]' st={sideSt}>

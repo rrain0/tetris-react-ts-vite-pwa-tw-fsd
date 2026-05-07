@@ -34,7 +34,7 @@ export default function IngameControls(props: IngameControlsProps) {
   //const onClickPause = useOnClick(() => { })
   
   return (
-    <div cn='jus-end flex row start-end no-pointer container-size' st={containerSt}>
+    <div cn='pls-[start_end] flex row start-end no-pointer container-size' st={containerSt}>
       <div cn='flex row start-end no-pointer' st={controlsSt}>
         
         {fscreen.available && (

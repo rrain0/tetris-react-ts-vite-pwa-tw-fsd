@@ -16,49 +16,50 @@ export default function IngameScreenPort(props: IngameScreenPortProps) {
   const { combinedField, nextGhost, hiScore, score, level, lines } = props
   
   const {
-    blockSz,
-    fieldBoxBdSz, fieldBoxW, fieldBoxH,
-    fullFieldBoxH,
-    topH,
-    topTitleBoxH, topTitleBoxW, topTitleH,
-    bottomG, bottomH, titleH, digitH, bottomTxG,
-    controlsIcSz, controlsG, controlsW,
-    gameW, gameH, gameRatio,
-    hOfCqw,
-  } = ingameScreenPortSizes()
+    block, fieldBox, comboField, comboFieldBox, top, bottom, gameControls, game,
+    wInCqw, hInCqw,
+  } = ingameScreenPortSizes
   
   // Size styles
-  const containerSt = { width: elemSizeContain(gameRatio).width, height: '100%' }
+  const containerSt = { width: elemSizeContain(game.ratio).width }
   const gameSt = {
     grid: `
-      'controls' 1fr
-      'top' ${hOfCqw(topH)}
-      'fieldBox' ${hOfCqw(fieldBoxH)}
-      'bottom' ${hOfCqw(bottomH)}
+      '.' 1fr
+      'top' ${hInCqw(top.h)}
+      'fieldBox' ${hInCqw(fieldBox.h)}
+      'bottom' ${hInCqw(bottom.h)}
       '.' 1fr
        / 100%
     `,
   }
-  const fieldBoxSt = { borderWidth: hOfCqw(fieldBoxBdSz), height: hOfCqw(fieldBoxH) }
-  const fieldSt = {
-    borderWidth: hOfCqw(fieldBoxBdSz),
-    height: hOfCqw(fullFieldBoxH),
+  const fieldBoxSt = { borderWidth: hInCqw(fieldBox.bdSz), height: hInCqw(fieldBox.h) }
+  const comboFieldBoxSt = {
+    borderWidth: hInCqw(comboFieldBox.bdSz),
+    width: wInCqw(fieldBox.w),
+    height: hInCqw(comboFieldBox.h),
     borderTop: 'none',
   }
-  const topSt = { height: hOfCqw(topH) }
-  const topTitleBoxSt = { width: hOfCqw(topTitleBoxW), height: hOfCqw(topTitleBoxH) }
-  const topTitleSt = { fontSize: hOfCqw(topTitleH), opacity: nextGhost ? 0.5 : 1 }
-  const bottomSt = {
-    height: hOfCqw(bottomH),
-    paddingTop: hOfCqw(bottomG),
-    paddingBottom: hOfCqw(bottomG),
-    gap: hOfCqw(bottomG),
+  const comboFieldSt = {
+    width: wInCqw(comboField.w),
+    height: hInCqw(comboField.h),
   }
-  const bottomItemSt = { gap: hOfCqw(bottomTxG) }
-  const titleSt = { fontSize: hOfCqw(titleH) }
-  const digitsSt = { fontSize: hOfCqw(digitH) }
-  const controlsSt = { gap: hOfCqw(controlsG) }
-  const controlsIcSt = { width: hOfCqw(controlsIcSz), height: hOfCqw(controlsIcSz) }
+  const topSt = { height: hInCqw(top.h) }
+  const topTitleBoxSt = { width: hInCqw(top.titleBox.w), height: hInCqw(top.titleBox.h) }
+  const topTitleSt = { fontSize: hInCqw(top.title.h), opacity: nextGhost ? 0.5 : 1 }
+  const bottomSt = {
+    height: hInCqw(bottom.h),
+    paddingTop: hInCqw(bottom.g),
+    paddingBottom: hInCqw(bottom.g),
+    gap: hInCqw(bottom.g),
+  }
+  const bottomItemSt = { gap: hInCqw(bottom.tx.g) }
+  const titleSt = { fontSize: hInCqw(bottom.title.h) }
+  const digitsSt = { fontSize: hInCqw(bottom.digit.h) }
+  const controlsSt = { gap: hInCqw(gameControls.g) }
+  const controlsIcSt = {
+    width: hInCqw(gameControls.ic.sz),
+    height: hInCqw(gameControls.ic.sz),
+  }
   
   return (
     <>
@@ -75,17 +76,17 @@ export default function IngameScreenPort(props: IngameScreenPortProps) {
           </div>
           
           <div
-            cn='flex col in-area-[fieldBox] jus-stretch
-              bd-cl-[var(--cl-tetris-field-bd)] rad-[1cqh]'
+            cn='flex col in-area-[fieldBox] pls-[end_stretch]
+              rad-[1cqh] bd-cl-[var(--cl-tetris-field-bd)]'
             st={fieldBoxSt}
           />
           
           <div
-            cn='flex col in-area-[top/top/fieldBox/fieldBox] pls-[end_center]
-              bd-cl-none rad-[1cqh]'
-            st={fieldSt}
+            cn='flex col in-area-[top/top/fieldBox/fieldBox] pls-[end_stretch]
+              rad-[1cqh] bd-cl-none'
+            st={comboFieldBoxSt}
           >
-            <TetrisField cn='h-full' field={combinedField}/>
+            <TetrisField st={comboFieldSt} field={combinedField}/>
           </div>
           
           <div cn='grid cols-[1fr_1.2fr] in-area-[bottom] w-full' st={bottomSt}>
