@@ -1,5 +1,6 @@
 import PieceControls from '@/screens/ingame/ui/piece-controls/PieceControls.tsx'
 import { ingameScreenPortSizes } from '@/screens/ingame/ui/port/ingameScreenPortSizes.ts'
+import EnvSafeAreaInset from '@@/components/elems/page/EnvSafeAreaInset.tsx'
 import {
   useGamepadDownClick
 } from '@@/lib/input/gamepad-key/useGamepadDownClick.ts'
@@ -17,7 +18,6 @@ import {
 import { elemProps } from '@@/utils/dom/elemProps.ts'
 import { useFocusWithinElem } from '@@/utils/dom/useFocusWithinElem.ts'
 import { useResizeRef } from '@@/utils/dom/useResizeRef.ts'
-import { floorTo0 } from '@@/utils/math/rounding.ts'
 import { propsOf } from '@@/utils/react/props/combineProps.ts'
 import { useRefGetSet } from '@@/utils/react/state/useRefGetSet.ts'
 import { assertNever } from '@@/utils/ts/ts.ts'
@@ -30,7 +30,7 @@ import IngameScreenLand from '@/screens/ingame/ui/land/IngameScreenLand.tsx'
 import IngameScreenLandSm from '@/screens/ingame/ui/land-sm/IngameScreenLandSm.tsx'
 import { ingameScreenLandSizes } from '@/screens/ingame/ui/land/ingameScreenLandSizes.ts'
 import IngameScreenPort from '@/screens/ingame/ui/port/IngameScreenPort.tsx'
-import PageFullVp from '@@/components/elems/PageFullVp.tsx'
+import PageFullVp from '@@/components/elems/page/PageFullVp.tsx'
 import bg from '@@/assets/im/bg4.jpg'
 import type { IngameData } from '@/screens/ingame/model/ingameScreen.model.ts'
 import type { PointerId } from '@/shared/utils/pointer/types'
@@ -196,25 +196,26 @@ export default function IngameScreen() {
     <>
       <PageFullVp
         cn={`bg-pos-[center] bg-sz-[cover] no-touch-action
-          pt-[env(safe-area-inset-top)]
-          pr-[env(safe-area-inset-right)]
-          pb-[env(safe-area-inset-bottom)]
-          pl-[env(safe-area-inset-left)]
+          grid plc-[stretch]
         `}
         st={{ backgroundImage: `url(${bg})` }}
         ref={refToFocus}
         tabIndex={-1}
         {...propsOf(...appActionsEvHandlers, onPointer())}
       >
-        <div cn='sz-full p-[8]'>
-          <div cn='sz-full stack center2 container-size' ref={refFun}>
+        <EnvSafeAreaInset>
+          
+          <div cn='sz-full p-[8]'>
+            <div cn='sz-full stack center2 container-size' ref={refFun}>
+              
+              <ScreenLayout layout={layout} {...ingameData}/>
+              
+              {isMobile && <PieceControls cn='in-area-[1/1/-1/-1]' game={game}/>}
             
-            <ScreenLayout layout={layout} {...ingameData}/>
-            
-            {isMobile && <PieceControls cn='in-area-[1/1/-1/-1]' game={game}/>}
-            
+            </div>
           </div>
-        </div>
+          
+        </EnvSafeAreaInset>
       </PageFullVp>
     </>
   )

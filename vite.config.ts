@@ -20,6 +20,11 @@ const appBuildConfig = {
       appName: 'Tetris',
       appDescription: 'Tetris Game',
     },
+    'en': {
+      appLang: 'en-US',
+      appName: 'HTML Title',
+      appDescription: 'HTML Description',
+    },
   },
 }
 

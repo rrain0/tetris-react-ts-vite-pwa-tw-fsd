@@ -1,3 +1,4 @@
+import { blockSizes } from '@/widgets/tetris-field/entities/block/ui/blockSizes.ts'
 import type {
   Field, FieldBlockType,
 } from '@@/lib/tetris/tetris-engine/entities/field/model/field.ts'
@@ -16,7 +17,7 @@ export default function TetrisField({ field, ...rest }: TetrisFieldProps) {
   const { rows, cols } = field
   return (
     <div
-      cn='grid'
+      cn='grid pli-[stretch]'
       st={{
         gridTemplateRows: `repeat(${rows},1fr)`,
         gridTemplateColumns: `repeat(${cols},1fr)`,
@@ -40,5 +41,12 @@ const ListBlock = React.memo(function ListBlock(fieldBlock: ListBlockProps) {
   const { x, y, type, pieceType } = fieldBlock
   const data = mapPieceTypeToBlockUiData(type, pieceType)
   const row = y + 1, col = x + 1
-  return <Block draggable={false} {...data} style={{ gridArea: `${row} / ${col}` }}/>
+  
+  const { boxSt } = blockSizes().blockInFigure
+  
+  return (
+    <div cn='container-size' st={{ gridArea: `${row} / ${col}` }}>
+      <Block {...data} st={boxSt}/>
+    </div>
+  )
 })

@@ -1,8 +1,8 @@
 {
   "lang": "en-US",
-  "short_name": "Tetris",
-  "name": "Tetris",
-  "description": "Tetris Game",
+  "short_name": "manifest short_name",
+  "name": "manifest name",
+  "description": "manifest description",
   "start_url": ".",
   "display": "fullscreen",
   "orientation": "portrait",

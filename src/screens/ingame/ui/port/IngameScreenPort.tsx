@@ -1,4 +1,3 @@
-import PieceControls from '@/screens/ingame/ui/piece-controls/PieceControls.tsx'
 import IngameControls from '@/screens/ingame/ui/controls/IngameControls.tsx'
 import type { Field } from '@@/lib/tetris/tetris-engine/entities/field/model/field.ts'
 import { elemSizeContain } from '@@/utils/css/elemSizeContain.ts'

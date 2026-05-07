@@ -27,9 +27,38 @@
   "orientation": "portrait",
   
   
+  /*
+  ● ● ● Title
+  
+  ● ● Windows Chrome (html)
+  ● Tab title - html <title>
+  ● Explorer Link title (+ add link prompt title) - html <title> (always)
+  ● Explorer PWA title (+ install prompt title) - manifest.name
+  
+  ● ● Android Chrome (html)
+  ● Tab title - html <title>
+  ● Launcher Link title (+ add link prompt title) - manifest.short_name
+  
+  
+  
+  
+  
+  ● ● Windows Chrome
+  ● Tab title - html <title> (always)
+  ● Explorer Link title (+ add link prompt title) - html <title> (always)
+  ● Explorer PWA title (+ install prompt title) - manifest.name
+  
+  
+  */
+  /*
+  ● ● ● Description
+  
+  
+  
+  */
   
   /*
-  ● ● ● Icons / Screens / Colors for PWA-capable site
+  ● ● ● Icons / Screens / Colors
   
   ● ● Windows Chrome.
   

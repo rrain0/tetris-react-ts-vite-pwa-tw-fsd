@@ -5,7 +5,19 @@
 
 
 
+/* TODO colors */
 @layer app {
+  
+  .envSafeAreaPaddings {
+    padding-top: env(safe-area-inset-top);
+    padding-right: env(safe-area-inset-right);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+  }
+  
+  .block-shadow {
+    box-shadow: 0 0 2px 2px black;
+  }
   
   .pixeled-filter {
     mask-image: conic-gradient(
