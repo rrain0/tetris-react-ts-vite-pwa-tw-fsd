@@ -14,24 +14,12 @@ export const blockSizes = (() => {
     const szInCqw = (size: number) => fracToCqw(szOfFsz(size))
     const szInPerc = (size: number) => fracToPerc(szOfFsz(size))
     
-    const bdPerc = szInPerc(bdSz)
-    const bdAndImPerc = szInPerc(bdSz + imSz)
     const imPerc = szInPerc(imSz)
-    
-    const bdCqw = szInCqw(bdSz)
-    const bd2Cqw = szInCqw(bdSz * 1.5)
-    
-    const imSt = {
-      //borderWidth: szInCqw(bdSz),
-      padding: szInCqw(bdSz),
-    } satisfies StylePropType
     
     return {
       bdSz, imSz, sz,
       szOf, szOfFsz, szInCqw, szInPerc,
-      bdPerc, bdAndImPerc, imPerc,
-      bdCqw, bd2Cqw,
-      //imSt,
+      imPerc,
     }
   })()
   

@@ -5,8 +5,9 @@ import react, { reactCompilerPreset } from '@vitejs/plugin-react'
 import babel from '@rolldown/plugin-babel'
 import babelPluginJsxCnStProps from './plugins/babelPluginJsxCnStProps.js'
 import svgr from 'vite-plugin-svgr'
-import { VitePWA } from 'vite-plugin-pwa'
+import { type ManifestOptions, VitePWA } from 'vite-plugin-pwa'
 import legacy from '@vitejs/plugin-legacy'
+import manifest from './manifest.base.json'
 
 
 
@@ -147,9 +148,9 @@ export default defineConfig(({ command, mode: buildMode }) => {
       
       addSvgrPlugin(),
       
-      //addVitePwaPlugin(),
+      addVitePwaPlugin(),
       
-      // Add polyfills to build (dev mode has no polyfills)
+      // Add polyfills to final build (dev mode has no polyfills)
       legacy({
         polyfills: false,
         renderLegacyChunks: false,
@@ -226,29 +227,26 @@ function addSvgrPlugin() {
 
 
 function addVitePwaPlugin() {
+  let m = manifest as Partial<ManifestOptions>
+  
   return VitePWA({
-    strategies: 'injectManifest',
-    // SW folder
-    srcDir: 'src/service-worker',
-    // SW filename
-    filename: 'service-worker.ts',
-    // Prompt user to reload page when SW was updated
-    registerType: 'prompt',
+    strategies: 'injectManifest', // compile custom SW and inject precache-manifest
+    srcDir: 'src/service-worker', // SW folder
+    filename: 'service-worker.ts', // SW filename
+    injectRegister: 'script', // inject SW registration script
+    includeAssets: ['public/static/**'], // static assets to be precached in SW
+    
+    registerType: 'prompt', // prompt user to reload page when SW was updated
+    
+    // Disable manifest generation & injection by plugin.
+    // I want to generate dynamic manifest & dynamic html link manifest search params.
+    manifest: false,
     
     devOptions: {
       enabled: true, // enable PWA in dev mode
-      type: 'module', // Service Worker is module
+      type: 'module', // SW is module
     },
     
-    // Do not inject manifest, only service worker,
-    // so you can write your own link to manifest in index.html
-    // https://vite-pwa-org.netlify.app/guide/service-worker-without-pwa-capabilities
-    injectRegister: 'script',
-    manifest: false,
-    
-    base: '/',
-    
-    includeAssets: ['public/**'],
-    pwaAssets: { disabled: true },
+    pwaAssets: { disabled: true }, // Auto-generation of pwa assets
   })
 }

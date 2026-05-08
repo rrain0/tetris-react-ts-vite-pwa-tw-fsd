@@ -1,0 +1,84 @@
+
+// ⚠️ manifest.json is PURE JSON and NO COMMENTS allowed.
+
+// You can add Search Params to manifest url to make it more dynamic.
+// Build process can generate manifest.
+// Service Worker can intercept manifest by search params.
+// Backend can generate manifest by search params.
+
+// Mechanism of applying new manifest:
+// https://web.dev/manifest-updates/
+
+{
+  "lang": "en-US",
+  // "name" or "short_name" REQUIRED
+  // PWA app / shortcut title
+  "short_name": "Tetris",
+  // As html title
+  "name": "Tetris",
+  // As html meta description
+  "description": "Tetris Game",
+  // REQUIRED
+  "start_url": ".",
+  // REQUIRED
+  // 'fullscreen' | 'standalone' | 'minimal-ui'
+  "display": "standalone",
+  // Orientation when installed as PWA
+  "orientation": "portrait",
+  
+  
+  
+  
+  // Used as status bar color when html theme-color is not loaded yet.
+  // It will be overridden by html <meta name="theme-color" .../>.
+  
+  // Android splashscreen status bar color.
+  // Title bar of window, status bar on mobile.
+  "theme_color": "#282c34",
+  
+  
+  // Used as bg color when html body background-color is not loaded yet.
+  // It will be overridden by html body background-color.
+  // html body background-color is WINDOW background.
+  
+  // Splashscreen bg color.
+  // NOT Window or Viewport bg.
+  "background_color": "#282c34",
+  
+  
+  
+  
+  
+  // Need to include all icons in vite.config.ts pwaOptions:
+  // includeAssets: ['public/*'],
+  
+  // Paths are relative because manifest.json is in root.
+  "icons": [
+    // This size is REQUIRED.
+    {
+      "src": "public/assets/icon192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    // This size is REQUIRED.
+    // Android splashscreen icon.
+    {
+      "src": "public/assets/icon512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+    /*{
+      "src": "public/assets/icon512-padding.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable"
+    }*/
+  ]
+  
+  
+  
+  
+  // REQUIRED: prefer_related_applications не должен присутствовать или должен быть false.
+  // For Android, if manifest has "related_applications" and "prefer_related_applications": true,
+  // user will be redirected to Google Play and user will be prompted to install specified Android app.
+}

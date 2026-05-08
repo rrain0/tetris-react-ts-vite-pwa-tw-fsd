@@ -15,7 +15,7 @@ export default function Block(props: BlockProps) {
   
   const src = mapBlockUiTypeToSrc(type)
   
-  const { bdSz, sz, imPerc, bd2Cqw } = blockSizes.block
+  const { bdSz, imPerc, sz } = blockSizes.block
   
   /* TODO colors */
   const bdCl = '#212121'
