@@ -1,5 +1,5 @@
 {
-  "include": ["./types-global", "./plugins", "vite.config.ts"],
+  "include": ["./types-global", "./plugins", "./src/app-meta","vite.config.ts"],
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
     "target": "ES2023",
@@ -22,6 +22,6 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitAny": false,
-    "noUncheckedSideEffectImports": true
-  },
+    "noUncheckedSideEffectImports": true,
+  }
 }

@@ -1,7 +1,7 @@
 export { }
 import type {
   ObjectEntriesSimple,
-  ObjectFromEntriesArr,
+  ObjectFromEntriesArr, ObjectKeys,
   ObjectValues,
 } from '@@/utils/object/objectTypes.ts'
 
@@ -9,6 +9,8 @@ import type {
 
 declare global {
   interface ObjectConstructor {
+    
+    keys<O extends object>(object: O): ObjectKeys<O>;
     
     values<O extends object>(object: O): ObjectValues<O>
     

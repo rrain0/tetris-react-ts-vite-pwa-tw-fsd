@@ -1,5 +1,6 @@
 /// <reference lib="webworker"/>
-import { envIsDev, envBaseUrl } from '@/app/env.ts'
+import { generateManifest } from '@/app-meta/generateManifest.ts'
+import { getAppMetaOrDefault } from '@/app-meta/getAppMeta.ts'
 import type { WorkboxPlugin } from 'workbox-core'
 import { ExpirationPlugin } from 'workbox-expiration'
 import {
@@ -11,6 +12,8 @@ import {
 } from 'workbox-precaching'
 import { NavigationRoute, registerRoute } from 'workbox-routing'
 import { CacheFirst, StaleWhileRevalidate } from 'workbox-strategies'
+import { envIsDev, envBaseUrl } from '@/app/env.ts'
+
 
 
 
@@ -68,16 +71,11 @@ if (!envIsDev) {
 
 
 // Intercept manifest.json to cache & generate dynamic manifest
-/* {
+{
   const manifestStrategy = new StaleWhileRevalidate({
     cacheName: 'manifest',
     plugins: [new ExpirationPlugin({ maxEntries: 130 })] as WorkboxPlugin[],
   })
-  
-  const getPwaId = (buildMode: string) => {
-    const mode = buildMode ? `-${buildMode}` : ''
-    return `tetris${mode}-react`
-  }
   
   registerRoute(
     ({ url }) => url.pathname === `${envBaseUrl}manifest.json`,
@@ -88,20 +86,10 @@ if (!envIsDev) {
       
       //console.log('manifest', manifest)
       
-      const buildModeMap: Record<string, any> = {
-        development: {
-          id: getPwaId('development'),
-          short_name: `Dev ${manifest.short_name}`,
-          name: `Dev ${manifest.name}`,
-          description: `Dev ${manifest.description}`,
-        },
-        production: {
-          id: getPwaId('production'),
-        },
-      }
-      
       const buildMode = searchParams.get('buildMode') ?? ''
-      manifest = { ...manifest, ...buildModeMap[buildMode] }
+      const lang = searchParams.get('lang') ?? ''
+      const { appLang, appName, appDescription } = getAppMetaOrDefault(buildMode, lang)
+      manifest = generateManifest(buildMode, appLang, appName, appDescription)
       
       return new Response(JSON.stringify(manifest), {
         // Save original headers
@@ -109,7 +97,7 @@ if (!envIsDev) {
       })
     }
   )
-} */
+}
 
 
 
