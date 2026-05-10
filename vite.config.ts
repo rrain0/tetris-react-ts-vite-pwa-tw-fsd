@@ -69,6 +69,20 @@ export default defineConfig(({ command, mode }) => {
     },
     
     plugins: [
+      // 1. Transform props first
+      babel({ plugins: [babelPluginJsxCnStProps()] }),
+      
+      // 2. Heavy Transformations (Must run before other transforms)
+      babel({ presets: [reactCompilerPreset()] }),
+      
+      // 3. Standard React logic
+      react(),
+      
+      // 4. Styles & Assets
+      tailwindcss(),
+      getSvgrPlugin(),
+      
+      // 5. Inject data & paths to html
       getHtmlAppHeadersPlugin({
         deployLocale, appName, appDescription,
         manifestSearchParams,
@@ -76,8 +90,7 @@ export default defineConfig(({ command, mode }) => {
         icon48, icon167, icon180,
       }),
       
-      getSvgrPlugin(),
-      
+      // 6. PWA & Build (Keep these at the bottom)
       getGeneratePwaManifestPlugin({
         deployMode,
         deployLocale, appName, appDescription,
@@ -85,18 +98,7 @@ export default defineConfig(({ command, mode }) => {
         icon64,
         icon192, icon192Maskable, icon512, icon512Maskable,
       }),
-      
-      tailwindcss(),
-      
       getVitePwaPlugin(),
-      
-      react(),
-      
-      babel({
-        presets: [reactCompilerPreset()],
-        plugins: [babelPluginJsxCnStProps()],
-      }),
-      
       getViteLegacyPlugin({ buildDate }),
     ],
     
