@@ -12,6 +12,8 @@ const exprAst = template.expression.ast
 
 // Any 'cn' & 'st' are removed from jsx (but original object in spread is not touched).
 // and is merged with 'className' & 'style'.
+// If 'cn' or 'className' value is JSX string literal
+// then they are wrapped in template literal to preserve newlines.
 // Any 'style' & 'className' are preserved as is.
 // If jsx node has no 'cn' attr and no 'st' attr and no spreads then this plugin does nothing.
 // Otherwise, plugin adds one or two spreads as last attr
@@ -119,12 +121,21 @@ export default function babelPluginJsxCnStProps() {
         
         // Calculate className final value
         if (maybeCn) {
-          // If cn attr evaluates to truly value then return container-object with attr & value.
-          // Otherwise, return empty container-object.
-          // If cn attr does not exist, return empty container-object.
-          const cnBox = hasCnAttr
-            ? exprAst`((cn) => cn ? { className: cn } : { })(${cnAttrValue})`
-            : exprAst`{ }`
+          const cnBox = (() => {
+            // If cn attr does not exist, return empty container-object.
+            if (!hasCnAttr) return exprAst`{ }`
+            // If cn attr value is string then it can be multiline string
+            // so transform to template literal
+            // and if it evaluates to true - return container-object with attr & value,
+            // otherwise return empty container-object.
+            console.log('cnAttrValue', JSON.stringify(cnAttrValue))
+            if (typeof cnAttrValue === 'string') {
+              const tlv = escapeForTemplateLiteral(cnAttrValue)
+              return exprAst`((cn) => cn ? { className: cn } : { })(\`${tlv}\`)`
+            }
+            // Otherwise, return container-object with attr & value.
+            return exprAst`((cn) => cn ? { className: cn } : { })(${cnAttrValue})`
+          })()
           
           // Find spread with non-falsy value of cn prop in it and return it in container-object.
           // Otherwise, return cnBox.
@@ -136,6 +147,13 @@ export default function babelPluginJsxCnStProps() {
           const classNameBox = (() => {
             // If className attr does not exist, return empty container-object.
             if (!hasClassNameAttr) return exprAst`{ }`
+            // If className attr value is string then it can be multiline string
+            // so transform to template literal
+            // and  return container-object with attr & value.
+            if (typeof classNameAttrValue === 'string') {
+              const tlv = escapeForTemplateLiteral(classNameAttrValue)
+              return exprAst`{ className: ${tlv} }`
+            }
             // Otherwise, return container-object with attr & value.
             return exprAst`{ className: ${classNameAttrValue} }`
           })()
@@ -207,9 +225,7 @@ export default function babelPluginJsxCnStProps() {
           )(${stSpreadAndPropBox}, ${styleSpreadAndPropBox})`
           
           // Add container-object as spread
-          path.node.attributes.push(
-            t.jsxSpreadAttribute(finalStyleBox)
-          )
+          path.node.attributes.push(t.jsxSpreadAttribute(finalStyleBox))
         }
         
         
@@ -217,3 +233,10 @@ export default function babelPluginJsxCnStProps() {
     },
   }
 }
+
+
+
+const escapeForTemplateLiteral = str => str
+  .replace(/\\/g, '\\\\') // escape backslashes
+  .replace(/`/g, '\\`')   // escape backticks
+  .replace(/\$\{/g, '\\${') // escape interpolation start

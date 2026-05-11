@@ -1,5 +1,5 @@
-@import 'layers.css'; /* CSS Layers MUST be FIRST of all CSS */
-@import 'reset.css';
+@import './layers.css'; /* CSS Layers MUST be FIRST of all CSS */
+@import './reset.css';
 
 
 

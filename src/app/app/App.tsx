@@ -12,7 +12,7 @@ import { parserTest } from '@@/lib/parser/model/parser.ts'
 import { useState } from 'react'
 import * as React from 'react'
 import IngameScreen from '@/screens/ingame/ui/IngameScreen.tsx'
-import SwUpdater from '@/features/sw-updater/ui/SwUpdater.tsx'
+import SwUpdater from '@/features/sw-updater/ui/SwUpdater'
 
 parserTest()
 

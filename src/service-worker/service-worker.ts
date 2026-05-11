@@ -1,9 +1,6 @@
 /// <reference lib="webworker"/>
 import { getAppDeployData } from '@/app-deploy/getAppDeployData.ts'
 import { getAppManifest } from '@/app-deploy/manifest/getAppManifest.ts'
-import { getAppDeployThemeData } from '@/app-deploy/theme/getAppDeployThemeData.ts'
-import { getAppDeployIcons } from '@/app-deploy/icons/getAppDeployIcons.ts'
-import { getAppDeployLocaleData } from '@/app-deploy/locale/getAppDeployLocaleData.ts'
 import type { WorkboxPlugin } from 'workbox-core'
 import { ExpirationPlugin } from 'workbox-expiration'
 import {
@@ -75,9 +72,14 @@ if (!envIsDev) {
 
 // Intercept & generate dynamic manifest
 registerRoute(
-  ({ url }) => url.pathname === `${envBaseUrl}manifest.json`,
+  ({ url }) => {
+    return url.origin === self.location.origin &&
+      url.pathname === `${envBaseUrl}manifest.json`
+  },
   async ({ request, event, url, params }) => {
     const { searchParams } = url
+    const { origin } = self.location
+    console.log('SW origin', origin)
     
     const deployMode = searchParams.get('deployMode') ?? ''
     const locale = searchParams.get('locale') ?? ''

@@ -10,7 +10,7 @@ import {
   type DeployLocale,
 } from './src/app-deploy/locale/getAppDeployLocaleData.ts'
 import { getAppManifest } from './src/app-deploy/manifest/getAppManifest.ts'
-import { defineConfig, type Plugin, type UserConfigFn } from 'vite'
+import { defineConfig, type Plugin } from 'vite'
 import tailwindcss from '@tailwindcss/vite'
 import react, { reactCompilerPreset } from '@vitejs/plugin-react'
 import babel from '@rolldown/plugin-babel'
@@ -36,6 +36,7 @@ export default defineConfig(({ command, mode }) => {
   const {
     appName, appDescription,
     manifestSearchParams,
+    iosSplashscreensPath,
     buildDate, buildVer,
     themeColor, bgColor, iosStatusBarStyle,
     icon48, icon64, icon167, icon180,
@@ -69,37 +70,36 @@ export default defineConfig(({ command, mode }) => {
     },
     
     plugins: [
-      // 1. Transform props first
-      babel({ plugins: [babelPluginJsxCnStProps()] }),
       
-      // 2. Heavy Transformations (Must run before other transforms)
-      babel({ presets: [reactCompilerPreset()] }),
-      
-      // 3. Standard React logic
-      react(),
-      
-      // 4. Styles & Assets
-      tailwindcss(),
-      getSvgrPlugin(),
-      
-      // 5. Inject data & paths to html
-      getHtmlAppHeadersPlugin({
+      htmlAppDeployDataPlugin({
         deployLocale, appName, appDescription,
         manifestSearchParams,
         themeColor, bgColor, iosStatusBarStyle,
         icon48, icon167, icon180,
+        iosSplashscreensPath,
       }),
       
-      // 6. PWA & Build (Keep these at the bottom)
-      getGeneratePwaManifestPlugin({
+      tailwindcss(),
+      
+      react(),
+      
+      babel({ plugins: [babelPluginJsxCnStProps()] }),
+      
+      babel({ presets: [reactCompilerPreset()] }),
+      
+      svgrPlugin(),
+      
+      vitePwaPlugin(),
+      
+      generatePwaManifestPlugin({
         deployMode,
         deployLocale, appName, appDescription,
         themeColor, bgColor,
         icon64,
         icon192, icon192Maskable, icon512, icon512Maskable,
       }),
-      getVitePwaPlugin(),
-      getViteLegacyPlugin({ buildDate }),
+      
+      viteLegacyPlugin({ buildDate }),
     ],
     
   }
@@ -177,6 +177,7 @@ function getAppRunAndDeployData({ deployMode, deployLocale, deployTheme }: {
     icon48, icon64, icon167, icon180,
     icon192, icon192Maskable, icon512, icon512Maskable,
     manifestSearchParams,
+    iosSplashscreensPath,
   } = getAppDeployData({ deployMode, deployLocale, deployTheme })
   
   const buildDate = new Date()
@@ -188,6 +189,7 @@ function getAppRunAndDeployData({ deployMode, deployLocale, deployTheme }: {
     icon48, icon64, icon167, icon180,
     icon192, icon192Maskable, icon512, icon512Maskable,
     manifestSearchParams,
+    iosSplashscreensPath,
     buildDate, buildVer,
   }
 }
@@ -214,11 +216,12 @@ function getEnvVarsRuntime({ projectRunMode, buildVer }: {
 
 
 
-function getHtmlAppHeadersPlugin({
+function htmlAppDeployDataPlugin({
   deployLocale, appName, appDescription,
   manifestSearchParams,
   themeColor, bgColor, iosStatusBarStyle,
   icon48, icon167, icon180,
+  iosSplashscreensPath,
 }: {
   deployLocale: string
   appName: string
@@ -230,6 +233,7 @@ function getHtmlAppHeadersPlugin({
   icon48: string
   icon167: string
   icon180: string
+  iosSplashscreensPath: string
 }): Plugin {
   return {
     name: 'html-app-headers-plugin',
@@ -240,18 +244,19 @@ function getHtmlAppHeadersPlugin({
         .replace(/%APP_DESCRIPTION%/g, appDescription)
         .replace(/%MANIFEST_SEARCH_PARAMS%/g, manifestSearchParams)
         .replace(/%THEME_COLOR%/g, themeColor)
-        .replace(/%BG_COLOR%/g, bgColor)
+        .replace(/--BG_COLOR/g, bgColor)
         .replace(/%IOS_STATUS_BAR_STYLE%/g, iosStatusBarStyle)
         .replace(/%FAVICON_48%/g, icon48)
         .replace(/%IPAD_ICON_167%/g, icon167)
         .replace(/%IPHONE_ICON_180%/g, icon180)
+        .replace(/%IOS_SPLASHSCREENS_PATH%/g, iosSplashscreensPath)
     },
   }
 }
 
 
 
-function getSvgrPlugin() {
+function svgrPlugin() {
   return svgr({
     svgrOptions: {
       // These plugins must be manually installed as dev deps
@@ -286,7 +291,7 @@ function getSvgrPlugin() {
 
 
 
-function getGeneratePwaManifestPlugin({
+function generatePwaManifestPlugin({
   deployMode,
   deployLocale, appName, appDescription,
   themeColor, bgColor,
@@ -342,16 +347,23 @@ function getGeneratePwaManifestPlugin({
 
 
 
-function getVitePwaPlugin() {
+function vitePwaPlugin() {
   return VitePWA({
     strategies: 'injectManifest', // compile custom SW and inject precache-manifest
     srcDir: './src/service-worker', // SW folder
     filename: 'service-worker.ts', // SW filename
     injectRegister: 'script', // inject SW registration script
     //includeAssets: ['public/static/**'], // public assets to be precached in SW
-    includeAssets: [],
+    //includeAssets: [],
     
     registerType: 'prompt', // prompt user to reload page when SW was updated
+    injectManifest: {
+      
+      // This targets the PWA plugin's internal service worker build
+      rollupOptions: {
+        external: ['fsevents'],
+      },
+    },
     
     // Disable manifest generation & html injection by plugin.
     // I generate dynamic manifest & dynamic html link manifest search params by myself.
@@ -369,7 +381,7 @@ function getVitePwaPlugin() {
 
 
 // Add polyfills to final build (dev mode has no polyfills)
-function getViteLegacyPlugin({ buildDate }: { buildDate: Date }) {
+function viteLegacyPlugin({ buildDate }: { buildDate: Date }) {
   return legacy({
     polyfills: false,
     renderLegacyChunks: false,
