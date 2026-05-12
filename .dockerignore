@@ -13,14 +13,11 @@ dist-ssr
 dev-dist
 *.local
 
-nginx-proxy
-nginx-react
 .git
 .gitignore
-Makefile
-Dockerfile
-docker-compose*
 *.env
+
+deploy-*
 README.md
 
 # Editor directories and files

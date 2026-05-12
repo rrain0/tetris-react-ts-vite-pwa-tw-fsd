@@ -1,8 +1,11 @@
 # Tetris
 
 
+
 ## Play
 Play at <https://tetris.rrain.fvds.ru:40300>
+
+
 
 ## Controls
 
@@ -33,7 +36,10 @@ Play at <https://tetris.rrain.fvds.ru:40300>
 - P.S. The touchpad controls need some work.
 
 
+
 ## Run & Build Configurations
+
+
 
 ### Run Dev server
 Run only dev server.
@@ -48,6 +54,7 @@ Under `./` run <br/>
 and go to `http://localhost:${REACT_PORT}` e.g. <http://localhost:40109>
 
 
+
 ### Run Dev server + proxy
 Build & run docker nginx proxy and run dev server.
 #### Before run
@@ -60,6 +67,7 @@ Build & run docker nginx proxy and run dev server.
 Under `./` run <br/>
 `make -f deploy-dev.mk dev-proxy` <br/>
 and go to `https://${PROXY_HOST}:${PROXY_PORT}` e.g. <https://tetris.dev.rraindev:40100>
+
 
 
 ### Run Staging
@@ -77,20 +85,32 @@ and go to `https://${PROXY_HOST}:${PROXY_PORT}` e.g. <https://tetris.stg.rrainde
 
 
 
+### Run Production
+Build project, build react nginx image, build docker nginx proxy, run project in docker.
+#### Before run
+- You can customize production config by editing `./deploy-prod/tetris.react.prod.env` (private file).
+
+#### Run
+Under `./` run <br/>
+`make -f deploy-stg.mk stg` <br/>
+and go to `https://${PROXY_HOST}:${PROXY_PORT}` e.g. <https://tetris.stg.rraindev:40200>
+
+
+
 ## What I've used / learned making this pet-project
 
-### React + TS + Tailwind + FSD + Vite + PWA
+#### Main stack: React + TS + Tailwind + FSD + Vite + PWA
 
-- Используется React 19 + React Compiler.
-- Приложение можно собрать в докер.
-- Написал собственный Babel плагин для трансформации cn & st пропсов в className & style.
+- `React 19` + `React Compiler` is used.
+- `Docker` deploy + multiple deploy configurations.
+- My own handwritten `Babel plugin` to transform cn & st into className & style.
 
 
-- Играть можно, очки текут, уровни повышаются.
-- Пока что более менее готовы движок и экран самой игры.
-- Движок реализован на raf и JS генераторах.
-- Пауза пока не поддерживается.
-- Сохранение прогресса не реализовано.
-- Пока что 1 экран самой игры.
-- Вёрстка адаптивная под всё на CSS Container Queries.
-- Есть режим полного экрана и установка в качестве PWA.
+- For now, you can just play: points flow, levels increase.
+- For now, the engine and the single game screen itself are more or less ready.
+- The engine is implemented using `raf` and `JS generators`.
+- Game pause is not supported yet.
+- Saving progress is not implemented.
+- Responsive layout for everything using CSS Container Queries.
+- Fullscreen mode.
+- PWA installation.

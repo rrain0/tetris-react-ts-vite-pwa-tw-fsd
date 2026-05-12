@@ -1,26 +1,12 @@
 
-
-
-name: tetris-stg-react
+name: tetris-dev-react
 
 
 services:
 
-  nginx-react:
-    image: tetris-stg-react-react
-    ports:
-      - '${PROXY_PORT}:${PROXY_PORT}'
-    volumes:
-      - ../deploy-nginx/nginx-react.nginx.conf:/etc/nginx/templates/nginx.conf.template:ro
-    environment:
-      - NGINX_ENVSUBST_OUTPUT_DIR=/etc/nginx # where to find 'templates/nginx.conf.template'
-      - REACT_PORT
-    restart: unless-stopped
-
-
   nginx-proxy:
     image: nginx:1.29.8-alpine
-    network_mode: 'service:nginx-react'
+    network_mode: 'host' # no 'ports' section needed when 'host' network mode
     volumes:
       - ../deploy-nginx/nginx-proxy.nginx.conf:/etc/nginx/templates/nginx.conf.template:ro
       - ${PROXY_CERT_CRT}:/etc/ssl/cert/cert.crt:ro
@@ -45,10 +31,10 @@ services:
 # 1) Add env variables to your nginx.conf file.
 # 2) Copy it to /etc/nginx/templates/nginx.conf.template in the container (as opposed to your normal /etc/nginx)
 # in the build step or mount as a volume.
-# 3) Set the NGINX_ENVSUBST_OUTPUT_DIR: /etc/nginx environment variable in docker-compose.yml.
+# 3) Set the NGINX_ENVSUBST_OUTPUT_DIR: /etc/nginx environment variable in docker-compose.yaml.
 #
 # This will cause the nginx.conf.template file to be copied to /etc/nginx as nginx.conf
 # where environment variables will be replaced with their values.
 #
-# There is one caveat to keep in mind: using command property in docker-compose.yml
+# There is one caveat to keep in mind: using command property in docker-compose.yaml
 # seems to be disabling the extraction functionality.

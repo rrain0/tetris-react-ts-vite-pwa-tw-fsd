@@ -11,7 +11,7 @@ RUN corepack enable
 # '--activate' explicitly sets up this pnpm version to be used globally by 'pnpm' command
 RUN corepack prepare pnpm@latest --activate
 
-# Set the current path in image
+# Set the current path in image (across all build stages in the same image)
 WORKDIR /app
 
 
@@ -20,7 +20,7 @@ WORKDIR /app
 # Load & use only runtime dependencies
 FROM base AS runtime-deps
 # Copy dependency-list files
-COPY package.json pnpm-lock.yaml ./
+COPY ./package.json ./pnpm-lock.yaml ./pnpm-workspace.yaml ./
 # Mount deps folder from your host machine and install only runtime deps
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile
 
@@ -35,12 +35,6 @@ COPY ./ ./
 
 # Mount deps folder from your host machine and install all deps
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
-
-# Set backend address envs
-#ARG BACKEND_HOST
-#ARG BACKEND_PORT
-#ENV BACKEND_HOST=$BACKEND_HOST
-#ENV BACKEND_PORT=$BACKEND_PORT
 
 # Build project
 RUN pnpm run build
