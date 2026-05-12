@@ -1,6 +1,7 @@
+import type { NodePath, PluginObj } from '@babel/core'
 import * as t from '@babel/types'
-import _template from '@babel/template'
-const template = _template.default || _template // Handles both ESM and CJS
+import template from '@babel/template'
+
 const exprAst = template.expression.ast
 
 
@@ -35,39 +36,52 @@ const exprAst = template.expression.ast
 
 
 
-export default function babelPluginJsxCnStProps() {
+export default function babelPluginJsxCnStProps(): PluginObj {
   return {
     name: 'babel-plugin-jsx-cn-st-prop',
     visitor: {
-      JSXOpeningElement(path) {
+      JSXOpeningElement(path: NodePath<t.JSXOpeningElement>) {
         
         // Collect existing attrs
         
         const attrs = path.get('attributes')
         
-        let hasCnAttr
-        let cnAttrValue
-        const cnSpreads = []
+        type AttrValue =
+          | t.JSXElement
+          | t.JSXFragment
+          | t.StringLiteral
+          | t.JSXEmptyExpression
+          | t.Expression
+          | null
+          | undefined
         
-        let hasStAttr
-        let stAttrValue
-        const stSpreads = []
+        // Has any cn attr
+        let hasCnAttr = false
+        // Calue of last cn attr
+        let cnAttrValue: AttrValue
+        // Contains any spread attr args (from last to first).
+        // Spread attrs before last cn attr are skipped.
+        const cnSpreads: t.Expression[] = []
         
-        let hasClassNameAttr // has any className attr
-        let classNameAttrValue // value of last className attr
-        const classNameSpreads = [] // from last spread attr arg to first before last className attr
+        let hasStAttr = false
+        let stAttrValue: AttrValue
+        const stSpreads: t.Expression[] = []
         
-        let hasStyleAttr
-        let styleAttrValue
-        const styleSpreads = []
+        let hasClassNameAttr = false
+        let classNameAttrValue: AttrValue
+        const classNameSpreads: t.Expression[] = []
+        
+        let hasStyleAttr = false
+        let styleAttrValue: AttrValue
+        const styleSpreads: t.Expression[] = []
         
         for (let i = attrs.length - 1; i >= 0; i--) {
           const attr = attrs[i]
           if (attr.isJSXAttribute()) {
             const name = attr.node.name.name
             
-            let v = attr.node.value
-            if (t.isJSXExpressionContainer(v)) v = v.expression
+            const vRaw = attr.node.value
+            const v: AttrValue = t.isJSXExpressionContainer(vRaw) ? vRaw.expression : vRaw
             
             if (name === 'cn') {
               if (!hasCnAttr) {
@@ -235,7 +249,7 @@ export default function babelPluginJsxCnStProps() {
 
 
 
-const stringLiteralNodeToTemplateLiteralNode = slNode => t.templateLiteral(
+const stringLiteralNodeToTemplateLiteralNode = (slNode: t.StringLiteral) => t.templateLiteral(
   [t.templateElement({
     // This is what the generator prints (it should have your escapes like \n or \\)
     raw: slNode.value.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$\{/g, '\\${'),
