@@ -22,10 +22,6 @@
     border: 0 solid;
   }
   
-  input, textarea {
-    justify-items: normal;
-  }
-  
   /* Unstyled headings*/
   h1, h2, h3, h4, h5, h6 {
     font-size: inherit;
@@ -41,6 +37,14 @@
   img, svg, video, canvas, audio, iframe, embed, object {
     display: block;
     vertical-align: middle;
+  }
+  
+  button {
+    background-color: transparent;
+  }
+  
+  input, textarea {
+    justify-items: normal;
   }
   
 }

@@ -14,7 +14,7 @@ const ingameControlsButtonCn = `
   
   before:content-['']
   before:abs
-  before:a-[-10%]
+  before:trbl-[-10%]
   before:z-[-1000]
   before:rad-[16%]
   before:transition-all-200

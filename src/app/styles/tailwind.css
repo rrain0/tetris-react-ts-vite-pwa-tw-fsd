@@ -50,8 +50,8 @@ sp - space / spacing
 fixed - position: fixed;
 abs - position: absolute;
 rel - position: relative;
-pos-a - top & right & bottom & left
-pos-v, pos-h - top & bottom, right & left
+trbl - top & right & bottom & left
+tb, lr - top & bottom, right & left
 t, r, b, l - top, right, bottom, left
 z - z-index
 
