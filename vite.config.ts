@@ -18,6 +18,7 @@ import babelPluginJsxCnStProps from './plugins/babelPluginJsxCnStProps.ts'
 import svgr from 'vite-plugin-svgr'
 import { VitePWA } from 'vite-plugin-pwa'
 import legacy from '@vitejs/plugin-legacy'
+import fs from 'node:fs'
 
 // TODO process test environment (process.env.VITEST === 'true', mode === 'test')
 
@@ -92,7 +93,7 @@ export default defineConfig(({ command, mode }) => {
       vitePwaPlugin(),
       
       generatePwaManifestPlugin({
-        deployMode,
+        projectRunMode, deployMode,
         deployLocale, appName, appDescription,
         themeColor, bgColor,
         icon64,
@@ -237,19 +238,22 @@ function htmlAppDeployDataPlugin({
 }): Plugin {
   return {
     name: 'html-app-headers-plugin',
-    transformIndexHtml(html) {
-      return html
-        .replace(/%APP_LOCALE%/g, deployLocale)
-        .replace(/%APP_NAME%/g, appName)
-        .replace(/%APP_DESCRIPTION%/g, appDescription)
-        .replace(/%MANIFEST_SEARCH_PARAMS%/g, manifestSearchParams)
-        .replace(/%THEME_COLOR%/g, themeColor)
-        .replace(/--BG_COLOR/g, bgColor)
-        .replace(/%IOS_STATUS_BAR_STYLE%/g, iosStatusBarStyle)
-        .replace(/%FAVICON_48%/g, icon48)
-        .replace(/%IPAD_ICON_167%/g, icon167)
-        .replace(/%IPHONE_ICON_180%/g, icon180)
-        .replace(/%IOS_SPLASHSCREENS_PATH%/g, iosSplashscreensPath)
+    transformIndexHtml: {
+      order: 'pre', // run this before other plugins and before Vite internal HTML transform
+      handler(html) {
+        return html
+          .replace(/%APP_LOCALE%/g, deployLocale)
+          .replace(/%APP_NAME%/g, appName)
+          .replace(/%APP_DESCRIPTION%/g, appDescription)
+          .replace(/%MANIFEST_SEARCH_PARAMS%/g, manifestSearchParams)
+          .replace(/%THEME_COLOR%/g, themeColor)
+          .replace(/--BG_COLOR/g, bgColor)
+          .replace(/%IOS_STATUS_BAR_STYLE%/g, iosStatusBarStyle)
+          .replace(/%FAVICON_48%/g, icon48)
+          .replace(/%IPAD_ICON_167%/g, icon167)
+          .replace(/%IPHONE_ICON_180%/g, icon180)
+          .replace(/%IOS_SPLASHSCREENS_PATH%/g, iosSplashscreensPath)
+      },
     },
   }
 }
@@ -292,12 +296,13 @@ function svgrPlugin() {
 
 
 function generatePwaManifestPlugin({
-  deployMode,
+  projectRunMode, deployMode,
   deployLocale, appName, appDescription,
   themeColor, bgColor,
   icon64,
   icon192, icon192Maskable, icon512, icon512Maskable,
 }: {
+  projectRunMode: ProjectRunMode
   deployMode: string
   deployLocale: string
   appName: string
@@ -309,40 +314,116 @@ function generatePwaManifestPlugin({
   icon192Maskable: string
   icon512: string
   icon512Maskable: string
-}): Plugin[] {
-  const manifestJson = JSON.stringify(getAppManifest({
-    deployMode,
-    deployLocale, appName, appDescription,
-    themeColor, bgColor,
-    icon64,
-    icon192, icon192Maskable, icon512, icon512Maskable,
-  }))
-  return [
-    {
-      name: 'generate-and-inject-manifest',
-      // Generate manifest for dev server
-      configureServer(server) {
-        server.middlewares.use((req, res, next) => {
-          const { pathname } = new URL(req.url || '', `http://${req.headers.host}`)
-          const manifestPath = `${server.config.base}manifest.json`
-          if (pathname === manifestPath) {
-            res.setHeader('Content-Type', 'application/json')
-            res.end(manifestJson)
-            return
-          }
-          next()
-        })
-      },
-      // Generate manifest file for build
-      generateBundle() {
-        this.emitFile({
-          type: 'asset',
-          fileName: 'manifest.json',
-          source: manifestJson,
-        })
-      },
+}): Plugin | Plugin[] {
+  const plugins: Record<ProjectRunMode, () => Plugin | Plugin[]> = {
+    'dev': () => {
+      const manifestJson = JSON.stringify(getAppManifest({
+        deployMode,
+        deployLocale, appName, appDescription,
+        themeColor, bgColor,
+        icon64,
+        icon192, icon192Maskable, icon512, icon512Maskable,
+      }), null, 2)
+      return {
+        name: 'generate-and-inject-manifest',
+        // Generate manifest for dev server
+        configureServer(server) {
+          server.middlewares.use((req, res, next) => {
+            const { pathname: path } = new URL(req.url || '', `http://${req.headers.host}`)
+            const manifestPath = `${server.config.base}manifest.json`
+            if (path === manifestPath) {
+              res.setHeader('Content-Type', 'application/json')
+              res.end(manifestJson)
+              return
+            }
+            next()
+          })
+        },
+      }
     },
-  ]
+    'build': () => [
+      {
+        name: 'include-manifest-icons',
+        // Tell Rolldown to include the files at the start of the build
+        buildStart() {
+          ;[
+            {
+              name: 'icon-64.png',
+              absPath: fileURLToPath(new URL(
+                'src/static-deploy-dev/assets/app-icon/icon-64.png', import.meta.url
+              )),
+            },
+          ].map(it => {
+            this.emitFile({
+              type: 'asset',
+              name: it.name, // This sets fileInfo.name for the next hook
+              source: fs.readFileSync(it.absPath),
+            })
+          })
+          
+        },
+      },
+      {
+        name: 'generate-and-inject-manifest',
+        // Generate manifest file for build
+        generateBundle(options, bundle) {
+          ;({
+            icon64,
+            icon192, icon192Maskable, icon512, icon512Maskable,
+          } = (() => {
+            const relPaths = Object.entries({
+              icon64,
+              icon192, icon192Maskable, icon512, icon512Maskable,
+            })
+            return Object.fromEntries(Object.entries(bundle).map(([_, fileInfo]) => {
+              if (fileInfo.type === 'asset') {
+                const { originalFileNames, fileName } = fileInfo
+                for (let i = 0; i < originalFileNames.length; i++) {
+                  const orig = originalFileNames[i]
+                  for (let j = 0; j < relPaths.length; j++) {
+                    const [tag, rel] = relPaths[j]
+                    if (orig === rel) return [tag, fileName] as const
+                  }
+                }
+              }
+              return ['', ''] as const
+            }))
+          })())
+          
+          console.log('icon64', icon64)
+          
+          const manifestJson = JSON.stringify(getAppManifest({
+            deployMode,
+            deployLocale, appName, appDescription,
+            themeColor, bgColor,
+            icon64,
+            icon192, icon192Maskable, icon512, icon512Maskable,
+          }), null, 2)
+          
+          const assetMap = { }
+          
+          for (const [fileInBundle, fileInfo] of Object.entries(bundle)) {
+            // fileName: The final generated hashed name (e.g., 'assets/index-B3x9a1.js')
+            // fileInfo.name: The original filename before hashing (e.g., 'index.js')
+            if (fileInfo.type === 'asset' && fileInfo.name && /[.]png$/.test(fileInfo.name)) {
+              const { source, ...fileInfoRest } = fileInfo
+              assetMap[fileInfo.name] = { fileInBundle, ...fileInfoRest }
+            }
+          }
+          
+          console.log('assetMap', JSON.stringify(assetMap, null, 2))
+          
+          
+          this.emitFile({
+            type: 'asset',
+            fileName: 'manifest.json',
+            source: manifestJson,
+          })
+        },
+      },
+    ],
+  }
+  return plugins[projectRunMode]()
 }
 
 
@@ -353,8 +434,13 @@ function vitePwaPlugin() {
     srcDir: './src/service-worker', // SW folder
     filename: 'service-worker.ts', // SW filename
     injectRegister: 'script', // inject SW registration script
-    //includeAssets: ['public/static/**'], // public assets to be precached in SW
-    //includeAssets: [],
+    
+    // Public assets to be precached in SW.
+    // By default, all precached entries are:
+    // bundled JS, bundled CSS, public index.html, public registerSW.js.
+    // You may add public assets to be precached.
+    // These public assets must be in '<project-root>/public/' folder and paths relative to this.
+    includeAssets: ['./static/**'],
     
     registerType: 'prompt', // prompt user to reload page when SW was updated
     injectManifest: {

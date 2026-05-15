@@ -7,7 +7,7 @@ services:
   nginx-react:
     build:
       context: ../ # build context - it is project root inside Dockerfile
-      dockerfile: ./deploy-docker/Dockerfile # path to Dockerfile relative to context
+      dockerfile: ./deploy-stg/Dockerfile # path to Dockerfile relative to context
     image: tetris-stg-react-react
     ports:
       - '${PROXY_PORT}:${PROXY_PORT}'
@@ -16,7 +16,7 @@ services:
     environment:
       - NGINX_ENVSUBST_OUTPUT_DIR=/etc/nginx # where to find 'templates/nginx.conf.template'
       - REACT_PORT
-    restart: unless-stopped
+    restart: on-failure
 
 
   nginx-proxy:
@@ -33,7 +33,7 @@ services:
       - PROXY_CERT_CRT
       - PROXY_CERT_KEY
       - REACT_PORT
-    restart: unless-stopped
+    restart: on-failure
 
 
 

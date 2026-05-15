@@ -11,7 +11,7 @@ endif
 
 docker-prod-build:
 	docker build \
-		-f ../deploy-docker/Dockerfile \
+		-f ./Dockerfile \
 		-t $(DOCKER_IMAGE_NAMESPACE)/tetris-prod-react-react:$(DOCKER_IMAGE_VERSION) \
 		../
 
