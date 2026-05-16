@@ -7,14 +7,14 @@ import {
 
 
 export type DeployIcons = {
-  icon48: string
-  icon64: string
-  icon167: string
-  icon180: string
-  icon192: string
-  icon192Maskable: string
-  icon512: string
-  icon512Maskable: string
+  icon48Path: string
+  icon64Path: string
+  icon167Path: string
+  icon180Path: string
+  icon192Path: string
+  icon192MaskablePath: string
+  icon512Path: string
+  icon512MaskablePath: string
 }
 
 
@@ -23,48 +23,25 @@ export function getAppDeployIcons({ deployMode }: {
   // Types are not precise to provide default values
   deployMode: string,
 }): DeployIcons {
-  const iconsByDeployMode: Record<DeployMode, DeployIcons> = {
-    'development': (() => {
-      const assetsPath = 'src/static-deploy-dev/assets/app-icon'
-      return {
-        icon48: `${assetsPath}/icon-48.png`,
-        icon64: `${assetsPath}/icon-64.png`,
-        icon167: `${assetsPath}/icon-167.png`,
-        icon180: `${assetsPath}/icon-180.png`,
-        icon192: `${assetsPath}/icon-192.png`,
-        icon192Maskable: `${assetsPath}/icon-192-maskable.png`,
-        icon512: `${assetsPath}/icon-512.png`,
-        icon512Maskable: `${assetsPath}/icon-512-maskable.png`,
-      }
-    })(),
-    'staging': (() => {
-      const assetsPath = 'src/static-deploy-stg/assets/app-icon'
-      return {
-        icon48: `${assetsPath}/icon-48.png`,
-        icon64: `${assetsPath}/icon-64.png`,
-        icon167: `${assetsPath}/icon-167.png`,
-        icon180: `${assetsPath}/icon-180.png`,
-        icon192: `${assetsPath}/icon-192.png`,
-        icon192Maskable: `${assetsPath}/icon-192-maskable.png`,
-        icon512: `${assetsPath}/icon-512.png`,
-        icon512Maskable: `${assetsPath}/icon-512-maskable.png`,
-      }
-    })(),
-    'production': (() => {
-      const assetsPath = 'src/static/assets/app-icon'
-      return {
-        icon48: `${assetsPath}/icon-48.png`,
-        icon64: `${assetsPath}/icon-64.png`,
-        icon167: `${assetsPath}/icon-167.png`,
-        icon180: `${assetsPath}/icon-180.png`,
-        icon192: `${assetsPath}/icon-192.png`,
-        icon192Maskable: `${assetsPath}/icon-192-maskable.png`,
-        icon512: `${assetsPath}/icon-512.png`,
-        icon512Maskable: `${assetsPath}/icon-512-maskable.png`,
-      }
-    })(),
+  const iconsPathByDeployMode: Record<DeployMode, string> = {
+    'development': 'src/static-deploy-dev/assets/app-icon',
+    'staging': 'src/static-deploy-stg/assets/app-icon',
+    'production': 'src/static/assets/app-icon',
   }
   
-  if (supportedDeployModes.includes(deployMode)) return iconsByDeployMode[deployMode]
-  return iconsByDeployMode[deployModeDefault]
+  const path = ((): string => {
+    if (supportedDeployModes.includes(deployMode)) return iconsPathByDeployMode[deployMode]
+    return iconsPathByDeployMode[deployModeDefault]
+  })()
+  
+  return {
+    icon48Path: `${path}/icon-48.png`,
+    icon64Path: `${path}/icon-64.png`,
+    icon167Path: `${path}/icon-167.png`,
+    icon180Path: `${path}/icon-180.png`,
+    icon192Path: `${path}/icon-192.png`,
+    icon192MaskablePath: `${path}/icon-192-maskable.png`,
+    icon512Path: `${path}/icon-512.png`,
+    icon512MaskablePath: `${path}/icon-512-maskable.png`,
+  }
 }

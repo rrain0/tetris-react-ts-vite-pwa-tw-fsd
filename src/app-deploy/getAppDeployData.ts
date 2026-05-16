@@ -23,8 +23,8 @@ export function getAppDeployData({ deployMode, deployLocale, deployTheme }: {
     iosStatusBarStyle, themeColor, bgColor,
   } = getAppDeployThemeData({ deployTheme })
   const {
-    icon48, icon64, icon167, icon180,
-    icon192, icon192Maskable, icon512, icon512Maskable,
+    icon48Path, icon64Path, icon167Path, icon180Path,
+    icon192Path, icon192MaskablePath, icon512Path, icon512MaskablePath,
   } = getAppDeployIcons({ deployMode })
   const manifestSearchParams = getAppManifestSearchParams({
     deployMode, locale: deployLocale, theme: deployTheme,
@@ -40,8 +40,8 @@ export function getAppDeployData({ deployMode, deployLocale, deployTheme }: {
     deployMode, deployLocale, deployTheme,
     appName, appDescription,
     iosStatusBarStyle, themeColor, bgColor,
-    icon48, icon64, icon167, icon180,
-    icon192, icon192Maskable, icon512, icon512Maskable,
+    icon48Path, icon64Path, icon167Path, icon180Path,
+    icon192Path, icon192MaskablePath, icon512Path, icon512MaskablePath,
     manifestSearchParams,
     iosSplashscreensPath,
     buildDate, buildVer,

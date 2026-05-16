@@ -56,23 +56,24 @@
   "icons": [
     // This size is REQUIRED.
     {
-      "src": "public/assets/icon192.png",
+      "src": "public/assets/icon-192.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     // This size is REQUIRED.
     // Android splashscreen icon.
     {
-      "src": "public/assets/icon512.png",
+      "src": "public/assets/icon-512.png",
       "type": "image/png",
-      "sizes": "512x512"
-    }
-    /*{
-      "src": "public/assets/icon512-padding.png",
+      "sizes": "512x512",
+      "purpose": "any"
+    },
+    {
+      "src": "public/assets/icon-512-maskable.png",
       "type": "image/png",
       "sizes": "512x512",
       "purpose": "maskable"
-    }*/
+    }
   ]
   
   

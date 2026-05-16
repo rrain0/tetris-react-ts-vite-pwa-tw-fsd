@@ -11,8 +11,8 @@ export function getAppManifest({
   deployMode, deployLocale,
   appName, appDescription,
   themeColor, bgColor,
-  icon64,
-  icon192, icon192Maskable, icon512, icon512Maskable,
+  icon64Path,
+  icon192Path, icon192MaskablePath, icon512Path, icon512MaskablePath,
 }: {
   // Types are not precise to provide default values
   deployMode: string
@@ -21,17 +21,20 @@ export function getAppManifest({
   appDescription: string
   themeColor: string
   bgColor: string
-  icon64: string
-  icon192: string
-  icon192Maskable: string
-  icon512: string
-  icon512Maskable: string
+  icon64Path: string
+  icon192Path: string
+  icon192MaskablePath: string
+  icon512Path: string
+  icon512MaskablePath: string
 }): ManifestPart {
   let manifest = manifestBase as ManifestPart
   manifest = applyPwaId(manifest, { deployMode, deployLocale })
   manifest = applyLocale(manifest, { deployLocale, appName, appDescription })
   manifest = applyColors(manifest, { themeColor, bgColor })
-  manifest = applyIcons(manifest, { icon64, icon192, icon192Maskable, icon512, icon512Maskable })
+  manifest = applyIcons(manifest, { 
+    icon64Path, 
+    icon192Path, icon192MaskablePath, icon512Path, icon512MaskablePath,
+  })
   return manifest
 }
 
@@ -85,44 +88,44 @@ function applyColors(
 function applyIcons(
   manifest: ManifestPart,
   {
-    icon64,
-    icon192, icon192Maskable, icon512, icon512Maskable,
+    icon64Path,
+    icon192Path, icon192MaskablePath, icon512Path, icon512MaskablePath,
   }: {
-    icon64: string
-    icon192: string
-    icon192Maskable: string
-    icon512: string
-    icon512Maskable: string
+    icon64Path: string
+    icon192Path: string
+    icon192MaskablePath: string
+    icon512Path: string
+    icon512MaskablePath: string
   },
 ): ManifestPart {
   return {
     ...manifest,
     icons: [
       {
-        src: icon64,
+        src: icon64Path,
         sizes: '64x64',
         type: 'image/png',
       },
       {
-        src: icon192,
+        src: icon192Path,
         sizes: '192x192',
         type: 'image/png',
         purpose: 'any',
       },
       {
-        src: icon192Maskable,
+        src: icon192MaskablePath,
         sizes: '192x192',
         type: 'image/png',
         purpose: 'maskable',
       },
       {
-        src: icon512,
+        src: icon512Path,
         sizes: '512x512',
         type: 'image/png',
         purpose: 'any',
       },
       {
-        src: icon512Maskable,
+        src: icon512MaskablePath,
         sizes: '512x512',
         type: 'image/png',
         purpose: 'maskable',

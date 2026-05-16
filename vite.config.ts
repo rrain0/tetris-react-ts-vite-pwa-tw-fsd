@@ -23,7 +23,6 @@ import fs from 'node:fs'
 // TODO process test environment (process.env.VITEST === 'true', mode === 'test')
 
 type ProjectRunMode = 'dev' | 'build'
-type NodeEnv = 'development' | 'production'
 
 
 
@@ -40,16 +39,13 @@ export default defineConfig(({ command, mode }) => {
     iosSplashscreensPath,
     buildDate, buildVer,
     themeColor, bgColor, iosStatusBarStyle,
-    icon48, icon64, icon167, icon180,
-    icon192, icon192Maskable, icon512, icon512Maskable,
+    icon48Path, icon64Path, icon167Path, icon180Path,
+    icon192Path, icon192MaskablePath, icon512Path, icon512MaskablePath,
   } = getAppRunAndDeployData({ deployMode, deployLocale, deployTheme })
   
-  const envVarsRuntime = getEnvVarsRuntime({ projectRunMode, buildVer })
+  const manifestPathSearch = `/manifest.json${manifestSearchParams}`
   
   return {
-    // Pass desired env variables to runtime
-    define: envVarsRuntime,
-    
     // Make url paths absolute (relative to root)
     base: '/',
     
@@ -70,13 +66,16 @@ export default defineConfig(({ command, mode }) => {
       allowedHosts: true, // allow any host
     },
     
+    // Pass desired env variables to runtime
+    define: getEnvVarsRuntime({ projectRunMode, buildVer }),
+    
     plugins: [
       
       htmlAppDeployDataPlugin({
         deployLocale, appName, appDescription,
-        manifestSearchParams,
+        manifestPathSearch,
         themeColor, bgColor, iosStatusBarStyle,
-        icon48, icon167, icon180,
+        icon48Path, icon167Path, icon180Path,
         iosSplashscreensPath,
       }),
       
@@ -96,8 +95,8 @@ export default defineConfig(({ command, mode }) => {
         projectRunMode, deployMode,
         deployLocale, appName, appDescription,
         themeColor, bgColor,
-        icon64,
-        icon192, icon192Maskable, icon512, icon512Maskable,
+        icon64Path,
+        icon192Path, icon192MaskablePath, icon512Path, icon512MaskablePath,
       }),
       
       viteLegacyPlugin({ buildDate }),
@@ -114,7 +113,7 @@ function getDeployEnvVars() {
   const { REACT_PORT, APP_LOCALE, APP_THEME, VITEST } = process.env
   
   return {
-    envReactPort: !REACT_PORT || !/\d+/.test(REACT_PORT) ? 40109 : +REACT_PORT,
+    envReactPort: REACT_PORT && /\d+/.test(REACT_PORT) && +REACT_PORT || 40109,
     envLocale: APP_LOCALE || 'en-US',
     envTheme: APP_THEME || 'dark',
     envIsVitest: VITEST === 'true',
@@ -133,7 +132,7 @@ function getAppDeployConfig({ command, mode, envLocale, envTheme, envIsVitest }:
   const projectRunMode: ProjectRunMode = ({
     'serve': 'dev',
     'build': 'build',
-  } as const)[command]
+  } as const satisfies Record<typeof command, ProjectRunMode>)[command]
   
   // Check if deployMode supported
   if (!supportedDeployModes.includes(mode)) {
@@ -175,8 +174,8 @@ function getAppRunAndDeployData({ deployMode, deployLocale, deployTheme }: {
   const {
     appName, appDescription,
     iosStatusBarStyle, themeColor, bgColor,
-    icon48, icon64, icon167, icon180,
-    icon192, icon192Maskable, icon512, icon512Maskable,
+    icon48Path, icon64Path, icon167Path, icon180Path,
+    icon192Path, icon192MaskablePath, icon512Path, icon512MaskablePath,
     manifestSearchParams,
     iosSplashscreensPath,
   } = getAppDeployData({ deployMode, deployLocale, deployTheme })
@@ -187,8 +186,8 @@ function getAppRunAndDeployData({ deployMode, deployLocale, deployTheme }: {
   return {
     appName, appDescription,
     iosStatusBarStyle, themeColor, bgColor,
-    icon48, icon64, icon167, icon180,
-    icon192, icon192Maskable, icon512, icon512Maskable,
+    icon48Path, icon64Path, icon167Path, icon180Path,
+    icon192Path, icon192MaskablePath, icon512Path, icon512MaskablePath,
     manifestSearchParams,
     iosSplashscreensPath,
     buildDate, buildVer,
@@ -201,14 +200,14 @@ function getEnvVarsRuntime({ projectRunMode, buildVer }: {
   projectRunMode: ProjectRunMode
   buildVer: string
 }) {
-  const projectRunModeToNodeEnv: Record<ProjectRunMode, NodeEnv> = {
+  const nodeEnv = ({
     'dev': 'development',
     'build': 'production',
-  }
+  } as const satisfies Record<ProjectRunMode, string>)[projectRunMode]
   
   const envVarsRuntime: Record<string, string> = {
     // Add old-fashioned 'process.env.NODE_ENV' property to support legacy libs and node
-    'process.env.NODE_ENV': JSON.stringify(projectRunModeToNodeEnv[projectRunMode]),
+    'process.env.NODE_ENV': JSON.stringify(nodeEnv),
     'import.meta.env.BUILD_VER': JSON.stringify(buildVer),
   }
   
@@ -219,21 +218,21 @@ function getEnvVarsRuntime({ projectRunMode, buildVer }: {
 
 function htmlAppDeployDataPlugin({
   deployLocale, appName, appDescription,
-  manifestSearchParams,
+  manifestPathSearch,
   themeColor, bgColor, iosStatusBarStyle,
-  icon48, icon167, icon180,
+  icon48Path, icon167Path, icon180Path,
   iosSplashscreensPath,
 }: {
   deployLocale: string
   appName: string
   appDescription: string,
-  manifestSearchParams: string
+  manifestPathSearch: string
   themeColor: string
   iosStatusBarStyle: string
   bgColor: string
-  icon48: string
-  icon167: string
-  icon180: string
+  icon48Path: string
+  icon167Path: string
+  icon180Path: string
   iosSplashscreensPath: string
 }): Plugin {
   return {
@@ -245,13 +244,13 @@ function htmlAppDeployDataPlugin({
           .replace(/%APP_LOCALE%/g, deployLocale)
           .replace(/%APP_NAME%/g, appName)
           .replace(/%APP_DESCRIPTION%/g, appDescription)
-          .replace(/%MANIFEST_SEARCH_PARAMS%/g, manifestSearchParams)
+          .replace(/%MANIFEST%/g, manifestPathSearch)
           .replace(/%THEME_COLOR%/g, themeColor)
           .replace(/--BG_COLOR/g, bgColor)
           .replace(/%IOS_STATUS_BAR_STYLE%/g, iosStatusBarStyle)
-          .replace(/%FAVICON_48%/g, icon48)
-          .replace(/%IPAD_ICON_167%/g, icon167)
-          .replace(/%IPHONE_ICON_180%/g, icon180)
+          .replace(/%FAVICON_48%/g, icon48Path)
+          .replace(/%IPAD_ICON_167%/g, icon167Path)
+          .replace(/%IPHONE_ICON_180%/g, icon180Path)
           .replace(/%IOS_SPLASHSCREENS_PATH%/g, iosSplashscreensPath)
       },
     },
@@ -272,8 +271,6 @@ function svgrPlugin() {
       descProp: true, // desc prop => desc tag
       svgoConfig: {
         plugins: [
-          //'removeTitle',
-          //'removeDesc',
           // SVG elements' id attr auto prefixer to avoid duplicate ids across all document
           {
             name: 'prefixIds',
@@ -299,8 +296,8 @@ function generatePwaManifestPlugin({
   projectRunMode, deployMode,
   deployLocale, appName, appDescription,
   themeColor, bgColor,
-  icon64,
-  icon192, icon192Maskable, icon512, icon512Maskable,
+  icon64Path,
+  icon192Path, icon192MaskablePath, icon512Path, icon512MaskablePath,
 }: {
   projectRunMode: ProjectRunMode
   deployMode: string
@@ -309,11 +306,11 @@ function generatePwaManifestPlugin({
   appDescription: string
   themeColor: string
   bgColor: string
-  icon64: string
-  icon192: string
-  icon192Maskable: string
-  icon512: string
-  icon512Maskable: string
+  icon64Path: string
+  icon192Path: string
+  icon192MaskablePath: string
+  icon512Path: string
+  icon512MaskablePath: string
 }): Plugin | Plugin[] {
   const plugins: Record<ProjectRunMode, () => Plugin | Plugin[]> = {
     'dev': () => {
@@ -321,8 +318,8 @@ function generatePwaManifestPlugin({
         deployMode,
         deployLocale, appName, appDescription,
         themeColor, bgColor,
-        icon64,
-        icon192, icon192Maskable, icon512, icon512Maskable,
+        icon64Path,
+        icon192Path, icon192MaskablePath, icon512Path, icon512MaskablePath,
       }), null, 2)
       return {
         name: 'generate-and-inject-manifest',
@@ -330,8 +327,8 @@ function generatePwaManifestPlugin({
         configureServer(server) {
           server.middlewares.use((req, res, next) => {
             const { pathname: path } = new URL(req.url || '', `http://${req.headers.host}`)
-            const manifestPath = `${server.config.base}manifest.json`
-            if (path === manifestPath) {
+            const manifestPathSearch = `${server.config.base}manifest.json`
+            if (path === manifestPathSearch) {
               res.setHeader('Content-Type', 'application/json')
               res.end(manifestJson)
               return
@@ -368,12 +365,12 @@ function generatePwaManifestPlugin({
         // Generate manifest file for build
         generateBundle(options, bundle) {
           ;({
-            icon64,
-            icon192, icon192Maskable, icon512, icon512Maskable,
+            icon64Path,
+            icon192Path, icon192MaskablePath, icon512Path, icon512MaskablePath,
           } = (() => {
             const relPaths = Object.entries({
-              icon64,
-              icon192, icon192Maskable, icon512, icon512Maskable,
+              icon64Path,
+              icon192Path, icon192MaskablePath, icon512Path, icon512MaskablePath,
             })
             return Object.fromEntries(Object.entries(bundle).map(([_, fileInfo]) => {
               if (fileInfo.type === 'asset') {
@@ -390,27 +387,27 @@ function generatePwaManifestPlugin({
             }))
           })())
           
-          console.log('icon64', icon64)
+          console.log('icon64Path', icon64Path)
           
           const manifestJson = JSON.stringify(getAppManifest({
             deployMode,
             deployLocale, appName, appDescription,
             themeColor, bgColor,
-            icon64,
-            icon192, icon192Maskable, icon512, icon512Maskable,
+            icon64Path,
+            icon192Path, icon192MaskablePath, icon512Path, icon512MaskablePath,
           }), null, 2)
           
-          const assetMap = { }
           
+          
+          const assetMap = { }
           for (const [fileInBundle, fileInfo] of Object.entries(bundle)) {
             // fileName: The final generated hashed name (e.g., 'assets/index-B3x9a1.js')
             // fileInfo.name: The original filename before hashing (e.g., 'index.js')
-            if (fileInfo.type === 'asset' && fileInfo.name && /[.]png$/.test(fileInfo.name)) {
+            if (fileInfo.type === 'asset' /* && fileInfo.name && /[.]png$/.test(fileInfo.name) */) {
               const { source, ...fileInfoRest } = fileInfo
-              assetMap[fileInfo.name] = { fileInBundle, ...fileInfoRest }
+              assetMap[fileInfo.name ?? ''] = { fileInBundle, ...fileInfoRest }
             }
           }
-          
           console.log('assetMap', JSON.stringify(assetMap, null, 2))
           
           
@@ -437,10 +434,10 @@ function vitePwaPlugin() {
     
     // Public assets to be precached in SW.
     // By default, all precached entries are:
-    // bundled JS, bundled CSS, public index.html, public registerSW.js.
+    // bundled JS, bundled CSS, public index.html, public registerSW.js, public/**
     // You may add public assets to be precached.
     // These public assets must be in '<project-root>/public/' folder and paths relative to this.
-    includeAssets: ['./static/**'],
+    //includeAssets: ['static/**'],
     
     registerType: 'prompt', // prompt user to reload page when SW was updated
     injectManifest: {
