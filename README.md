@@ -115,3 +115,4 @@ and go to `https://${PROXY_HOST}:${PROXY_PORT}` e.g. <https://tetris.rrain.fvds.
 - Responsive layout for everything using CSS Container Queries.
 - Fullscreen mode.
 - PWA installation.
+- Pull request to squash merge from dev to main + version tag.
