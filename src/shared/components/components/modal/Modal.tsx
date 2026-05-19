@@ -44,7 +44,7 @@ export default function Modal(props: ModalProps) {
     <Portal>
       <div
         cn={`
-          fixed-bot h-[100dvh] z-[1000] bg-cl-[#0000009a]
+          fixed-blr h-[100dvh] z-[1000] bg-cl-[#0000009a]
           ${noPointer ? 'no-pointer' : ''}
         `}
         ref={combineRefs(ref, elemRef)}
