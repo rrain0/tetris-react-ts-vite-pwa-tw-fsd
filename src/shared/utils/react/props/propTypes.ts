@@ -1,0 +1,26 @@
+import React, { type ComponentProps, type ReactNode } from 'react'
+
+
+
+export type StylePropType = React.CSSProperties
+export type ClassNamePropType = string
+export type ChildrenPropType = ReactNode
+
+export type DivProps = ComponentProps<'div'>
+export type ImgProps = ComponentProps<'img'>
+export type StyleProp = { style?: StylePropType | undefined }
+export type ClassNameProp = { className?: ClassNamePropType | undefined }
+export type ChildrenProp = { children?: ChildrenPropType | undefined }
+
+// Short aliases
+export type Div = DivProps
+export type Img = ImgProps
+export type Children = ChildrenProp
+export type CnSt = ClassNameProp & StyleProp
+export type CnStChl = ClassNameProp & StyleProp & ChildrenProp
+
+
+
+// Modern browser treat 'click' event as pointer event
+// so native 'click' event must be pointer event.
+export type ReactOnClickEventModern<E = Element> = React.MouseEvent<E, PointerEvent>

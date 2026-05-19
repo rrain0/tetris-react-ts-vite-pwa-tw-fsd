@@ -1,0 +1,137 @@
+
+
+
+
+/*** 🔶Size🔶 ***/
+
+/** box-sizing **/
+@utility content-box { box-sizing: content-box; }
+@utility border-box { box-sizing: border-box; }
+
+@theme {
+  --size-full: 100%;
+  --size-ct: fit-content;
+  --size-0: 0;
+  --size-auto: auto;
+}
+
+/** size - width & height **/
+@utility sz-* {
+  width: --value([number])px; width: --value(--size-*, [*]);
+  height: --value([number])px; height: --value(--size-*, [*]);
+}
+
+/** size min - min-width & min-height **/
+@utility sz-min-* {
+  min-width: --value([number])px; min-width: --value(--size-*, [*]);
+  min-height: --value([number])px; min-height: --value(--size-*, [*]);
+}
+
+/** size max - max-width & max-height **/
+@utility sz-max-* {
+  max-width: --value([number])px; max-width: --value(--size-*, [*]);
+  max-height: --value([number])px; max-height: --value(--size-*, [*]);
+}
+
+/** width **/
+@utility w-* { width: --value([number])px; width: --value(--size-*, [*]); }
+
+/** min-width **/
+@utility w-min-* { min-width: --value([number])px; min-width: --value(--size-*, [*]); }
+
+/** max-width **/
+@utility w-max-* { max-width: --value([number])px; max-width: --value(--size-*, [*]); }
+
+/** height **/
+@utility h-* { height: --value([number])px; height: --value(--size-*, [*]); }
+
+/** min-height **/
+@utility h-min-* { min-height: --value([number])px; min-height: --value(--size-*, [*]); }
+
+/** max-height **/
+@utility h-max-* { max-height: --value([number])px; max-height: --value(--size-*, [*]); }
+
+/** aspect-ratio **/
+@utility square { aspect-ratio: 1; }
+@utility round { border-radius: 999999px; }
+@utility ratio-* { aspect-ratio: --value([*]); }
+
+/** margin **/
+@utility m-* { margin: --value([number])px; margin: --value(--size-*, [*]); }
+@utility mv-* {
+  margin-top: --value([number])px; margin-top: --value(--size-*, [*]);
+  margin-bottom: --value([number])px; margin-bottom: --value(--size-*, [*]);
+}
+@utility mh-* {
+  margin-left: --value([number])px; margin-left: --value(--size-*, [*]);
+  margin-right: --value([number])px; margin-right: --value(--size-*, [*]);
+}
+@utility mt-* { margin-top: --value([number])px; margin-top: --value(--size-*, [*]); }
+@utility mr-* { margin-right: --value([number])px; margin-right: --value(--size-*, [*]); }
+@utility mb-* { margin-bottom: --value([number])px; margin-bottom: --value(--size-*, [*]); }
+@utility ml-* { margin-left: --value([number])px; margin-left: --value(--size-*, [*]); }
+
+/** padding **/
+@utility p-* { padding: --value([number])px; padding: --value(--size-*, [*]); }
+@utility pv-* {
+  padding-top: --value([number])px; padding-top: --value(--size-*, [*]);
+  padding-bottom: --value([number])px; padding-bottom: --value(--size-*, [*]);
+}
+@utility ph-* {
+  padding-left: --value([number])px; padding-left: --value(--size-*, [*]);
+  padding-right: --value([number])px; padding-right: --value(--size-*, [*]);
+}
+@utility pt-* { padding-top: --value([number])px; padding-top: --value(--size-*, [*]); }
+@utility pr-* { padding-right: --value([number])px; padding-right: --value(--size-*, [*]); }
+@utility pb-* { padding-bottom: --value([number])px; padding-bottom: --value(--size-*, [*]); }
+@utility pl-* { padding-left: --value([number])px; padding-left: --value(--size-*, [*]); }
+
+/** gap **/
+@utility g-* { gap: --value([number])px; gap: --value(--size-*, [*]); }
+@utility g-row-* { row-gap: --value([number])px; row-gap: --value(--size-*, [*]); }
+@utility g-col-* { column-gap: --value([number])px; column-gap: --value(--size-*, [*]); }
+
+
+
+
+/*** 🔶Position🔶 ***/
+
+@utility fixed-trbl { position: fixed; top: 0; right: 0; bottom: 0; left: 0; }
+@utility fixed-tlwh { position: fixed; top: 0; left: 0; width: 100%; height: 100%; }
+@utility fixed-top { position: fixed; top: 0; left: 0; right: 0; }
+@utility fixed-left { position: fixed; top: 0; left: 0; bottom: 0; }
+@utility fixed-bot { position: fixed; bottom: 0; left: 0; right: 0; }
+
+@utility abs-trbl { position: absolute; top: 0; right: 0; bottom: 0; left: 0; }
+@utility abs-tlwh { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+@utility abs-tl { position: absolute; top: 0; left: 0; }
+
+@utility abs { position: absolute; }
+@utility rel { position: relative; }
+@utility fixed { position: fixed; }
+@utility pos-* { position: --value([*]); }
+
+@utility trbl-* {
+  top: --value([number])px; top: --value(--size-*, [*]);
+  right: --value([number])px; right: --value(--size-*, [*]);
+  bottom: --value([number])px; bottom: --value(--size-*, [*]);
+  left: --value([number])px; left: --value(--size-*, [*]);
+}
+@utility tb-* {
+  top: --value([number])px; top: --value(--size-*, [*]);
+  bottom: --value([number])px; bottom: --value(--size-*, [*]);
+}
+@utility lr-* {
+  right: --value([number])px; right: --value(--size-*, [*]);
+  left: --value([number])px; left: --value(--size-*, [*]);
+}
+
+@utility t { top: 0; }
+@utility t-* { top: --value([number])px; top: --value(--size-*, [*]); }
+@utility r { right: 0; }
+@utility r-* { right: --value([number])px; right: --value(--size-*, [*]); }
+@utility b { bottom: 0; }
+@utility b-* { bottom: --value([number])px; bottom: --value(--size-*, [*]); }
+@utility l { left: 0; }
+@utility l-* { left: --value([number])px; left: --value(--size-*, [*]); }
+@utility z-* { z-index: --value(--size-*, [*]); }

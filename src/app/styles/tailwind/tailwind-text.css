@@ -1,0 +1,18 @@
+
+
+
+
+/*** 🔶Text🔶 ***/
+
+/** text-align **/
+@utility tx-center { text-align: center; }
+@utility tx-left { text-align: left; }
+@utility tx-right { text-align: right; }
+@utility tx-justify { text-align: justify; }
+
+/** text size **/
+@utility tx-f-* { font-family: --value([*]); }
+@utility tx-sz-* { font-size: --value([number])px; font-size: --value([*]); }
+@utility tx-wt-* { font-weight: --value([*]); }
+@utility tx-h-* { line-height: --value([*]); }
+@utility tx-sp-* { letter-spacing: --value([*]); }

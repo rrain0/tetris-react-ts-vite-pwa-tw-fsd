@@ -1,0 +1,9 @@
+
+
+
+
+/*** 🔶SVG Content🔶 ***/
+
+/** fill & stroke color **/
+@utility svg-cl-* { fill: --value([*]); stroke: --value([*]); }
+@utility svg-curr-cl { fill: currentColor; stroke: currentColor; }

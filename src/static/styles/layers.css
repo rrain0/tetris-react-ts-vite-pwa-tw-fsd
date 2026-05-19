@@ -1,0 +1,34 @@
+
+
+/* Tailwind base */
+@layer base;
+/* Tailwind theme */
+@layer theme;
+
+
+/* Unstyled elements defaults */
+@layer reset;
+
+/* App fonts */
+@layer fonts;
+
+/* App defaults */
+@layer app;
+
+/* App styles (colors, text styles, ...) */
+@layer styles;
+
+
+
+/* Unstyled local widget */
+@layer widgetReset;
+
+/* Local widget defaults */
+@layer widget;
+
+
+
+/* Tailwind utilities */
+@layer utilities;
+/* Tailwind components */
+@layer components;

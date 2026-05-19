@@ -1,18 +1,20 @@
 {
   // defines paths to apply this tsconfig to
-  "include": ["src", "node_modules_type_overrides"],
+  "include": ["types-global", "src"],
   "compilerOptions": {
     // A file for storing compilation information to build faster
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
     // Output JS version, newer used features might be downleveled to run on older JS version
-    "target": "ES2022",
-    // Specify available built-in type definitions
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "target": "ESNext",
+    // Define which built-in environment APIs global types are pulled in.
+    "lib": ["ESNext", "DOM"],
+    // Define which external libraries' global types are pulled in.
+    "types": [], // default value
     // Sets the module system for the program, influences 'import' / 'export' translation into JS
     "module": "ESNext",
     // Skip any errors in d.ts files (including node_modules), invalid types treated as 'any'
     "skipLibCheck": true,
-
+    
     /* Bundler mode */
     // Use bundler-specific features when resolving imports. Vite is bundler
     "moduleResolution": "bundler",
@@ -38,40 +40,30 @@
     
     /* Linting */
     "strict": true,
+    // It is useless when using multiple static factory methods.
+    "strictPropertyInitialization": false,
     "erasableSyntaxOnly": false,
     // Checks module existence even if you don't import any values from it
-    "noUncheckedSideEffectImports": true,
+    "noUncheckedSideEffectImports": true, // default value
     "allowUnreachableCode": true,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,
-    "noImplicitAny": false,
+    "noImplicitAny": true,
     "noImplicitOverride": true,
     // '?' means absence of property but not 'undefined'
     "exactOptionalPropertyTypes": true,
-    // Disallow for indexed type to write 'obj.prop' in addition to 'obj['prop']'
+    // 'false' to allow to write 'obj.prop' in addition to 'obj['prop']' for indexed types.
     "noPropertyAccessFromIndexSignature": false,
     // Add 'undefined' when get prop of indexed type
     "noUncheckedIndexedAccess": false,
-    // Allow use [...anyIterator]
-    "downlevelIteration": true,
     
     /* Path aliases */
-    "baseUrl": ".",
+    // Aliases for ts compiler.
+    // Aliases used in CSS & Workers must be duplicated in vite.config.ts.
     "paths": {
-      "*": [
-        "src/*",
-        "node_modules_type_overrides/*"
-      ],
-      
-      "src/*": ["src/*"],
-      
-      "@utils/*": ["src/utils/*"],
-      "@assets/*": ["src/assets/*"],
-      "@mini-libs/*": ["src/mini-libs/*"],
-      
-      "@im/*": ["src/res/im/*"],
-      "@ic/*": ["src/res/ic/*"],
+      "@/*": ["./src/*"],
+      "@@/*": ["./src/shared/*"],
     }
   }
 }

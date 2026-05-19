@@ -1,0 +1,42 @@
+.reload-prompt-container {
+    padding: 0;
+    margin: 0;
+    width: 0;
+    height: 0;
+    color: black;
+}
+.reload-prompt-buildDate {
+    position: absolute;
+    width: 0;
+    height: 0;
+    display: none;
+}
+.reload-prompt-toast {
+    position: absolute;
+    right: 16px;
+    bottom: 16px;
+    width: 400px;
+    max-width: calc(100% - 16px - 16px);
+    padding: 12px;
+    border: 1px solid #8885;
+    border-radius: 4px;
+    z-index: 10000;
+    text-align: left;
+    box-shadow: 3px 4px 5px 0 #8885;
+    background-color: white;
+    color: black;
+}
+.reload-prompt-toast-message {
+    margin-bottom: 8px;
+    color: black;
+}
+.reload-prompt-toast-button {
+    min-width: 100px;
+    height: 36px;
+    border: 1px solid #8885;
+    outline: none;
+    margin-right: 5px;
+    border-radius: 2px;
+    padding: 3px 10px;
+    color: black;
+}

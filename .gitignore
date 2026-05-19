@@ -10,7 +10,13 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+dev-dist
+manifest.json
 *.local
+
+/deploy-prod/*.env
+/deploy-prod/*.pem*
+/deploy-prod/*.pfx
 
 # Editor directories and files
 .vscode/*

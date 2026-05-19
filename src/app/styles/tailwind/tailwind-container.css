@@ -1,0 +1,23 @@
+
+
+
+
+/*** 🔶Container🔶 ***/
+
+/** overflow **/
+@utility no-overflow { overflow: hidden; }
+@utility overflow-auto { overflow: auto; }
+@utility overflow-hidden { overflow: hidden; }
+@utility overflow-visible { overflow: visible; }
+
+/** contain **/
+@utility no-contain { contain: none; }
+@utility contain-paint { contain: paint; }
+@utility contain-layout { contain: layout; }
+@utility contain-size { contain: size; }
+@utility contain-content { contain: content; } /* paint + layout */
+@utility contain-strict { contain: strict; } /* paint + layout + size */
+
+/** container **/
+@utility container-inline-size { container-type: inline-size; }
+@utility container-size { container-type: size; }

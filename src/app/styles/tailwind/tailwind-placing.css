@@ -1,0 +1,66 @@
+
+
+
+
+/*** 🔶Place🔶 ***/
+
+/** align-items **/
+@utility ali-start { align-items: start; }
+@utility ali-center { align-items: center; }
+@utility ali-end { align-items: end; }
+@utility ali-stretch { align-items: stretch; }
+@utility ali-* { align-items: --value([*]); }
+
+/** justify-items **/
+@utility jui-start { justify-items: start; }
+@utility jui-center { justify-items: center; }
+@utility jui-end { justify-items: end; }
+@utility jui-stretch { justify-items: stretch; }
+@utility jui-* { justify-items: --value([*]); }
+
+/** place-items **/
+@utility pli-* { place-items: --value([*]); }
+
+/** align-content **/
+@utility alc-start { align-content: start; }
+@utility alc-center { align-content: center; }
+@utility alc-end { align-content: end; }
+@utility alc-stretch { align-content: stretch; }
+@utility alc-between { align-content: space-between; }
+@utility alc-around { align-content: space-around; }
+@utility alc-* { align-content: --value([*]); }
+
+/** justify-content **/
+@utility juc-start { justify-content: start; }
+@utility juc-center { justify-content: center; }
+@utility juc-end { justify-content: end; }
+@utility juc-stretch { justify-content: stretch; }
+@utility juc-between { justify-content: space-between; }
+@utility juc-around { justify-content: space-around; }
+@utility juc-* { justify-content: --value([*]); }
+
+/** place-items **/
+@utility plc-* { place-content: --value([*]); }
+
+
+
+/*** 🔶Placed🔶 ***/
+
+/* align-self */
+@utility als-start { align-self: start; }
+@utility als-center { align-self: center; }
+@utility als-end { align-self: end; }
+@utility als-stretch { align-self: stretch; }
+@utility als-* { align-self: --value([*]); }
+
+/* justify-self */
+@utility jus-start { justify-self: start; }
+@utility jus-center { justify-self: center; }
+@utility jus-end { justify-self: end; }
+@utility jus-stretch { justify-self: stretch; }
+@utility jus-* { justify-self: --value([*]); }
+
+/** placed 2 **/
+@utility centered2 { place-self: center; }
+@utility ended2 { place-self: end; }
+@utility pls-* { place-self: --value([*]); }

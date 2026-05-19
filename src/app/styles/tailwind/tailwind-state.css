@@ -1,0 +1,48 @@
+
+
+
+
+/*** 🔶State🔶 ***/
+/*
+  ℹ️ ПОРЯДОК СОСТОЯНИЙ в CSS:
+  normal
+  :checked
+  selected (&[selected] { }) - элемент выбран (например выделен элемент в списке)
+  inFocus (&:hovrr { } &:active { } &:focus-visible { })
+  hovrr (@media (hover: hover) and (pointer: fine) { &:hover { } })
+  :hover
+  :active
+  :focus
+  :focus-visible
+  :read-only
+  :disabled
+  locked (&[locked] { }) (<div disabled locked/>) -
+    это короткий disabled, например во время layout transition.
+    Элемент выглядит как обычно, но не интерактивен.
+    Например кнопку нельзя нажать, но выглядит она как обычно.
+  error (&[error] { })
+*/
+
+/* selected - элемент выбран (например выделен элемент в списке) */
+@custom-variant selected {
+  &[selected] { @slot; }
+}
+/* in-focus - :hovrr or :active or :focus-visible */
+@custom-variant in-focus {
+  @media (hover: hover) and (pointer: fine) { &:hover { @slot; } }
+  &:active { @slot; }
+  &:focus-visible { @slot; }
+}
+/* hovrr - hoverable hover */
+@custom-variant hovrr {
+  @media (hover: hover) and (pointer: fine) { &:hover { @slot; } }
+}
+/* locked (<div disabled locked/>) */
+/* это короткий disabled, например во время layout transition */
+@custom-variant locked {
+  &[locked] { @slot; }
+}
+/* error */
+@custom-variant error {
+  &[error] { @slot; }
+}

@@ -1,0 +1,86 @@
+
+
+
+
+/*** 🔶Grid🔶 ***/
+
+/* shortcuts */
+@utility stack { @apply grid-['stack']; & > * { @apply in-area-[stack]; } }
+
+/** grid **/
+@utility grid { display: grid; }
+@utility grid-* { display: grid; grid: --value([*]); }
+
+/** grid direction **/
+@utility row { &:where(.grid,[class*=grid-],.stack) {
+  grid-auto-flow: column;
+} }
+@utility col { &:where(.grid,[class*=grid-],.stack) {
+  grid-auto-flow: row;
+} }
+
+/** grid layout **/
+@utility rows-* { &:where(.grid,[class*=grid-],.stack) {
+  grid-template-rows: --value([*]);
+} }
+@utility cols-* { &:where(.grid,[class*=grid-],.stack) {
+  grid-template-columns: --value([*]);
+} }
+@utility areas-* { &:where(.grid,[class*=grid-],.stack) {
+  grid-template-areas: --value([*]);
+} }
+@utility auto-rows-* { &:where(.grid,[class*=grid-],.stack) {
+  grid-auto-rows: --value([*]);
+} }
+@utility auto-cols-* { &:where(.grid,[class*=grid-],.stack) {
+  grid-auto-columns: --value([*]);
+} }
+
+
+
+/** grid placing **/
+
+@utility start { &:where(.grid,[class*=grid-],.stack) {
+  align-items: start;
+} }
+@utility center { &:where(.grid,[class*=grid-],.stack) {
+  align-items: center;
+} }
+@utility end { &:where(.grid,[class*=grid-],.stack) {
+  align-items: end;
+} }
+@utility stretch { &:where(.grid,[class*=grid-],.stack) {
+  align-items: stretch;
+} }
+
+@utility start2 { &:where(.grid,[class*=grid-],.stack) {
+  place-items: start;
+} }
+@utility center2 { &:where(.grid,[class*=grid-],.stack) {
+  place-items: center;
+} }
+@utility end2 { &:where(.grid,[class*=grid-],.stack) {
+  place-items: end;
+} }
+@utility stretch2 { &:where(.grid,[class*=grid-],.stack) {
+  place-items: stretch;
+} }
+
+@utility center-start { &:where(.grid,[class*=grid-],.stack) {
+  place-items: center start;
+} }
+@utility end-stretch { &:where(.grid,[class*=grid-],.stack) {
+  place-items: end stretch;
+} }
+
+
+
+
+/** grided **/
+@utility grid-row-* { grid-row: --value([*]); }
+@utility grid-col-* { grid-column: --value([*]); }
+@utility grid-area-* { grid-area: --value([*]); }
+
+@utility in-row-* { grid-row: --value([*]); }
+@utility in-col-* { grid-column: --value([*]); }
+@utility in-area-* { grid-area: --value([*]); }

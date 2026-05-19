@@ -1,0 +1,50 @@
+
+/* ⚠️ html / body display property behaves strange */
+
+@layer reset {
+  
+  *,
+  ::before,
+  ::after,
+  ::backdrop,
+  ::file-selector-button {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    gap: 0;
+    
+    place-items: normal;
+    place-content: normal;
+    overflow-wrap: anywhere;
+    
+    transition-property: none;
+    
+    border: 0 solid;
+  }
+  
+  /* Unstyled headings*/
+  h1, h2, h3, h4, h5, h6 {
+    font-size: inherit;
+    font-weight: inherit;
+  }
+  
+  /* Unstyled lists */
+  ol, ul, menu {
+    list-style: none;
+  }
+  
+  /* Images and etc are blocks */
+  img, svg, video, canvas, audio, iframe, embed, object {
+    display: block;
+    vertical-align: middle;
+  }
+  
+  button {
+    background-color: transparent;
+  }
+  
+  input, textarea {
+    justify-items: normal;
+  }
+  
+}

@@ -1,7 +1,9 @@
+import { defineConfig } from 'eslint/config'
+
 // yarn add --dev globals
 import globals from 'globals'
 
-// yarn add --dev eslint @eslint/js @types/eslint__js typescript typescript-eslint
+// yarn add --dev eslint @eslint/js typescript typescript-eslint
 import js from '@eslint/js'
 import ts from 'typescript-eslint'
 
@@ -14,17 +16,11 @@ import react from 'eslint-plugin-react'
 // yarn add --dev eslint-plugin-react-hooks
 import reactHooks from 'eslint-plugin-react-hooks'
 
-// yarn add --dev eslint-plugin-import eslint-import-resolver-alias eslint-import-resolver-typescript
-import importPlugin from 'eslint-plugin-import'
-
 // yarn add --dev eslint-plugin-promise
 import promise from 'eslint-plugin-promise'
 
 // yarn add --dev eslint-plugin-react-refresh
 import reactRefresh from 'eslint-plugin-react-refresh'
-
-// yarn add --dev eslint-plugin-jsx-a11y
-import jsxA11y from 'eslint-plugin-jsx-a11y'
 
 // https://github.com/prettier/eslint-plugin-prettier
 // package.json.devDependencies."eslint-plugin-prettier": "^5.2.1",
@@ -34,34 +30,35 @@ import jsxA11y from 'eslint-plugin-jsx-a11y'
 
 
 
-export default [
+export default defineConfig([
   
   // typescript config
-  ...ts.config(
-    js.configs.recommended,
-    ...ts.configs.recommended,
-    {
-      rules: {
-        'eslint no-unused-expressions': 'off',
-        'no-async-promise-executor': 'off',
-        'no-constant-binary-expression': 'warn',
-        'no-constant-condition': 'off',
-        'no-empty': 'off',
-        'no-empty-pattern': 'off',
-        'no-self-assign': 'off',
-        'no-unexpected-multiline': 'off',
-        'prefer-const': 'warn',
-        '@typescript-eslint/no-unused-expressions': 'off',
-        '@typescript-eslint/ban-ts-comment': ['warn', { 'ts-expect-error': false }],
-        '@typescript-eslint/no-unused-vars': 'off',
-        '@typescript-eslint/ban-types': 'off',
-        '@typescript-eslint/no-explicit-any': 'off',
-        '@typescript-eslint/no-namespace': 'off',
-        '@typescript-eslint/no-empty-object-type': 'off',
-        '@typescript-eslint/no-unsafe-function-type': 'off',
-      },
-    }
-  ),
+  js.configs.recommended,
+  ts.configs.recommended,
+  {
+    rules: {
+      'eslint no-unused-expressions': 'off',
+      'no-async-promise-executor': 'off',
+      'no-constant-binary-expression': 'warn',
+      'no-constant-condition': 'warn',
+      'no-empty': 'off',
+      'no-empty-pattern': 'off',
+      'no-empty-static-block': 'off',
+      'no-self-assign': 'off',
+      'no-unexpected-multiline': 'off',
+      'no-useless-assignment': 'warn',
+      'prefer-const': 'warn',
+      '@typescript-eslint/no-unused-expressions': 'off',
+      '@typescript-eslint/ban-ts-comment': 'off',
+      '@typescript-eslint/no-unused-vars': 'off',
+      '@typescript-eslint/ban-types': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-namespace': 'off',
+      '@typescript-eslint/no-empty-object-type': 'off',
+      '@typescript-eslint/no-unsafe-function-type': 'off',
+      'react/no-unknown-property': ['error', { ignore: ['cn', 'st'] }],
+    },
+  },
   
   
   // react config
@@ -84,21 +81,17 @@ export default [
       'react/function-component-definition': 'off',
       'react/prop-types': 'off',
       'react/no-unescaped-entities': 'off',
-      // for emotion css property
-      'react/no-unknown-property': ['error', { 'ignore': ['css'] }],
     },
   },
   
   
   // https://www.npmjs.com/package/eslint-plugin-react-hooks
-  // Legacy error: TypeError: context.getSource is not a function
-  //...compat.extends('plugin:react-hooks/recommended'),
+  reactHooks.configs.flat.recommended,
   {
-    plugins: {
-      'react-hooks': reactHooks,
-    },
+    files: ['src/**/*.{js,jsx,ts,tsx}'],
     rules: {
-    
+      'react-hooks/exhaustive-deps': 'off',
+      'react-hooks/set-state-in-effect': 'off',
     },
   },
   
@@ -216,7 +209,7 @@ export default [
       '@stylistic/no-tabs': 'error',
       '@stylistic/no-trailing-spaces': 'off',
       '@stylistic/no-whitespace-before-property': 'error',
-      '@stylistic/nonblock-statement-body-position': 'off',
+      '@stylistic/nonblock-statement-body-blocks': 'off',
       '@stylistic/object-curly-newline': 'off',
       '@stylistic/object-curly-spacing': ['error', 'always'],
       //'@stylistic/object-property-newline': ['error', { allowAllPropertiesOnSameLine: true }],
@@ -284,7 +277,7 @@ export default [
       '@stylistic/jsx-quotes': ['warn', 'prefer-single'],
       '@stylistic/jsx-self-closing-comp': 'warn',
       '@stylistic/jsx-sort-props': 'off',
-      '@stylistic/jsx-tag-spacing': ['error', { beforeSelfClosing: 'never' }],
+      '@stylistic/jsx-tag-spacing': ['warn', { beforeSelfClosing: 'never' }],
       '@stylistic/jsx-wrap-multilines': ['error', {
         declaration: 'parens-new-line',
         assignment: 'parens-new-line',
@@ -297,55 +290,6 @@ export default [
       }],
     },
   },
-  
-  
-  // https://www.npmjs.com/package/eslint-plugin-import
-  // TypeError: context.getAncestors is not a function
-  //importPlugin.flatConfigs.recommended,
-  //importPlugin.flatConfigs.typescript,
-  // Legacy error
-  //...compat.extends('plugin:import/errors'),
-  //...compat.extends('plugin:import/warnings'),
-  /*{
-    languageOptions: {
-      ecmaVersion: 'latest',
-      sourceType: 'module',
-      globals: {
-        ...globals.serviceworker,
-        ...globals.browser,
-      },
-      parser: ts.parser,
-      parserOptions: {
-        ecmaVersion: 'latest',
-        sourceType: 'module',
-        ecmaFeatures: {
-          jsx: true,
-        }
-      },
-    },
-    files: ['**!/!*.{ts,cts,mts,tsx,d.ts,js,cjs,mjs,jsx}'],
-    plugins: {
-      'import': importPlugin,
-    },
-    settings: {
-      'import/resolver': {
-        typescript: {
-          alwaysTryTypes: true,
-        },
-        alias: [
-          ['', './public']
-        ],
-      }
-    },
-    rules: {
-      // import rules
-      // 'import/order': ['error', {
-      //   groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
-      //   'newlines-between': 'always',
-      // }],
-      
-    },
-  },*/
   
   
   // https://www.npmjs.com/package/eslint-plugin-promise
@@ -362,33 +306,6 @@ export default [
   },
   
   
-  // jsx-a11y config
-  // https://www.npmjs.com/package/eslint-plugin-jsx-a11y
-  jsxA11y.flatConfigs.recommended,
-  {
-    files: ['**/*.{js,mjs,cjs,jsx,mjsx,ts,tsx,mtsx}'],
-    languageOptions: {
-      ...jsxA11y.flatConfigs.recommended.languageOptions,
-      globals: {
-        ...globals.serviceworker,
-        ...globals.browser,
-      },
-    },
-    /*plugins: {
-      'jsx-a11y': jsxA11y,
-    },*/
-    rules: {
-      'jsx-a11y/alt-text': 'off',
-      'jsx-a11y/tabindex-no-positive': 'off',
-      'jsx-a11y/no-autofocus': 'off',
-      // for now, I do not concern about accessibility
-      'jsx-a11y/no-static-element-interactions': 'off',
-      // for now, I do not concern about accessibility
-      'jsx-a11y/click-events-have-key-events': 'off',
-    },
-  },
-  
-  
   // I do not use prettier because it formats my code in a strange non-configurable way.
   // Collapsing cause code becomes harder to read:
   // https://prettier.io/docs/en/rationale.html#empty-lines
@@ -399,4 +316,4 @@ export default [
   
   // !!! 'ignores' must be in a standalone object to work globally
   { ignores: ['dist', 'dev-dist'] },
-]
+])
