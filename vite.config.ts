@@ -50,7 +50,7 @@ export default defineConfig(({ command, mode }) => {
   
   //const manifestPathSearch = `manifest.json`
   //const manifestPathSearch = `manifest.json${manifestSearchParams}`
-  const manifestPath = `src/manifest.json`
+  const manifestPath = `manifest.json`
   const manifestPathSearch = `${manifestPath}${manifestSearchParams}`
   
   return {
@@ -62,8 +62,8 @@ export default defineConfig(({ command, mode }) => {
       
       // Works for TS (+ Workers), CSS
       alias: {
-        '@': fileURLToPath(new URL('./src', import.meta.url)),
-        '@@': fileURLToPath(new URL('./src/shared', import.meta.url)),
+        '@': fileURLToPath(new URL('src', import.meta.url)),
+        '@@': fileURLToPath(new URL('src/shared', import.meta.url)),
       },
     },
     
@@ -83,8 +83,8 @@ export default defineConfig(({ command, mode }) => {
           // Intercept how Rolldown names every single asset
           assetFileNames: (assetInfo) => {
             const filenamePattern = '[name]-[hash].[ext]'
-            // Route 'manifest.json' to root folder
-            if (assetInfo.names.includes('manifest.json')) return filenamePattern
+            // Route manifest to root folder
+            if (assetInfo.names.includes(manifestPath)) return filenamePattern
             // Else use standard asset route
             return `assets/${filenamePattern}`
           },
@@ -397,9 +397,10 @@ function generatePwaManifestPlugin({
               if (path !== basedPath) continue
               const contentType = mime.getType(basedPath)
               if (!contentType) continue
-              const content = requiredPath === manifestPath
-                ? manifestJson
-                : fs.readFileSync(fileURLToPath(new URL(requiredPath, import.meta.url)))
+              const content = (() => {
+                if (requiredPath === manifestPath) return manifestJson
+                return fs.readFileSync(fileURLToPath(new URL(requiredPath, import.meta.url)))
+              })()
               
               res.setHeader('Content-Type', contentType)
               res.end(content)
@@ -425,7 +426,10 @@ function generatePwaManifestPlugin({
           // Tell Rolldown to include the files at the start of the build.
           // Generate manifest file for build with a dynamic content hash.
           buildStart() {
-            
+            const iconsPaths = {
+              icon64Path,
+              icon192Path, icon192MaskablePath, icon512Path, icon512MaskablePath,
+            }
             const iconsPathsToBundled = {
               icon64Path: 'icon64Bundled',
               icon192Path: 'icon192Bundled',
@@ -441,10 +445,7 @@ function generatePwaManifestPlugin({
               icon512MaskableBundled: '',
             }
             
-            Object.entries({
-              icon64Path,
-              icon192Path, icon192MaskablePath, icon512Path, icon512MaskablePath,
-            }).forEach(([name, path]) => {
+            Object.entries(iconsPaths).forEach(([name, path]) => {
               const filename = lastPathSegment(path)
               const absPath = fileURLToPath(new URL(path, import.meta.url))
               const filenameBundled = this.getFileName(
@@ -471,7 +472,6 @@ function generatePwaManifestPlugin({
             
             // Physically create manifest file
             // just for Vite to correctly replaces its path in index.html
-            const manifestPath = 'src/manifest.json'
             fs.writeFileSync(fileURLToPath(new URL(manifestPath, import.meta.url)), manifestJson)
             const manifestBundled = this.getFileName(
               this.emitFile({

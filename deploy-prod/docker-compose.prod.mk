@@ -16,7 +16,7 @@ docker-prod-build:
 		../
 
 docker-prod-push:
-	docker push  \
+	docker push \
 		$(DOCKER_IMAGE_NAMESPACE)/tetris-prod-react-react:$(DOCKER_IMAGE_VERSION)
 
 

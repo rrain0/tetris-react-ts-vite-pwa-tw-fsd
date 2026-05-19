@@ -11,7 +11,7 @@ node_modules
 dist
 dist-ssr
 dev-dist
-/src/manifest.json
+manifest.json
 *.local
 
 /deploy-prod/*.env

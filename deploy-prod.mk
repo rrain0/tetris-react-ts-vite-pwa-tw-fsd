@@ -1,11 +1,11 @@
 
-prod-build:
+prod-image-build:
 	$(MAKE) -C ./deploy-prod -f docker-compose.prod.mk docker-prod-build
 
-prod-push:
+prod-image-push:
 	$(MAKE) -C ./deploy-prod -f docker-compose.prod.mk docker-prod-push
 
-prod-build-push: prod-build prod-push
+prod-image-build-push: prod-image-build prod-image-push
 
 
 
