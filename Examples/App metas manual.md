@@ -121,7 +121,7 @@
     * Android.
 
 - Screens
-  + iOS Splashscreen
+  + iOS Splashscreen [DOES NOT WORK]
     * Need something like
     ```html
       <html>

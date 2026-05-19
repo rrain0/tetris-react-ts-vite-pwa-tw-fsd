@@ -1,8 +1,5 @@
 import { getAppData } from './getAppData.ts'
 import { getAppDeployIcons } from './icons/getAppDeployIcons.ts'
-import {
-  getAppDeployIosSplashscreensPath
-} from './ios-splashscreen/getAppDeployIosSplashscreensPath.ts'
 import { getAppManifestSearchParams } from './manifest/getAppManifestSearchParams.ts'
 
 
@@ -24,7 +21,6 @@ export function getAppDeployData({ deployMode, deployLocale, deployTheme }: {
   const manifestSearchParams = getAppManifestSearchParams({
     deployMode, locale: deployLocale, theme: deployTheme,
   })
-  const { iosSplashscreensPath } = getAppDeployIosSplashscreensPath({ deployMode })
   
   
   const buildDate = new Date()
@@ -38,7 +34,6 @@ export function getAppDeployData({ deployMode, deployLocale, deployTheme }: {
     icon48Path, icon64Path, icon167Path, icon180Path,
     icon192Path, icon192MaskablePath, icon512Path, icon512MaskablePath,
     manifestSearchParams,
-    iosSplashscreensPath,
     buildDate, buildVer,
   }
 }
