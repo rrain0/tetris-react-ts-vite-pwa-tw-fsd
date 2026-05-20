@@ -1,4 +1,4 @@
-FROM node:22-alpine AS base
+FROM node:22.17.0-alpine AS base
 
 # Configures where pnpm stores its global data
 ENV PNPM_HOME="/pnpm"

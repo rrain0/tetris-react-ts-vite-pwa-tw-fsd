@@ -13,8 +13,13 @@ import { useState } from 'react'
 import * as React from 'react'
 import IngameScreen from '@/screens/ingame/ui/IngameScreen.tsx'
 import SwUpdater from '@/features/sw-updater/ui/SwUpdater'
+import SyncToHtml from './components/SyncToHtml.tsx'
+
+
 
 parserTest()
+
+
 
 export default function App() {
   
@@ -25,6 +30,8 @@ export default function App() {
       <GamepadInputProvider>
         <InputLayoutProvider>
           <HtmlFullscreenProvider navUiShow resumeByGesture>
+            
+            <SyncToHtml/>
             
             <SwUpdater/>
             

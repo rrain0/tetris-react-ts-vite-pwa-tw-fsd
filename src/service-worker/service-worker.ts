@@ -56,52 +56,54 @@ console.log('SW precacheManifest', precacheManifest)
   // @ts-expect-error
   const manifestPathData: PrecacheEntry | undefined = precacheManifest
     .find(it => isobject(it) && manifestPathPattern.test(it.url))
-  if (manifestPathData) {
-    let manifestPath = manifestPathData.url
-    manifestPath = `${envBaseUrl}${manifestPath}`
-    //console.log('manifest manifestPath', manifestPath)
-    
-    // Intercept & generate dynamic manifest
-    registerRoute(
-      ({ url }) => {
-        //console.log('manifest url.pathname', url.pathname)
-        return url.origin === self.location.origin && url.pathname === manifestPath
-      },
-      async ({ request, event, url, params }) => {
-        // 'https://tetris.stg.rraindev:40200'
-        //console.log('manifest origin', self.location.origin)
-        // '/manifest-C6ydhvnX.json'
-        console.log('manifest path', url.pathname)
-        
-        const cachedResponse = await matchPrecache(new URL(url.pathname, url.origin).toString())
-        if (cachedResponse) {
-          let manifest = await cachedResponse.json() as ManifestPart
-          
-          const deployMode = url.searchParams.get('deployMode') || deployModeDefault
-          const deployLocale = url.searchParams.get('locale') || deployLocaleDefault
-          const deployTheme = url.searchParams.get('theme') || deployThemeDefault
-          
-          const {
-            appName, appDescription,
-            themeColor, bgColor,
-          } = getAppData({ deployMode, deployLocale, deployTheme })
-          
-          manifest = manifestToUpdated({
-            manifest,
-            locale: deployLocale,
-            appName, appDescription,
-            themeColor, bgColor,
-          })
-          
-          return new Response(JSON.stringify(manifest, null, 2), {
-            headers: { 'Content-Type': 'application/json' },
-          })
-        }
-        
-        return await fetch(request)
-      }
-    )
-  }
+  
+  let manifestPath = 'manifest.json' // default path for dev
+  if (manifestPathData) manifestPath = manifestPathData.url
+  manifestPath = `${envBaseUrl}${manifestPath}`
+  //console.log('manifest manifestPath', manifestPath)
+  
+  // Intercept & generate dynamic manifest
+  registerRoute(
+    ({ url }) => {
+      //console.log('manifest url.pathname', url.pathname)
+      return url.origin === self.location.origin && url.pathname === manifestPath
+    },
+    async ({ request, event, url, params }) => {
+      // 'https://tetris.stg.rraindev:40200'
+      //console.log('manifest origin', self.location.origin)
+      // '/manifest-C6ydhvnX.json'
+      //console.log('manifest path', url.pathname)
+      
+      const manifestResponse = await matchPrecache(new URL(url.pathname, url.origin).toString())
+        ?? await fetch(request)
+      
+      let manifest = await manifestResponse.json() as ManifestPart
+      
+      const deployMode = url.searchParams.get('deployMode') || deployModeDefault
+      const pwaMode = url.searchParams.get('pwaMode') ?? undefined
+      const deployLocale = url.searchParams.get('locale') || deployLocaleDefault
+      const deployTheme = url.searchParams.get('theme') || deployThemeDefault
+      
+      //console.log('pwaMode', pwaMode)
+      
+      const {
+        appName, appDescription,
+        themeColor, bgColor,
+      } = getAppData({ deployMode, deployLocale, deployTheme })
+      
+      manifest = manifestToUpdated({
+        manifest,
+        pwaMode,
+        locale: deployLocale,
+        appName, appDescription,
+        themeColor, bgColor,
+      })
+      
+      return new Response(JSON.stringify(manifest, null, 2), {
+        headers: { 'Content-Type': 'application/json' },
+      })
+    }
+  )
 }
 
 
