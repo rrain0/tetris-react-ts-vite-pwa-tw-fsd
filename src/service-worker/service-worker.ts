@@ -10,11 +10,11 @@ import {
 import { NavigationRoute, registerRoute } from 'workbox-routing'
 import { envIsDev, envBaseUrl } from '@/app/env.ts'
 import { CacheFirst } from 'workbox-strategies'
-import { deployModeDefault } from '../app-deploy/deployMode.ts'
-import { getAppData } from '../app-deploy/getAppData.ts'
-import { deployLocaleDefault } from '../app-deploy/locale/getAppDeployLocaleData.ts'
-import { addAppDataToAppManifest } from '../app-deploy/manifest/addAppDataToAppManifest.ts'
-import { deployThemeDefault } from '../app-deploy/theme/getAppDeployThemeData.ts'
+import { deployModeDefault } from '@/app-deploy/deployMode.model.ts'
+import { getAppData } from '@/app-deploy/getAppData.ts'
+import { deployLocaleDefault } from '@/app-deploy/locale/deployLocale.model.ts'
+import { manifestToUpdated } from '@/app-deploy/manifest/manifestToUpdated.ts'
+import { deployThemeDefault } from '@/app-deploy/theme/getAppDeployThemeData.ts'
 import type { ManifestPart } from '@/app-deploy/manifest/manifest.model.ts'
 
 
@@ -85,9 +85,10 @@ console.log('SW precacheManifest', precacheManifest)
             appName, appDescription,
             themeColor, bgColor,
           } = getAppData({ deployMode, deployLocale, deployTheme })
-          manifest = addAppDataToAppManifest({
+          
+          manifest = manifestToUpdated({
             manifest,
-            deployMode, deployLocale, deployTheme,
+            locale: deployLocale,
             appName, appDescription,
             themeColor, bgColor,
           })

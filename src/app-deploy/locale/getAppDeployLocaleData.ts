@@ -1,19 +1,10 @@
-import {
-  type DeployMode,
-  deployModeDefault,
-  supportedDeployModes,
-} from '../deployMode.ts'
+import { type DeployMode, deployModeDefault, supportedDeployModes } from '../deployMode.model.ts'
 import { appDeployLocalesData } from './appDeployLocalesData.ts'
-
-
-
-export const supportedDeployLocales = ['en-US'] as const
-export type DeployLocale = typeof supportedDeployLocales[number]
-export const deployLocaleDefault: DeployLocale = 'en-US'
-export type DeployLocaleData = {
-  appName: string
-  appDescription: string
-}
+import {
+  type DeployLocaleData,
+  deployLocaleDefault,
+  supportedDeployLocales,
+} from './deployLocale.model.ts'
 
 
 

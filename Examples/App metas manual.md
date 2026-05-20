@@ -34,7 +34,7 @@
     * Title bar color of window.
   + iOS status bar style / color
     * `html <meta name='apple-mobile-web-app-status-bar-style' content='...'>`
-    * Applicable if PWA mode & manifest.display: "standalone".
+    * Applicable if PWA mode & manifest.display: "standalone" or "fullscreen".
     * `content='black'` - чёрный фон, белый текст
     * `content='black-translucent'` - прозрачный фон, белый текст, контент приложения заходит под статус бар.
   + Theme color (manifest)

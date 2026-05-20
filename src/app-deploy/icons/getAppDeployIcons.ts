@@ -1,21 +1,5 @@
-import {
-  type DeployMode,
-  deployModeDefault,
-  supportedDeployModes,
-} from '../deployMode.ts'
-
-
-
-export type DeployIcons = {
-  icon48Path: string
-  icon64Path: string
-  icon167Path: string
-  icon180Path: string
-  icon192Path: string
-  icon192MaskablePath: string
-  icon512Path: string
-  icon512MaskablePath: string
-}
+import { type DeployMode, deployModeDefault, supportedDeployModes } from '../deployMode.model.ts'
+import type { DeployIcons } from './deployIcons.model.ts'
 
 
 

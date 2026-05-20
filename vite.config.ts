@@ -1,15 +1,15 @@
 import { fileURLToPath, URL } from 'node:url'
 import { getAppDeployData } from './src/app-deploy/getAppDeployData.ts'
-import { type DeployMode, supportedDeployModes } from './src/app-deploy/deployMode.ts'
-import { addDeployDataToAppManifest } from './src/app-deploy/manifest/addDeployDataToAppManifest.ts'
+import { type DeployMode, supportedDeployModes } from './src/app-deploy/deployMode.model.ts'
+import {
+  type DeployLocale,
+  supportedDeployLocales,
+} from './src/app-deploy/locale/deployLocale.model.ts'
+import { manifestToUpdated } from './src/app-deploy/manifest/manifestToUpdated.ts'
 import {
   type DeployTheme,
   supportedDeployThemes,
 } from './src/app-deploy/theme/getAppDeployThemeData.ts'
-import {
-  supportedDeployLocales,
-  type DeployLocale,
-} from './src/app-deploy/locale/getAppDeployLocaleData.ts'
 import { defineConfig, type Plugin } from 'vite'
 import tailwindcss from '@tailwindcss/vite'
 import react, { reactCompilerPreset } from '@vitejs/plugin-react'
@@ -41,7 +41,6 @@ export default defineConfig(({ command, mode }) => {
   const {
     appName, appDescription,
     manifestSearchParams,
-    iosSplashscreensPath,
     buildDate, buildVer,
     themeColor, bgColor, iosStatusBarStyle,
     icon48Path, icon64Path, icon167Path, icon180Path,
@@ -98,7 +97,6 @@ export default defineConfig(({ command, mode }) => {
         manifestPathSearch,
         themeColor, bgColor, iosStatusBarStyle,
         icon48Path, icon167Path, icon180Path,
-        iosSplashscreensPath,
       }),
       
       tailwindcss(),
@@ -223,7 +221,6 @@ function getAppRunAndDeployData({ deployMode, deployLocale, deployTheme }: {
     icon48Path, icon64Path, icon167Path, icon180Path,
     icon192Path, icon192MaskablePath, icon512Path, icon512MaskablePath,
     manifestSearchParams,
-    iosSplashscreensPath,
   } = getAppDeployData({ deployMode, deployLocale, deployTheme })
   
   const buildDate = new Date()
@@ -235,7 +232,6 @@ function getAppRunAndDeployData({ deployMode, deployLocale, deployTheme }: {
     icon48Path, icon64Path, icon167Path, icon180Path,
     icon192Path, icon192MaskablePath, icon512Path, icon512MaskablePath,
     manifestSearchParams,
-    iosSplashscreensPath,
     buildDate, buildVer,
   }
 }
@@ -267,7 +263,6 @@ function htmlAppDeployDataPlugin({
   manifestPathSearch,
   themeColor, bgColor, iosStatusBarStyle,
   icon48Path, icon167Path, icon180Path,
-  iosSplashscreensPath,
 }: {
   deployLocale: string
   appName: string
@@ -279,7 +274,6 @@ function htmlAppDeployDataPlugin({
   icon48Path: string
   icon167Path: string
   icon180Path: string
-  iosSplashscreensPath: string
 }): Plugin {
   return {
     name: 'html-app-headers-plugin',
@@ -297,7 +291,6 @@ function htmlAppDeployDataPlugin({
           .replace(/%FAVICON_48%/g, icon48Path)
           .replace(/%IPAD_ICON_167%/g, icon167Path)
           .replace(/%IPHONE_ICON_180%/g, icon180Path)
-          .replace(/%IOS_SPLASHSCREENS_PATH%/g, iosSplashscreensPath)
       },
     },
   }
@@ -364,15 +357,17 @@ function generatePwaManifestPlugin({
 }): Plugin | Plugin[] {
   const plugins: Record<ProjectRunMode, () => Plugin | Plugin[]> = {
     'dev': () => {
-      const manifestJson = JSON.stringify(addDeployDataToAppManifest({
-        deployMode, deployLocale, deployTheme,
+      const manifestJson = JSON.stringify(manifestToUpdated({
+        locale: deployLocale,
         appName, appDescription,
         themeColor, bgColor,
-        icon64Src: icon64Path,
-        icon192Src: icon192Path,
-        icon192MaskableSrc: icon192MaskablePath,
-        icon512Src: icon512Path,
-        icon512MaskableSrc: icon512MaskablePath,
+        icons: {
+          icon64Src: icon64Path,
+          icon192Src: icon192Path,
+          icon192MaskableSrc: icon192MaskablePath,
+          icon512Src: icon512Path,
+          icon512MaskableSrc: icon512MaskablePath,
+        },
       }), null, 2)
       
       const requiredPaths = [
@@ -459,15 +454,17 @@ function generatePwaManifestPlugin({
               iconsBundled[iconsPathsToBundled[name]] = filenameBundled
             })
             
-            const manifestJson = JSON.stringify(addDeployDataToAppManifest({
-              deployMode, deployLocale, deployTheme,
+            const manifestJson = JSON.stringify(manifestToUpdated({
+              locale: deployLocale,
               appName, appDescription,
               themeColor, bgColor,
-              icon64Src: iconsBundled.icon64Bundled,
-              icon192Src: iconsBundled.icon192Bundled,
-              icon192MaskableSrc: iconsBundled.icon192MaskableBundled,
-              icon512Src: iconsBundled.icon512Bundled,
-              icon512MaskableSrc: iconsBundled.icon512MaskableBundled,
+              icons: {
+                icon64Src: iconsBundled.icon64Bundled,
+                icon192Src: iconsBundled.icon192Bundled,
+                icon192MaskableSrc: iconsBundled.icon192MaskableBundled,
+                icon512Src: iconsBundled.icon512Bundled,
+                icon512MaskableSrc: iconsBundled.icon512MaskableBundled,
+              },
             }), null, 2)
             
             // Physically create manifest file

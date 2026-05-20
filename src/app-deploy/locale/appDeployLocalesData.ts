@@ -1,4 +1,4 @@
-import type { DeployLocale, DeployLocaleData } from './getAppDeployLocaleData.ts'
+import type { DeployLocale, DeployLocaleData } from './deployLocale.model.ts'
 
 
 

@@ -5,7 +5,7 @@
 
 // TODO Html setup from Local Storage
 
-function syncHtml() {
+function globalSyncHtml() {
   // eslint-disable-next-line no-undef
   const deployMode = envBuildMode
   // eslint-disable-next-line no-undef

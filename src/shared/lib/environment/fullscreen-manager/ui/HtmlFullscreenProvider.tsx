@@ -7,10 +7,9 @@ import {
 import type {
   PageLifecycleEv,
 } from '@@/lib/environment/page-lifecycle/model/page-lifecycle.model.ts'
-import { useIsPwa } from '@@/utils/css/useIsPwa.ts'
+import { useIsStandaloneOrFullscreen } from '@@/utils/css/useIsStandaloneOrFullscreen.ts'
 import { isElement } from '@@/utils/dom/elem.ts'
 import type { Children } from '@@/utils/react/props/propTypes.ts'
-import { useAsRefGet } from '@@/utils/react/state/useAsRefGet.ts'
 import { useAsStateAndRef } from '@@/utils/react/state/useAsStateAndRef.ts'
 import { useRefGetSet } from '@@/utils/react/state/useRefGetSet.ts'
 import { useStateAndRef } from '@@/utils/react/state/useStateAndRef.ts'
@@ -52,10 +51,8 @@ export default function HtmlFullscreenProvider(props: FullscreenManagerProps) {
   const byConfirmation = !byGesture && !!resumeByConfirmation
   const canNeedEnter = byGesture || byConfirmation
   
-  const isPwa = useIsPwa()
-  
   // Is fullscreen mode available
-  const [available, getAvailable] = useAsStateAndRef(getFullscreenAvailable() && !isPwa)
+  const [available, getAvailable] = useAsStateAndRef(getFullscreenAvailable())
   // Is user enabled fullscreen
   const { state: enabled, get: getEnabled, set: setEnabled } = useStateAndRef(false)
   // Is document in fullscreen

@@ -10,6 +10,8 @@
 // https://web.dev/manifest-updates/
 
 {
+  // 'id' must never be changed
+  "id": "tetris",
   "lang": "en-US",
   // "name" or "short_name" REQUIRED
   // PWA app / shortcut title
@@ -21,7 +23,11 @@
   // REQUIRED
   "start_url": ".",
   // REQUIRED
-  // 'fullscreen' | 'standalone' | 'minimal-ui'
+  // 'fullscreen' | 'standalone' | 'minimal-ui' | 'browser'
+  // 'browser' - show browser nav & tab bars. No reason to use it.
+  // 'minimal-ui' - shows browser navigation bars. No reason to use it.
+  // 'fullscreen' - on iOS & desktop no difference, on Android is budggy, better not to use it.
+  // 'standalone' - better always use it.
   "display": "standalone",
   // Orientation when installed as PWA
   "orientation": "portrait",

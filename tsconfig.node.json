@@ -25,5 +25,12 @@
     "noFallthroughCasesInSwitch": true,
     "noImplicitAny": false,
     "noUncheckedSideEffectImports": true,
+    
+    /* Path aliases */
+    // Vite does not support path aliases inside its config
+    "paths": {
+      "src/*": ["./src/*"],
+      "src/shared/*": ["./src/shared/*"],
+    }
   }
 }

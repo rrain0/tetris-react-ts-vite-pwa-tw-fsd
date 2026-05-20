@@ -217,6 +217,13 @@ export default function IngameScreen() {
           
         </EnvSafeAreaInset>
       </PageFullVp>
+      
+      
+      {/* <PageFullVp
+       cn={`bg-pos-[center] bg-sz-[cover] no-touch-action
+       grid plc-[stretch] bg-cl-[aquamarine]
+       `}
+       /> */}
     </>
   )
 }
